@@ -1,12 +1,25 @@
 {% extends 'landingpage/base.html'%}
+{% block content %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <link href="{% static 'landingpage/landing.css' %}" type="text/css" rel="stylesheet" />
-<body>
-    <p>hi</p>
+<section id="landing">
+    <img src="{% static 'landingpage/img/graduates.png' %} " alt="Graduates" id="grad-pic"/>
+    <div class="container-floatabovepic">
+        <h2> Get closer to your dream today. </h2>
+        <a href = "#AboutUs" class="button-2">Learn More</a>
+    </div>
+</section>
 
-    
-</body>
-</html>
+
+<section id="AboutUs">
+    <h2>About Us</h2>
+    <p>Multimedia University, is a private research university in Cyberjaya and Melaka 
+    in Malaysia. Founded in 1997, it is the first private university within Malaysia and 
+    is a member of The Alliance of Government Linked Universities. </p>
+
+    <p>Our option of various loans and scholarships are available for deserving students 
+    so that quality university education is accessible to all. Come join us and reward yourself!
+    Be one of our MMU Scholarship students, and graduate with flying colours.</p>    
+</section> 
+
+{% endblock %}
