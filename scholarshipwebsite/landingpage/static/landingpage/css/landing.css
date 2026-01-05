@@ -1,0 +1,41 @@
+/**
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+
+position: relative;
+width: 1440px;
+height: 2395px;
+
+background: #FFFFFF;
+
+/* Navigation */
+
+**/
+
+.navbar {
+  background-color: whitesmoke; /* Optional */
+  padding: 10px;
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;           /* Horizontal layout */
+  align-items: center;     /* Vertically center items */
+  gap: 10px;               /* Space between items */
+  margin: 0;
+  padding: 0;
+}
+
+.nav-list li {
+  display: flex;           /* Ensure <li> contents are in line */
+  align-items: center;     /* Vertically center inside <li> */
+   gap: 20px;
+}
+
+
+.nav-list li button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
