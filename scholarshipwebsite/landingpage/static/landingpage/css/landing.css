@@ -12,9 +12,9 @@ background: #FFFFFF;
 
 /* Navigation */
 
-**/
-body{
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+html{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    scroll-behavior:smooth;
 }
 
 .navbar {
@@ -34,13 +34,28 @@ body{
   display: flex;           
   align-items: center;    
    gap: 20px;
+   
 }
 
+.about-and-scholarship{
+  padding-left: 400px;
+}
+
+
+.about:hover, .scholarship:hover{
+  color:#EC1C24
+}
+
+.nav-list a{
+  text-decoration: none;
+  color: black;
+  font-size: medium;
+  padding-right: 50px;
+}
 
 .nav-list li button {
   padding: 5px 10px;
   cursor: pointer;
-  
 }
 
 .button:link, .button:visited, .button-2:link, .button-2:visited {
@@ -80,18 +95,53 @@ body{
 
 #landing h2{
     position: absolute; /* Takes text out of flow to float it */
-    top: 50%;           /* Moves top of text to vertical center */
-    left: 50%;          /* Moves left of text to horizontal center */
+    top: 50%;           
+    left: 50%;          
     transform: translate(-50%, -50%); /* Center the text */
     color: black;      
     font-size: 3rem;    
     text-align: center;
-    width: 80%;         /* width of text */
+    width: 80%;         
 }
 
 .button-2{
     position: absolute; /* Takes text out of flow to float it */
-    top: 70%;           /* Moves top of text to vertical center */
-    left: 41%;          /* Moves left of text to horizontal center */
-    width: 10%;         /* width of button */
+    top: 70%;           
+    left: 41%;          
+    width: 10%;         
 }
+
+#AboutUs{
+  height: 550px;
+  margin:80px;
+}
+
+#AboutUs h1, #Scholarship h1{
+  text-align: center;
+  font-size: 30px;
+  padding-top: 30px;
+}
+
+.paragraph{
+  padding-top: 30px;
+  width:500px;
+  font-size: 18px;
+  padding-bottom: 30px;
+}
+
+#button-3{
+  margin-left: 100px;
+}
+
+#student{
+  float: right;
+  margin-left: 30px; 
+  margin-bottom: 15px; 
+  margin-top: 50px;
+}
+
+#Scholarship{
+  height: 550px;
+  margin:80px;
+}
+
