@@ -12,14 +12,27 @@
 
 
 <section id="AboutUs">
-    <h2>About Us</h2>
+    <h1>About Us</h1>
+    <img src="{% static 'landingpage/img/student.png' %}" alt="Students" id="student"/>
+    <div class="paragraph">
     <p>Multimedia University, is a private research university in Cyberjaya and Melaka 
     in Malaysia. Founded in 1997, it is the first private university within Malaysia and 
     is a member of The Alliance of Government Linked Universities. </p>
 
     <p>Our option of various loans and scholarships are available for deserving students 
     so that quality university education is accessible to all. Come join us and reward yourself!
-    Be one of our MMU Scholarship students, and graduate with flying colours.</p>    
+    Be one of our MMU Scholarship students, and graduate with flying colours.</p>
+    </div>
+    <a href = "#Scholarship" class="button" id="button-3">Check Scholarship List</a>    
+</section> 
+
+<section id="Scholarship">
+    <h1>Scholarship</h1>
+    <div class="table">
+    
+    </div>
+    
+<a href = "{% url 'committee' %}" class="button">Committee</a>
 </section> 
 
 {% endblock %}
