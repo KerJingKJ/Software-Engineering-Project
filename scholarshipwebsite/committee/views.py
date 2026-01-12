@@ -4,3 +4,9 @@ from django.http import HttpResponse
 
 def index(response):
     return render(response, "committee/committee.html", {})
+
+def manage(response):
+    return render(response, "committee/manageScholarship.html", {})
+
+def reviewApprove(response):
+    return render(response, "committee/reviewApprove.html", {})

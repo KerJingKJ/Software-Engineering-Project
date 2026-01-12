@@ -4,19 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{% static 'login/css/login.css' %}" type="text/css" rel="stylesheet" />
+    <link href="{% static 'login/css/signup.css' %}" type="text/css" rel="stylesheet" />
     <title>Log In</title>
 </head>
 <body style="background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('{% static 'login/img/login-bg.jpg' %}');">
     <div id="container-login">
-        <h2> Log in </h2>
+        <h2> Sign Up </h2>
 
         <p> Email address </p>
         <p> Password </p>
 
-        <p> First time using? <a href = "{% url 'signup' %}">Sign up</p>
+        
 
-        <a href = "{% url 'committee' %}" class="button">Login</a>
+        <a href = "{% url 'securityquestion' %}" class="button">Next </a>
+
     </div>
     
     

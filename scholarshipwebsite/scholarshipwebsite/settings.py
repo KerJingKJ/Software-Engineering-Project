@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'landingpage',
     'login',
     'committee',
+    'reviewer',
 ]
 
 MIDDLEWARE = [
