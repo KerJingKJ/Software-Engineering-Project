@@ -4,3 +4,9 @@ from django.http import HttpResponse
 
 def index(response):
     return render(response, "login/login.html", {})
+
+def signup(response):
+    return render(response, "login/signup.html", {})
+
+def securityquestion(response):
+    return render(response, "login/security.html", {})

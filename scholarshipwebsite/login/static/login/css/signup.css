@@ -1,0 +1,50 @@
+html{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#container-login{
+    width: 587px;
+    height: 400px;
+    position: absolute;
+    top: 100px;
+    left: 350px;
+    justify-content: center;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.80);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    align-items: center;
+}
+
+h2{
+    color:#034EA1;
+    text-align: center;
+    font-size:30px;
+}
+
+body{
+    background-size: cover;
+    background-repeat: no-repeat; 
+    background-position: center;  
+    background-attachment: fixed;
+    
+}
+
+
+.button:link, .button:visited, .button-2:link, .button-2:visited {
+  background-color: #034EA1;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  margin-left: 250px;
+  margin-right: 250px;    
+}
+
+.button:hover, .button:active, .button-2:hover, .button-2:active {
+    background-color: #EC1C24;
+}

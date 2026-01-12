@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'reviewer/css/reviewer.css' %}" type="text/css" rel="stylesheet" />
+    <title>Reviewer</title>
+</head>
+<body>
+    <nav class="navbar">
+    <ul class="nav-list">
+        <li class= "nav-left"><img src="{% static 'landingpage/img/logo.png' %} " alt="MMU Logo" style="width:10%; height:auto"/>
+        <h3> Multimedia University Scholarship </h3>
+    
+    <div class="dropdown">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+
+        <div class="content">
+            <a href = "{% url 'reviewer' %}">Dashboard</a>
+            <a href = "{% url 'review' %}">Review Scholarship</a>
+            <a href = "{% url 'login' %}">Logout</a>
+        </div>
+    </div>    
+    </li>
+    </ul>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+    
+</body>
+</html>
