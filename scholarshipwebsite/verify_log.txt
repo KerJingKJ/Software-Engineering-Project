@@ -1,0 +1,6 @@
+Sending POST request to create scholarship...
+Response status code: 200
+Response content: Scholarship created successfully!
+Success response received.
+Checking database...
+Scholarship found in DB: Test Scholarship 2, 2025-01-01
