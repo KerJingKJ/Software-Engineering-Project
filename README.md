@@ -1,2 +1,2 @@
-To run the Django App
+# To run the Django App
 python manage.py runserver
