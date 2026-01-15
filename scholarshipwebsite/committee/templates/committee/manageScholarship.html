@@ -2,13 +2,27 @@
 {% block content %}
 {% load static %}
 
- <link href="{% static 'committee/css/manageScholarship.css' %}" type="text/css" rel="stylesheet" />
-<body>
-    <section id="Manage">
-    <h1>Manage Scholarship</h1>    
-       
-    </section> 
 
-</body>
+<section id="Manage">
+    <h1>Manage Scholarships</h1>
+
+    <ul class="scholarship-list">
+        {% for scholarship in scholarships %}
+        <li class="scholarship-item">
+            <span class="scholarship-name">{{ scholarship.name }}</span>
+            <div>
+                <a href="{% url 'edit_scholarship' scholarship.id %}" class="btn-edit">Edit</a>
+                <form action="{% url 'delete_scholarship' scholarship.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete"
+                        onclick="return confirm('Are you sure you want to delete this scholarship?');">Delete</button>
+                </form>
+            </div>
+        </li>
+        {% empty %}
+        <li class="empty-state">No scholarships found. <a href="{% url 'create_scholarship' %}">Create one now</a>.</li>
+        {% endfor %}
+    </ul>
+</section>
 
 {% endblock %}
