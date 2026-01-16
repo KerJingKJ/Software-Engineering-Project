@@ -26,6 +26,10 @@ def index(request):
                 
                 if user is not None:
                     login(request, user)
+
+                    if not user.is_staff and not UserSecurityQuestion.objects.filter(user=user).exists():
+                        return redirect('securityquestion')
+
                     
                     # Role-based redirect logic
                     email_domain = user.email.split('@')[-1]
@@ -84,11 +88,21 @@ def securityquestion(request):
             security_question = form.save(commit=False)
             security_question.user = request.user
             security_question.save()
+
+             # Role-based redirect logic
+            email_domain = request.user.email.split('@')[-1]
+                    
+            if 'admin.mmu.edu.my' in email_domain:
+                return redirect('/admin/')
+            elif 'reviewer.mmu.edu.my' in email_domain:
+                return redirect('reviewer')
+            elif 'committee.mmu.edu.my' in email_domain:
+                return redirect('committee')
             return redirect('setup_profile') # Redirect to profile setup
     else:
         form = SecurityQuestionForm(instance=instance)
 
-    return render(request, "login/security_question_test.html", {"form": form})
+    return render(request, "login/security_question.html", {"form": form})
 
 from .forms import UserProfileForm
 
