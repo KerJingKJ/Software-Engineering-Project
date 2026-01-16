@@ -1,17 +1,3 @@
-/**
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-padding: 0px;
-
-position: relative;
-width: 1440px;
-height: 2395px;
-
-background: #FFFFFF;
-
-/* Navigation */
-
 html{
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     scroll-behavior:smooth;
@@ -119,7 +105,6 @@ html{
 #AboutUs h1, #Scholarship h1{
   text-align: center;
   font-size: 30px;
-  padding-top: 30px;
 }
 
 .paragraph{

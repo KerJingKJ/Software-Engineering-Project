@@ -46,5 +46,14 @@ def manage(response):
     scholarships = Scholarship.objects.all()
     return render(response, "committee/manageScholarship.html", {"scholarships": scholarships})
 
+def create(response):
+    return render(response, "committee/createScholarship.html", {})
+
+def edit(response):
+    return render(response, "committee/editScholarship.html", {})
+
 def reviewApprove(response):
     return render(response, "committee/reviewApprove.html", {})
+
+def schedule(response):
+    return render(response, "committee/scheduleInterview.html", {})
