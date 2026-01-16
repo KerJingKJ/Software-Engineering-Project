@@ -14,6 +14,7 @@ html{
   gap: 10px;               /* Space between items */
   margin: 0;
   padding: 0;
+  flex-wrap: wrap; 
 }
 
 .nav-list li {
@@ -37,6 +38,7 @@ html{
   color: black;
   font-size: medium;
   padding-right: 50px;
+  padding-right: 20px;
 }
 
 .nav-list li button {
@@ -94,7 +96,10 @@ html{
     position: absolute; /* Takes text out of flow to float it */
     top: 70%;           
     left: 41%;          
-    width: 10%;         
+    width: 10%;
+    left: 50%;  /* center horizontally on all screens */
+    transform: translateX(-50%);  
+    width: auto;       
 }
 
 #AboutUs{
