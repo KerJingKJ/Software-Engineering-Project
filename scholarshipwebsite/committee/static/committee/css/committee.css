@@ -3,7 +3,6 @@ html{
     scroll-behavior:smooth;
 }
 
-
 .navbar {
   background-color: whitesmoke;
 }
@@ -73,8 +72,27 @@ html{
 }
 
 
-#Dashboard h1, #ReviewApprove h1, #Manage h1{
+#Dashboard h1, #ReviewApprove h1, #Manage h1, #Create h1, #Edit h1, #Schedule h1{
   text-align: left;
   font-size: 30px;
-  padding-top: 30px;
+}
+
+.button:link, .button:visited{
+  background-color: #034EA1;
+  color: white;
+  width: 200px;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  margin-left: 10px;
+  margin-right: 250px;    
+}
+
+.button:hover, .button:active{
+    background-color: #EC1C24;
 }

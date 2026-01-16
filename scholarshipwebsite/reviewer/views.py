@@ -7,3 +7,6 @@ def index(response):
 
 def review(response):
     return render(response, "reviewer/reviewScholarship.html", {})
+
+def details(response):
+    return render(response, "reviewer/reviewScholarship.html", {})
