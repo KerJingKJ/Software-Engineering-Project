@@ -19,7 +19,7 @@ def index(request):
             user_obj = User.objects.filter(email=email).first()
             
             if user_obj is None:
-                messages.error(request, "No such user")
+                messages.error(request, "User not found. Sign up for an account.")
             else:
                 # User exists, check password
                 user = authenticate(username=user_obj.username, password=password)
@@ -46,7 +46,7 @@ def index(request):
                     else:
                         return redirect('committee') # Default fallback
                 else:
-                    messages.error(request, "Wrong password")
+                    messages.error(request, "Wrong password! Try again")
     else:
         form = LoginForm()
         
