@@ -7,6 +7,3 @@ def index(response):
 
 def signup(response):
     return render(response, "login/signup.html", {})
-
-def securityquestion(response):
-    return render(response, "login/security.html", {})
