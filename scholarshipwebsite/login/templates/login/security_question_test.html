@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Questions Test</title>
+</head>
+
+<body>
+    <h2>Set Security Questions</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div style="color: red;">
+            <ul>
+                {% for field in form %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <p>
+            <label for="{{ form.question_1.id_for_label }}">Question 1:</label><br>
+            {{ form.question_1 }}
+        </p>
+        <p>
+            <label for="{{ form.answer_1.id_for_label }}">Answer 1:</label><br>
+            {{ form.answer_1 }}
+        </p>
+
+        <p>
+            <label for="{{ form.question_2.id_for_label }}">Question 2:</label><br>
+            {{ form.question_2 }}
+        </p>
+        <p>
+            <label for="{{ form.answer_2.id_for_label }}">Answer 2:</label><br>
+            {{ form.answer_2 }}
+        </p>
+
+        <button type="submit">Save Security Questions</button>
+    </form>
+</body>
+
+</html>

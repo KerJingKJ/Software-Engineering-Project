@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import UserSecurityQuestion, UserProfile
+
+admin.site.register(UserSecurityQuestion)
+admin.site.register(UserProfile)

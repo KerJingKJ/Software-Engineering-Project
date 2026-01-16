@@ -1,0 +1,129 @@
+Sending POST request to create scholarship...
+Response status code: 200
+Response content: 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/committee/css/committee.css" type="text/css" rel="stylesheet" />
+    <title>Scholarship Committee</title>
+</head>
+<body>
+    <nav class="navbar">
+    <ul class="nav-list">
+        <li class= "nav-left"><img src="/static/landingpage/img/logo.png " alt="MMU Logo" style="width:10%; height:auto"/>
+        <h3> Multimedia University Scholarship </h3>
+    
+    <div class="dropdown">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+
+        <div class="content">
+            <a href = "/committee/">Dashboard</a>
+            <a href = "/committee/manage/">Manage Scholarship</a>
+            <a href = "/committee/reviewApprove/">Review/Approve Scholarship</a>
+            <a href = "/login/">Logout</a>
+        </div>
+    </div>    
+    </li>
+    </ul>
+    </nav>
+
+    
+
+<div class="scholarship-form-container">
+    <h2>Create Scholarship</h2>
+
+    <form method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="NWUt0zIdq5tuL9T6Xbr2kxMYfpfbOSkS3MEqdZdsKgXawX9ADOFu5hniS6dMHhmp">
+
+        
+        <div class="form-group">
+            <label for="id_name">Name</label>
+            <input type="text" name="name" value="Test Scholarship 2" maxlength="200" required id="id_name">
+            
+            
+        </div>
+        
+        <div class="form-group">
+            <label for="id_description">Description</label>
+            <textarea name="description" cols="40" rows="10" required id="id_description">
+A test scholarship 2</textarea>
+            
+            
+        </div>
+        
+        <div class="form-group">
+            <label for="id_criteria">Criteria</label>
+            <textarea name="criteria" cols="40" rows="10" required id="id_criteria">
+GPA &gt; 3.0</textarea>
+            
+            
+        </div>
+        
+        <div class="form-group">
+            <label for="id_deadline">Deadline</label>
+            <input type="date" name="deadline" value="2025-01-01" required aria-invalid="true" aria-describedby="id_deadline_error" id="id_deadline">
+            
+            
+            <ul class="errorlist">
+                
+                <li>The deadline cannot be in the past.</li>
+                
+            </ul>
+            
+        </div>
+        
+        <div class="form-group">
+            <label for="id_student_type">Student Type</label>
+            <select name="student_type" aria-invalid="true" aria-describedby="id_student_type_error" id="id_student_type">
+  <option value="International Student">International Student</option>
+
+  <option value="Local">Local</option>
+
+</select>
+            
+            
+            <ul class="errorlist">
+                
+                <li>This field is required.</li>
+                
+            </ul>
+            
+        </div>
+        
+        <div class="form-group">
+            <label for="id_education_level">Education Level</label>
+            <select name="education_level" aria-invalid="true" aria-describedby="id_education_level_error" id="id_education_level">
+  <option value="Foundation">Foundation</option>
+
+  <option value="Undergraduate">Undergraduate</option>
+
+  <option value="Diploma">Diploma</option>
+
+  <option value="Postgraduate">Postgraduate</option>
+
+</select>
+            
+            
+            <ul class="errorlist">
+                
+                <li>This field is required.</li>
+                
+            </ul>
+            
+        </div>
+        
+
+        <button type="submit">Save Scholarship</button>
+    </form>
+</div>
+
+    
+</body>
+</html>
+Failed to get success response.
+Checking database...
+Scholarship NOT found in DB.
