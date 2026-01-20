@@ -2,4 +2,8 @@ from django.contrib import admin
 
 from .models import Scholarship
 
-admin.site.register(Scholarship)
+from .forms import ScholarshipForm
+
+@admin.register(Scholarship)
+class ScholarshipAdmin(admin.ModelAdmin):
+    form = ScholarshipForm

@@ -76,3 +76,51 @@ body {
     color: #6c757d;
     padding: 40px 0;
 }
+
+/* The List Container */
+.scholarship-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* Individual Scholarship Row (Matching the image) */
+.scholarship-item {
+    display: flex;
+    justify-content: space-between; /* Name on left, buttons on right */
+    align-items: center;
+    background-color: #ECEEEF;      /* Light grey background from image */
+    padding: 20px 30px;
+    border-radius: 10px;            /* Rounded corners */
+    max-width: 600px;               /* Limit width to match image style */
+    margin-bottom: 10px;
+}
+
+.scholarship-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #000;
+}
+
+/* Button Group on the right */
+.scholarship-item div {
+    display: flex;
+    gap: 30px;                      /* Large gap between Edit and Delete */
+}
+
+/* Edit & Delete Buttons */
+.btn-edit, .btn-delete {
+    background-color: #034EA1;      /* Solid blue from image */
+    color: white;
+    padding: 10px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    min-width: 80px;
+    text-align: center;
+}
+
+.btn-edit:hover, .btn-delete:hover {
+    background-color: #023670;      /* Darker blue on hover */
+}
