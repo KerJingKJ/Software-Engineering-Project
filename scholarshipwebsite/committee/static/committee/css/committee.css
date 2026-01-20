@@ -5,6 +5,7 @@ html{
 
 .navbar {
   background-color: whitesmoke;
+  display: flex;
 }
 
 .nav-list {
@@ -71,6 +72,29 @@ html{
   transition: 0.4s; /* Smooth transition for potential animations (e.g., hover/click) */
 }
 
+#user-icon {
+    margin-left: 650px;
+}
+
+.user-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer; 
+}
+
+.user-btn img {
+  display: block;
+  height: auto;
+}
+
+.user-btn:hover {
+  opacity: 0.8;
+}
+
+.user-btn:active {
+  transform: scale(0.95);
+}
 
 #Dashboard h1, #ReviewApprove h1, #Manage h1, #Create h1, #Edit h1, #Schedule h1{
   text-align: left;

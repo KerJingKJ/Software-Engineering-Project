@@ -10,9 +10,14 @@
 <body>
     <nav class="navbar">
     <ul class="nav-list">
+    
         <li class= "nav-left"><img src="{% static 'landingpage/img/logo.png' %} " alt="MMU Logo" style="width:10%; height:auto"/>
         <h3> Multimedia University Scholarship </h3>
+    <a href = "{% url 'manageAccount' %}" id="user-icon">
+        <img src="{% static 'committee/img/user.png' %} " alt="User">
+    </a>
     
+
     <div class="dropdown">
         <div class="bar1"></div>
         <div class="bar2"></div>
@@ -23,6 +28,7 @@
             <a href = "{% url 'manage' %}">Manage Scholarship</a>
             <a href = "{% url 'reviewApprove' %}">Review/Approve Scholarship</a>
             <a href = "{% url 'login' %}">Logout</a>
+            
         </div>
     </div>    
     </li>

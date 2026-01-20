@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+from login import views as login_views 
 urlpatterns = [
     path("", views.index, name="committee"),
     path("manage/", views.manage, name="manage"),
@@ -14,4 +14,8 @@ urlpatterns = [
     path("application/<int:id>/family/", views.view_family_background, name="view_family_background"),
     path("application/<int:id>/interview/", views.schedule_interview, name="schedule_interview"),
     path("application/<int:id>/decision/", views.decision_page, name="decision_page"),
+
+
+    #Manage Account URL
+    path('manageAccount', login_views.manage_account, name='manageAccount'),
 ]

@@ -4,6 +4,12 @@ from .forms import ScholarshipForm
 from .models import Scholarship, ScholarshipApplication, Guardian, Interview, ApprovedApplication
 
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 # Create your views here.
 @csrf_exempt
@@ -45,6 +51,9 @@ def index(response):
 def manage(response):
     scholarships = Scholarship.objects.all()
     return render(response, "committee/manageScholarship.html", {"scholarships": scholarships})
+
+def manageAccount(response):
+    return render(response, "committee/manage_account.html", {})
 
 def create(response):
     return render(response, "committee/createScholarship.html", {})
@@ -136,3 +145,43 @@ def decision_page(request, id):
             return redirect('decision_page', id=id)
             
     return render(request, "committee/decision.html", {'application': application, 'interview': interview})
+
+
+
+@login_required(login_url='login')
+def change_password(request):
+    if request.method == 'POST':
+        # PasswordChangeForm requires the user object as the first argument
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Keeps the session active so the user isn't logged out
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('index') 
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'committee/change_password.html', {'form': form})
+
+@login_required(login_url='login')
+def update_security_questions(request):
+    # Fetch existing questions or None to create new ones
+    try:
+        instance = request.user.security_questions
+    except UserSecurityQuestion.DoesNotExist:
+        instance = None
+
+    if request.method == "POST":
+        form = SecurityQuestionForm(request.POST, instance=instance)
+        if form.is_valid():
+            security_question = form.save(commit=False)
+            security_question.user = request.user
+            security_question.save()
+            messages.success(request, 'Security questions updated successfully!')
+            return redirect('index')
+    else:
+        form = SecurityQuestionForm(instance=instance)
+
+    return render(request, "committee/update_security_question.html", {"form": form})

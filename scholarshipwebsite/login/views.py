@@ -5,6 +5,9 @@ from .forms import SignUpForm, SecurityQuestionForm, LoginForm, ForgotPasswordFo
 from .models import UserSecurityQuestion, UserProfile
 from .models import SECURITY_QUESTION_CHOICES
 from django.contrib.auth import logout
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
 
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -205,3 +208,45 @@ def logout_view(request):
     """
     logout(request)
     return redirect('landingpage') 
+
+def manage_account(request):
+    # Determine which form to show based on the URL parameter ?tab=
+    active_tab = request.GET.get('tab', 'password')
+    
+    # For password change
+    password_form = PasswordChangeForm(request.user)
+    try:
+        instance = request.user.security_questions
+    except UserSecurityQuestion.DoesNotExist:
+        instance = None
+    security_form = SecurityQuestionForm(instance=instance)
+
+    if request.method == 'POST':
+        # Logic for Reset Password
+        if 'reset_password' in request.POST:
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user) # Keeps user logged in
+                messages.success(request, 'Your password was successfully updated!')
+                return redirect('/manage-account/?tab=password')
+            else:
+                active_tab = 'password' # Stay on tab if error
+        
+        # Logic for Security Questions
+        elif 'reset_security' in request.POST:
+            security_form = SecurityQuestionForm(request.POST, instance=instance)
+            if security_form.is_valid():
+                security_question = security_form.save(commit=False)
+                security_question.user = request.user
+                security_question.save()
+                messages.success(request, 'Security questions updated successfully!')
+                return redirect('/manage-account/?tab=security')
+            else:
+                active_tab = 'security' # Stay on tab if error
+
+    return render(request, 'login/manage_account.html', {
+        'password_form': password_form, 
+        'security_form': security_form,
+        'active_tab': active_tab,
+    })
