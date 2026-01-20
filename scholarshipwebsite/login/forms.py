@@ -125,5 +125,5 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ['age', 'contact_number', 'bio']
         widgets = {
-            'bio': forms.Textarea(attrs={'rows': 4}),
+            'bio': forms.Textarea(attrs={'rows': 4,'class': 'bio-styled'}),
         }

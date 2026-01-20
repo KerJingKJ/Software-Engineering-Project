@@ -1,28 +1,38 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <link href="{% static 'login/css/security.css' %}" type="text/css" rel="stylesheet" />
     <title>Verify Security Questions</title>
 </head>
 
 <body>
-    <h2>Security Check</h2>
-    <p>Please answer both security questions to reset your password.</p>
+    
+    <div id="container-security">
+        <h2>Security Check</h2>
+        <div id="security-form">
+        <p>Please answer both security questions to reset your password.</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button">Verify Answers</button>
+        </form>
+        </div>
 
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li style="color: red;">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+        <div id="errorform">
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Verify Answers</button>
-    </form>
+    </div>
 </body>
 
 </html>
