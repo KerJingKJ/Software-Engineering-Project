@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'student/student.css' %}" type="text/css" rel="stylesheet" />
+    <title>Student</title>
+</head>
+<body>
+    <nav class="navbar">
+    <ul class="nav-list">
+        <li class= "nav-left"><a href="http://127.0.0.1:8000/student/"><img src="{% static 'landingpage/img/logo.png' %} " alt="MMU Logo" style="width:150px; height:auto;"/></a>
+        <h3> Multimedia University Scholarship </h3>
+        </li>
+    </ul> 
+    <ul class="nav-right">
+        <li><a href="#"><img src="{% static 'student/img/usericon.png' %}" alt="User" class="user-icon"/></a></li>
+        <li><div class="dropdown">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+
+            <div class="content">
+                <a href = "{% url 'student' %}">Dashboard</a>
+                <a href = "{% url 'trackApplication' %}">Track Application</a>
+                <a href = "{% url 'review' %}">Notification</a>
+                <a href = "{% url 'bookmarkScholarship' %}">Bookmark</a>
+                <a href = "{% url 'login' %}">Logout</a>
+            </div>
+        </div></li>  
+    </ul> 
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+    
+</body>
+</html>

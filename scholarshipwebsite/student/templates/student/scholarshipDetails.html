@@ -1,0 +1,106 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="detail-container">
+    
+    <h1 class="main-title">Scholarships Offer</h1>
+
+    <div id="content-chancellor" class="scholarship-content" style="display: none;">
+        <div class="scholarship-header">
+            <h2 class="scholarship-name">MMU Chancellor’s Scholarship</h2>
+
+            <img src="{% static 'student/img/bookmarkicon.png' %}" 
+                alt="Bookmark" 
+                class="bookmark-icon" 
+                onclick="toggleBookmark(this)">
+        </div>
+        <p class="description">Awarded to high-flying students...</p>
+
+        <h3 class="section-title"><u>Criteria & Entitlement</u></h3>
+        <h4 class="sub-title">Foundation Programmes</h4>
+        <table class="criteria-table">
+            <tbody>
+                <tr>
+                    <td class="col-left">SPM</td>
+                    <td class="col-center" rowspan="2">9As and above</td>
+                    <td class="col-right" rowspan="2">100% discount</td>
+                </tr>
+                <tr><td class="col-left">O-Level</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="content-merit" class="scholarship-content" style="display: none;">
+        <div class="scholarship-header">
+            <h2 class="scholarship-name">MMU Merit Scholarship</h2>
+            <img src="{% static 'student/img/bookmarkicon.png' %}" 
+                alt="Bookmark" 
+                class="bookmark-icon" 
+                onclick="toggleBookmark(this)">
+        </div>
+        <p class="description">Scholarship based on CGPA tiers for undergraduate students.</p>
+
+        <h3 class="section-title"><u>Entitlement Structure</u></h3>
+        <table class="criteria-table">
+            <thead>
+                <tr>
+                    <th style="background:#f0f0f0;">CGPA</th>
+                    <th style="background:#f0f0f0;">Entitlement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>3.75 - 4.00</td>
+                    <td>50% Tuition Waiver</td>
+                </tr>
+                <tr>
+                    <td>3.50 - 3.74</td>
+                    <td>30% Tuition Waiver</td>
+                </tr>
+                <tr>
+                    <td>3.33 - 3.49</td>
+                    <td>25% Tuition Waiver</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{% url 'scholarship_list' %}" class="btn-nav">Back</a>
+        <a href="#" class="btn-nav">Apply Now</a>
+    </div>
+
+</div>
+
+<script>
+    // 1. Get the URL parameters (e.g., ?id=merit)
+    const urlParams = new URLSearchParams(window.location.search);
+    const scholarshipId = urlParams.get('id');
+
+    // 2. Define which ID corresponds to which Div
+    // Default to 'chancellor' if no ID is found
+    const targetId = scholarshipId ? 'content-' + scholarshipId : 'content-chancellor';
+
+    // 3. Show the correct div
+    const element = document.getElementById(targetId);
+    if (element) {
+        element.style.display = 'block';
+    } else {
+        // Fallback if ID doesn't exist
+        document.getElementById('content-chancellor').style.display = 'block';
+    }
+
+    function toggleBookmark(imgElement) {
+        // Check if the current source contains the 'empty' image name
+        if (imgElement.src.includes('bookmarkicon.png')) {
+            // Change to filled version
+            imgElement.src = "{% static 'student/img/bookmark-filled.png' %}";
+        } else {
+            // Change back to empty version
+            imgElement.src = "{% static 'student/img/bookmarkicon.png' %}";
+        }
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="list-container">
+    
+    <div class="page-header">
+        <h1 class="page-title">My Bookmarks</h1>
+        <p class="page-subtitle">Manage your saved scholarships here.</p>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="scholarship-table">
+            <thead>
+                <tr>
+                    <th style="width: 30%;">Name</th>
+                    <th>Description</th>
+                    <th>Level</th>
+                    <th>Status</th>
+                    <th style="text-align: center;">Action</th> </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="{% url 'scholarship_details' %}?id=chancellor">MMU Chancellor’s Scholarship</a></td>
+                    <td>100% discount of tuition fees & monthly allowance</td>
+                    <td>Foundation & Undergraduate</td>
+                    <td><span class="status-open">Open</span></td>
+                    <td style="text-align: center;">
+                        <button class="btn-remove" onclick="removeRow(this)">Remove</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><a href="{% url 'scholarship_details' %}?id=merit">MMU Merit Scholarship</a></td>
+                    <td>Discount of tuition fees: 50% / 30% / 25%</td>
+                    <td>Undergraduate</td>
+                    <td><span class="status-open">Open</span></td>
+                    <td style="text-align: center;">
+                        <button class="btn-remove" onclick="removeRow(this)">Remove</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="empty-state" style="display: none; text-align: center; margin-top: 50px;">
+        <h3 style="color: #666;">No bookmarks yet!</h3>
+        <a href="{% url 'scholarship_list' %}" class="btn-nav">Explore Scholarships</a>
+    </div>
+
+</div>
+
+<script>
+    function removeRow(btn) {
+        // Deletes the row containing the clicked button
+        var row = btn.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+        
+        // Check if table is empty (optional logic)
+        var tableBody = document.querySelector(".scholarship-table tbody");
+        if (tableBody.children.length === 0) {
+            document.querySelector(".table-wrapper").style.display = "none";
+            document.getElementById("empty-state").style.display = "block";
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="status-container">
+
+    <div class="status-header">
+        <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <h1 class="page-title" style="text-align: center;">Application Submitted Successfully!</h1>
+        <p class="status-subtitle">Your application for the <strong>MMU Merit Scholarship</strong> has been received.</p>
+    </div>
+
+    <div class="progress-track">
+        <ul class="progressbar">
+            <li class="active">Application Received</li>
+            <li>Under Review</li>
+            <li>Interview</li>
+            <li>Outcome</li>
+        </ul>
+    </div>
+
+    <div class="status-card">
+        <h3>Application Summary</h3>
+        <hr>
+        <div class="summary-grid">
+            <div class="summary-item">
+                <span class="label">Application ID:</span>
+                <span class="value">#APP-2026-8892</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Date Applied:</span>
+                <span class="value">20th January 2026</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Current Status:</span>
+                <span class="status-badge pending">Pending Review</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-group-center">
+        <a href="{% url 'student' %}" style="text-decoration: none;" class="btn-next">Back to Dashboard</a>
+    </div>
+
+</div>
+{% endblock %}

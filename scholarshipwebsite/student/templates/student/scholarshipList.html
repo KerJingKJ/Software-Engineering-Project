@@ -1,0 +1,51 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="list-container">
+    <h1 class="page-title">Scholarships Offer</h1>
+
+    <div class="table-wrapper">
+        <table class="scholarship-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Level</th>
+                    <th>Local/International</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="{% url 'scholarship_details' %}?id=chancellor">MMU Chancellor’s Scholarship</a></td>
+                    <td>100% discount of tuition fees & monthly allowance</td>
+                    <td>Foundation & Undergraduate</td>
+                    <td>Local</td>
+                    <td>Open</td>
+                </tr>
+                <tr>
+                    <td>MMU President’s Scholarship</td>
+                    <td>100% discount of tuition fees</td>
+                    <td>Foundation & Undergraduate</td>
+                    <td>Local</td>
+                    <td>Closed</td>
+                </tr>
+                <tr>
+                    <td><a href="{% url 'scholarship_details' %}?id=merit">MMU Merit Scholarship</a></td>
+                    <td>Discount of tuition fees of : 50% / 30% / 25%</td>
+                    <td>Undergraduate</td>
+                    <td>Local</td>
+                    <td>Open</td>
+                </tr>
+                </tbody>
+        </table>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{% url 'student' %}" class="btn-nav">Home</a>
+        
+        
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,160 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="form-container">
+    
+    <h1 class="page-title" style="margin-left: 10px;">Scholarship Application Form</h1>
+    
+    <div class="tabs-wrapper">
+        <a href="{% url 'applicationForm' %}" class="tab">Part 1</a>
+        <a href="{% url 'applicationForm_p2' %}" class="tab">Part 2</a>
+        <a href="#" class="tab active">Part 3: Family Background</a>
+        <a href="{% url 'applicationForm_p4' %}" class="tab">Part 4</a>
+    </div>
+
+    <div class="form-content">
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="guardian-card">
+                <h3 class="card-title"><u>Guardian 1:</u></h3>
+                
+                <div class="form-row">
+                    <label>Relationship:</label>
+                    <select class="form-input small-select">
+                        <option></option>
+                        <option>Father</option>
+                        <option>Mother</option>
+                        <option>Guardian</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label>Name:</label>
+                    <input type="text" class="form-input" placeholder="Enter your name">
+                </div>
+
+                <div class="form-row">
+                    <label>Identification Card Number:</label>
+                    <input type="text" class="form-input" placeholder="Example: 001122143344">
+                </div>
+
+                <div class="form-row">
+                    <label>Date of Birth:</label>
+                    <div class="date-inputs">
+                        <input type="text" placeholder="DD">
+                        <input type="text" placeholder="MM">
+                        <input type="text" placeholder="YYYY">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label>Age:</label>
+                    <input type="number" class="form-input small-input">
+                </div>
+
+                <div class="form-row">
+                    <label>Nationality:</label>
+                    <select class="form-input small-select"><option></option><option>Malaysian</option></select>
+                </div>
+
+                <div class="form-row">
+                    <label>Gender:</label>
+                    <select class="form-input small-select"><option></option><option>Male</option><option>Female</option></select>
+                </div>
+
+                <div class="form-row">
+                    <label>Address:</label>
+                    <textarea class="form-input" rows="2"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <label>Contact number:</label>
+                    <input type="text" class="form-input" placeholder="Example: 60123456789">
+                </div>
+
+                <div class="form-row">
+                    <label>Email Address:</label>
+                    <input type="email" class="form-input">
+                </div>
+            </div>
+
+            <div class="guardian-card">
+                <h3 class="card-title"><u>Guardian 2:</u></h3>
+                <div class="form-row">
+                    <label>Relationship:</label>
+                    <select class="form-input small-select"><option></option><option>Mother</option></select>
+                </div>
+                <div class="form-row">
+                    <label>Name:</label>
+                    <input type="text" class="form-input" placeholder="Enter your name">
+                </div>
+                <div class="form-row">
+                    <label>Identification Card Number:</label>
+                    <input type="text" class="form-input" placeholder="Example: 001122143344">
+                </div>
+                <div class="form-row">
+                    <label>Date of Birth:</label>
+                    <div class="date-inputs">
+                        <input type="text" placeholder="DD">
+                        <input type="text" placeholder="MM">
+                        <input type="text" placeholder="YYYY">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label>Age:</label>
+                    <input type="number" class="form-input small-input">
+                </div>
+
+                <div class="form-row">
+                    <label>Nationality:</label>
+                    <select class="form-input small-select"><option></option><option>Malaysian</option></select>
+                </div>
+
+                <div class="form-row">
+                    <label>Gender:</label>
+                    <select class="form-input small-select"><option></option><option>Male</option><option>Female</option></select>
+                </div>
+
+                <div class="form-row">
+                    <label>Address:</label>
+                    <textarea class="form-input" rows="2"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <label>Contact number:</label>
+                    <input type="text" class="form-input" placeholder="Example: 60123456789">
+                </div>
+
+                <div class="form-row">
+                    <label>Email Address:</label>
+                    <input type="email" class="form-input">
+                </div>
+            </div>
+
+            <div class="docs-section">
+                <h3 class="card-title"><u>Supporting Documents:</u></h3>
+                <h4 style="margin-bottom: 15px; margin-left: 10px;">Upload</h4>
+                
+                <div class="form-row">
+                    <label>EA Form:</label>
+                    <input type="file" class="file-input">
+                </div>
+                
+                <div class="form-row">
+                    <label>Latest 3 months payslip:</label>
+                    <input type="file" class="file-input">
+                </div>
+            </div>
+
+            <div class="button-group-center">
+                <a href="{% url 'applicationForm_p2' %}" style="text-decoration: none;" class="btn-back">Back</a>
+                <a href="{% url 'applicationForm_p4' %}" style="text-decoration: none;" class="btn-next">Next</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
