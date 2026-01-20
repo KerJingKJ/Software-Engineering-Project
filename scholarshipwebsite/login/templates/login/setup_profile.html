@@ -1,24 +1,30 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <link href="{% static 'login/css/setup_profile.css' %}" type="text/css" rel="stylesheet" />
     <title>Set Up Profile</title>
 </head>
 
 <body>
-    <h2>Set Up Profile</h2>
-
+    <div id="container-heading">
+        <h2>Set Up Your Profile</h2>
+    </div>
+    
+    <div id="login-form">
     <p>Welcome, {{ request.user.username }}!</p>
-
     <form method="post">
         {% csrf_token %}
 
         {{ form.as_p }}
 
-        <button type="submit" name="save">Save</button>
-        <button type="submit" name="skip" style="background-color: grey;">Skip</button>
+        <button type="submit" name="save" class="button">Save</button>
+        <button type="submit" name="skip" class="button-2">Skip For Now</button>
     </form>
+</div>
+
 </body>
 
 </html>

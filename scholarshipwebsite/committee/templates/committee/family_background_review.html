@@ -1,0 +1,37 @@
+{% extends 'committee/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Family Background Review</h2>
+
+    <h3>Applicant: {{ application.name }}</h3>
+
+    {% for guardian in guardians %}
+    <div class="guardian-info" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+        <h4>Guardian {{ forloop.counter }}: {{ guardian.name }}</h4>
+        <p><strong>Relationship:</strong> {{ guardian.relationship }}</p>
+        <p><strong>IC No:</strong> {{ guardian.ic_no }}</p>
+        <p><strong>Date of Birth:</strong> {{ guardian.date_of_birth }} (Age: {{ guardian.age }})</p>
+        <p><strong>Gender:</strong> {{ guardian.gender }}</p>
+        <p><strong>Nationality:</strong> {{ guardian.nationality }}</p>
+        <p><strong>Address:</strong> {{ guardian.address }}</p>
+        <p><strong>Contact:</strong> {{ guardian.contact_number }} / {{ guardian.email_address }}</p>
+        <p><strong>Monthly Income:</strong> {{ guardian.monthly_income }}</p>
+    </div>
+    {% empty %}
+    <p>No guardian information found.</p>
+    {% endfor %}
+
+    <h4>Family Financial Documents</h4>
+    <ul>
+        <li>EA Form: {% if application.ea_form %} <a href="{{ application.ea_form.url }}" target="_blank">View</a> {%
+            else %} None {% endif %}</li>
+        <li>Payslip: {% if application.payslip %} <a href="{{ application.payslip.url }}" target="_blank">View</a> {%
+            else %} None {% endif %}</li>
+    </ul>
+
+    <div style="margin-top: 20px;">
+        <a href="{% url 'decision_page' application.id %}"><button>Next: Decision</button></a>
+    </div>
+</div>
+{% endblock %}

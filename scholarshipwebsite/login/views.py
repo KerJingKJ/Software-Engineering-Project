@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, SecurityQuestionForm, LoginForm, ForgotPasswordForm, SecurityQuestionVerifyForm, ResetPasswordForm
 from .models import UserSecurityQuestion, UserProfile
 from .models import SECURITY_QUESTION_CHOICES
+from django.contrib.auth import logout
 
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -19,13 +20,17 @@ def index(request):
             user_obj = User.objects.filter(email=email).first()
             
             if user_obj is None:
-                messages.error(request, "No such user")
+                messages.error(request, "User not found. Sign up for an account.")
             else:
                 # User exists, check password
                 user = authenticate(username=user_obj.username, password=password)
                 
                 if user is not None:
                     login(request, user)
+
+                    if not user.is_staff and not UserSecurityQuestion.objects.filter(user=user).exists():
+                        return redirect('securityquestion')
+
                     
                     # Role-based redirect logic
                     email_domain = user.email.split('@')[-1]
@@ -42,7 +47,7 @@ def index(request):
                     else:
                         return redirect('committee') # Default fallback
                 else:
-                    messages.error(request, "Wrong password")
+                    messages.error(request, "Wrong password! Try again")
     else:
         form = LoginForm()
         
@@ -84,11 +89,21 @@ def securityquestion(request):
             security_question = form.save(commit=False)
             security_question.user = request.user
             security_question.save()
+
+             # Role-based redirect logic
+            email_domain = request.user.email.split('@')[-1]
+                    
+            if 'admin.mmu.edu.my' in email_domain:
+                return redirect('/admin/')
+            elif 'reviewer.mmu.edu.my' in email_domain:
+                return redirect('reviewer')
+            elif 'committee.mmu.edu.my' in email_domain:
+                return redirect('committee')
             return redirect('setup_profile') # Redirect to profile setup
     else:
         form = SecurityQuestionForm(instance=instance)
 
-    return render(request, "login/security_question_test.html", {"form": form})
+    return render(request, "login/security_question.html", {"form": form})
 
 from .forms import UserProfileForm
 
@@ -182,3 +197,11 @@ def reset_password_confirm(request):
         form = ResetPasswordForm()
         
     return render(request, 'login/reset_password.html', {'form': form})
+
+@login_required(login_url='login')
+def logout_view(request):
+    """
+    Logs out the user and redirects to login page.
+    """
+    logout(request)
+    return redirect('landingpage') 

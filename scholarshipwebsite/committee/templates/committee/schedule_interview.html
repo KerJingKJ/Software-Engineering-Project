@@ -1,0 +1,62 @@
+{% extends 'committee/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Schedule Interview</h2>
+    <h3>Applicant: {{ application.name }}</h3>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="date">Select Date:</label>
+            <input type="date" id="date" name="date" required>
+        </div>
+
+        <div class="form-group">
+            <label>Select Interview Time:</label>
+            <div class="time-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                <button type="button" class="time-btn" onclick="selectTime('9:00 AM')">9:00 AM</button>
+                <button type="button" class="time-btn" onclick="selectTime('10:00 AM')">10:00 AM</button>
+                <button type="button" class="time-btn" onclick="selectTime('11:00 AM')">11:00 AM</button>
+                <button type="button" class="time-btn" onclick="selectTime('12:00 PM')">12:00 PM</button>
+                <button type="button" class="time-btn" onclick="selectTime('2:00 PM')">2:00 PM</button>
+                <button type="button" class="time-btn" onclick="selectTime('3:00 PM')">3:00 PM</button>
+                <button type="button" class="time-btn" onclick="selectTime('4:00 PM')">4:00 PM</button>
+                <button type="button" class="time-btn" onclick="selectTime('5:00 PM')">5:00 PM</button>
+            </div>
+            <input type="hidden" id="interview_time" name="interview_time" required>
+            <p id="selected-time" style="margin-top: 10px; font-weight: bold;"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="timezone">Time Zone:</label>
+            <select name="timezone" id="timezone">
+                <option value="UTC">UTC</option>
+                <option value="GMT+8" selected>GMT+8 (Malaysia/Singapore)</option>
+            </select>
+        </div>
+
+        <button type="submit">Confirm Interview</button>
+    </form>
+
+    <div style="margin-top: 20px;">
+        <a href="{% url 'decision_page' application.id %}">Back to Decision</a>
+    </div>
+</div>
+
+<script>
+    function selectTime(time) {
+        document.getElementById('interview_time').value = time;
+        document.getElementById('selected-time').textContent = 'Selected: ' + time;
+
+        // Highlight the selected button
+        var buttons = document.querySelectorAll('.time-btn');
+        buttons.forEach(function (btn) {
+            btn.style.backgroundColor = '';
+            btn.style.color = '';
+        });
+        event.target.style.backgroundColor = '#007bff';
+        event.target.style.color = 'white';
+    }
+</script>
+{% endblock %}

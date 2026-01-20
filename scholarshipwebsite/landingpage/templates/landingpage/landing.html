@@ -29,10 +29,48 @@
 <section id="Scholarship">
     <h1>Scholarship</h1>
     <div class="table">
-    
-    </div>
-    
-<a href = "{% url 'committee' %}" class="button">Committee</a>
+    <table border="1" cellpadding="10" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Student Type</th>
+            <th>Education Level</th>
+            <th>Deadline</th>
+            <th>Status</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in scholarships %}
+        <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.description }}</td>
+            <td>{{ s.student_type }}</td>
+            <td>{{ s.education_level }}</td>
+            <td>{{ s.deadline }}</td>
+            <td>
+                {% if s.status == "Open" %}
+                    <span style="color: green; font-weight: bold;">Open</span>
+                {% else %}
+                    <span style="color: red; font-weight: bold;">Closed</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" style="text-align:center;">
+                No scholarships available
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<a href="{% url 'login' %}" class="button-applynow">Apply Now!</a>
+
+
 </section> 
 
 {% endblock %}
