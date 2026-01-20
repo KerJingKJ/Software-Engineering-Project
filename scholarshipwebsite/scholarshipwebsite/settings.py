@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'login',
     'committee',
     'reviewer',
+    'student',
 ]
 
 MIDDLEWARE = [
