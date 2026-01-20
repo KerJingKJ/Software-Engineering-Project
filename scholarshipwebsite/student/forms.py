@@ -55,3 +55,16 @@ class ApplicationForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+    
+
+    # student_type = forms.ChoiceField(choices=[
+    #     ('International Student', 'International Student'),
+    #     ('Local', 'Local')
+    # ], label="Student Type")
+    
+    # education_level = forms.ChoiceField(choices=[
+    #     ('Foundation', 'Foundation'),
+    #     ('Undergraduate', 'Undergraduate'),
+    #     ('Diploma', 'Diploma'),
+    #     ('Postgraduate', 'Postgraduate')
+    # ], label="Education Level")
