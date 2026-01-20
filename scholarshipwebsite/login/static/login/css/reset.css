@@ -17,7 +17,7 @@ body {
     align-items: center;
 }
 
-#container-security {
+#container-reset{
     width: 100%;
     max-width: 600px;
     background: rgba(255,255,255,0.85);
@@ -34,12 +34,12 @@ h2 {
 
 }
 
-#setsecurity-form {
+#reset-form{
     display: flex;
     flex-direction: column;
 }
 
-#security-form p, #setsecurity-form p, #setsecurity-form select {
+#reset-form p{
     text-align: left;
     margin: 0;
     font-weight: bold;
@@ -47,7 +47,7 @@ h2 {
     margin-bottom: 20px;
 }
 
-#security-form input, #setsecurity-form input, #setsecurity-form select {
+#reset-form input{
     width: 100%;
     padding: 12px 20px;
     border: 1px solid #ccc;
@@ -83,14 +83,14 @@ h2 {
     transform: scale(0.98);
 }
 
-#container-security a{
+#container-reset a{
     color: #034EA1;
     text-decoration: none;
     font-weight: bold;
     display: inline-block;
 }
 
-#container-security a:hover{
+#container-reset a:hover{
     color: #EC1C24;
     text-decoration: underline;
 }
@@ -109,5 +109,3 @@ h2 {
     margin: 0;
     padding: 0;
 }
-
-

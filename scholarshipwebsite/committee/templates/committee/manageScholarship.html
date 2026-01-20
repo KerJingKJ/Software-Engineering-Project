@@ -5,7 +5,7 @@
 
 <section id="Manage">
     <h1>Manage Scholarships</h1>
-
+    <a href="{% url 'create_scholarship' %}" class="button">Create Scholarship</a>
     <ul class="scholarship-list">
         {% for scholarship in scholarships %}
         <li class="scholarship-item">

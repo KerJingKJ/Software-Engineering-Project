@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, SecurityQuestionForm, LoginForm, ForgotPasswordForm, SecurityQuestionVerifyForm, ResetPasswordForm
 from .models import UserSecurityQuestion, UserProfile
 from .models import SECURITY_QUESTION_CHOICES
+from django.contrib.auth import logout
 
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -196,3 +197,11 @@ def reset_password_confirm(request):
         form = ResetPasswordForm()
         
     return render(request, 'login/reset_password.html', {'form': form})
+
+@login_required(login_url='login')
+def logout_view(request):
+    """
+    Logs out the user and redirects to login page.
+    """
+    logout(request)
+    return redirect('landingpage') 

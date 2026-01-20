@@ -3,14 +3,14 @@
 
 {% block content %}
 
-<div class="scholarship-form-container">
+<div id="scholarship-form-container">
     <h2>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Scholarship</h2>
-
+<div id="create-form">
     <form method="post">
         {% csrf_token %}
 
         {% for field in form %}
-        <div class="form-group">
+        
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field }}
             {% if field.help_text %}
@@ -23,10 +23,11 @@
                 {% endfor %}
             </ul>
             {% endif %}
-        </div>
+        
         {% endfor %}
 
-        <button type="submit">Save Scholarship</button>
+        <button type="submit" clas="button">Save Scholarship</button>
     </form>
+</div>
 </div>
 {% endblock %}

@@ -27,22 +27,10 @@
 
             <button type="submit" class="button">Login</button>
         </form>
-
-        
         </div>
         <p> <a href="{% url 'forgot_password' %}">Forgot Password?</a></p>
         <p> First time using? <a href="{% url 'signup' %}">Sign up</a></p>
-    {% if messages %}
-        <div style="color: red; text-align: center; margin-bottom: 10px;">
-            {% for message in messages %}
-            {{ message }} <br>
-            {% endfor %}
-        </div>
-        {% endif %} 
     </div>
-
-    
-    
 </body>
 
 </html>
