@@ -1,0 +1,93 @@
+{
+    "info": {
+        "_postman_id": "scholarship-website-api",
+        "name": "Scholarship Website API",
+        "description": "Collection for testing the Scholarship Website backend endpoints.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Committee",
+            "item": [
+                {
+                    "name": "Create Scholarship",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "name",
+                                    "value": "Postman Scholarship",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "Created via Postman",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "open_for",
+                                    "value": "All Students",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "criteria",
+                                    "value": "Must use Postman",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "deadline",
+                                    "value": "2025-12-31",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/committee/create/",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "committee",
+                                "create",
+                                ""
+                            ]
+                        },
+                        "description": "Endpoint to create a new scholarship."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Committee Index",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://127.0.0.1:8000/committee/",
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "8000",
+                            "path": [
+                                "committee",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}

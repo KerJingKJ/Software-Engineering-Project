@@ -1,17 +1,3 @@
-/**
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-padding: 0px;
-
-position: relative;
-width: 1440px;
-height: 2395px;
-
-background: #FFFFFF;
-
-/* Navigation */
-
 html{
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     scroll-behavior:smooth;
@@ -21,6 +7,7 @@ html{
   background-color: whitesmoke;
 }
 
+
 .nav-list {
   list-style: none;
   display: flex;           /* Horizontal layout */
@@ -28,6 +15,7 @@ html{
   gap: 10px;               /* Space between items */
   margin: 0;
   padding: 0;
+  flex-wrap: wrap; 
 }
 
 .nav-list li {
@@ -42,7 +30,7 @@ html{
 }
 
 
-.about:hover, .scholarship:hover{
+.about:hover, .scholarship:hover, .button-applynow{
   color:#EC1C24
 }
 
@@ -51,6 +39,7 @@ html{
   color: black;
   font-size: medium;
   padding-right: 50px;
+  padding-right: 20px;
 }
 
 .nav-list li button {
@@ -58,7 +47,7 @@ html{
   cursor: pointer;
 }
 
-.button:link, .button:visited, .button-2:link, .button-2:visited {
+.button:link, .button:visited, .button-2:link, .button-2:visited{
   background-color: #034EA1;
   color: white;
   padding: 14px 25px;
@@ -69,7 +58,22 @@ html{
   margin-left: auto;
 }
 
-.button:hover, .button:active, .button-2:hover, .button-2:active {
+.button:hover, .button:active, .button-2:hover, .button-2:active{
+    background-color: #EC1C24;
+}
+
+.button-applynow, .button-applynow:visited{
+  background-color: #034EA1;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 15px;
+  margin-left: 38%;
+}
+
+.button-applynow:hover, .button-applynow:active{
     background-color: #EC1C24;
 }
 
@@ -108,7 +112,10 @@ html{
     position: absolute; /* Takes text out of flow to float it */
     top: 70%;           
     left: 41%;          
-    width: 10%;         
+    width: 10%;
+    left: 50%;  /* center horizontally on all screens */
+    transform: translateX(-50%);  
+    width: auto;       
 }
 
 #AboutUs{
@@ -119,7 +126,6 @@ html{
 #AboutUs h1, #Scholarship h1{
   text-align: center;
   font-size: 30px;
-  padding-top: 30px;
 }
 
 .paragraph{
@@ -145,3 +151,31 @@ html{
   margin:80px;
 }
 
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+tr:hover {background-color: #ddd;}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align:center;
+  background-color: #034EA1;
+  color: white;
+
+}
+
+.button-applynow{
+  margin-top: 50px;
+  position: absolute;
+}

@@ -1,0 +1,34 @@
+{% extends 'committee/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Decision Page</h2>
+    <h3>Applicant: {{ application.name }}</h3>
+
+    <div class="interview-section">
+        <h4>Interview Application</h4>
+        {% if interview %}
+        <p><strong>Scheduled Date:</strong> {{ interview.date }}</p>
+        <p><strong>Time:</strong> {{ interview.interview_time }}</p>
+        <p><strong>Timezone:</strong> {{ interview.timezone }}</p>
+        <a href="{% url 'schedule_interview' application.id %}"><button>Edit Interview Session</button></a>
+        {% else %}
+        <p>No interview scheduled yet.</p>
+        <a href="{% url 'schedule_interview' application.id %}"><button>Schedule Interview Session</button></a>
+        {% endif %}
+    </div>
+
+    <div class="decision-section" style="margin-top: 30px;">
+        <h4>Outcome</h4>
+        <p>Current Status: <strong>{{ application.status }}</strong></p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="decision" value="Approved"
+                style="background-color: green; color: white;">Approve</button>
+            <button type="submit" name="decision" value="Rejected"
+                style="background-color: red; color: white;">Reject</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

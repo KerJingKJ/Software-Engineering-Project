@@ -1,0 +1,33 @@
+{% extends 'committee/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div id="scholarship-form-container">
+    <h2>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Scholarship</h2>
+<div id="create-form">
+    <form method="post">
+        {% csrf_token %}
+
+        {% for field in form %}
+        
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+            <span class="helptext">{{ field.help_text }}</span>
+            {% endif %}
+            {% if field.errors %}
+            <ul class="errorlist">
+                {% for error in field.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        
+        {% endfor %}
+
+        <button type="submit" clas="button">Save Scholarship</button>
+    </form>
+</div>
+</div>
+{% endblock %}

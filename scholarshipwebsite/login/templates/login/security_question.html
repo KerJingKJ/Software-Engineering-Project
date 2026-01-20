@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'login/css/security.css' %}" type="text/css" rel="stylesheet" />
+    <title>Security Questions</title>
+</head>
+
+<body>
+    <div id="container-security">
+    <h2>Set Security Questions</h2>
+    <div id="setsecurity-form">
+    <form method="post">
+        {% csrf_token %}
+
+        <p>
+            <label for="{{ form.question_1.id_for_label }}">Question 1:</label><br>
+            {{ form.question_1 }}
+        </p>
+        <p>
+            <label for="{{ form.answer_1.id_for_label }}">Answer 1:</label><br>
+            {{ form.answer_1 }}
+        </p>
+
+        <p>
+            <label for="{{ form.question_2.id_for_label }}">Question 2:</label><br>
+            {{ form.question_2 }}
+        </p>
+        <p>
+            <label for="{{ form.answer_2.id_for_label }}">Answer 2:</label><br>
+            {{ form.answer_2 }}
+        </p>
+
+        <button type="submit" class="button">Save Security Questions</button>
+
+        {% if form.errors %}
+        <div class="errorform">
+            <ul>
+                {% for field in form %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </form>
+</div>
+    </div>
+</body>
+
+</html>

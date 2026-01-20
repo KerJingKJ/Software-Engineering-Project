@@ -3,16 +3,16 @@ html{
 }
 
 #container-login{
-    width: 587px;
-    height: 400px;
-    position: absolute;
-    top: 100px;
-    left: 350px;
-    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    background: rgba(255,255,255,0.85);
     border-radius: 30px;
-    background: rgba(255, 255, 255, 0.80);
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.25);
+    padding: 0px 10px;
+    box-sizing: border-box;
+    text-align: center;
     align-items: center;
+    justify-content:center ;
 }
 
 h2{
@@ -21,30 +21,90 @@ h2{
     font-size:30px;
 }
 
-body{
+body {
+    background-image: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url('../img/login-bg.jpg');
     background-size: cover;
-    background-repeat: no-repeat; 
-    background-position: center;  
+    background-repeat: no-repeat;
+    background-position: center;
     background-attachment: fixed;
-    
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
-.button:link, .button:visited, .button-2:link, .button-2:visited {
-  background-color: #034EA1;
-  color: white;
-  padding: 14px 25px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  border-radius: 15px;
-  display: flex;
-  justify-content: center; 
-  align-items: center;
-  margin-left: 250px;
-  margin-right: 250px;    
+#signup-form {
+    display: flex;
+    flex-direction: column;
 }
 
-.button:hover, .button:active, .button-2:hover, .button-2:active {
+#signup-form p {
+    text-align: left;
+    margin: 0;
+    font-weight: bold;
+    font-size: larger;
+}
+
+#signup-form input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    font-size: 16px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+
+.button {
+    background-color: #034EA1;
+    color: white;
+    padding: 14px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    max-width: 300px;
+    margin: 20px auto;
+    display: block;
+}
+
+.button:hover {
     background-color: #EC1C24;
+    transform: scale(1.05);
+}
+
+.button:active {
+    background-color: #B31217;
+    transform: scale(0.98);
+}
+
+#container-login a {
+    color: #034EA1;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+}
+
+#container-login a:hover {
+    color: #EC1C24;
+    text-decoration: underline;
+}
+
+#errorform{
+    color: #EC1C24; 
+    margin-bottom: 10px; 
+    font-size: 0.9em;
+    text-decoration: none;
+    text-align: left;
+}
+
+#errorform li{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
 }

@@ -3,7 +3,6 @@ html{
     scroll-behavior:smooth;
 }
 
-
 .navbar {
   background-color: whitesmoke;
 }
@@ -73,8 +72,172 @@ html{
 }
 
 
-#Dashboard h1, #ReviewApprove h1, #Manage h1{
+#Dashboard h1, #ReviewApprove h1, #Manage h1, #Create h1, #Edit h1, #Schedule h1{
   text-align: left;
   font-size: 30px;
-  padding-top: 30px;
+}
+
+.button:link, .button:visited{
+  background-color: #034EA1;
+  color: white;
+  width: 200px;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  margin-left: 10px;
+  margin-right: 250px;    
+}
+
+.button:hover, .button:active{
+    background-color: #EC1C24;
+}
+
+.scholarship-list {
+    list-style: none;
+    padding: 0;
+}
+
+
+.scholarship-item {
+    display: flex;
+    justify-content: space-between; /* Name on left, buttons on right */
+    align-items: center;
+    background-color: #ECEEEF;      
+    padding: 20px 30px;
+    border-radius: 10px;            
+    max-width: 500px;              
+    margin-bottom: 10px;
+}
+
+.scholarship-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #000;
+}
+
+
+.scholarship-item div {
+    display: flex;
+    gap: 30px;                      
+}
+
+
+.btn-edit{
+    background-color: #034EA1;      
+    color: white;
+    padding: 10px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    min-width: 80px;
+    text-align: center;
+}
+
+.btn-delete {
+    background-color:#EC1C24;     
+    color: white;
+    padding: 10px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    min-width: 80px;
+    text-align: center;
+
+}
+
+.btn-edit:hover{
+    background-color:#032042;      
+}
+
+.btn-delete:hover {
+    background-color:#a21419;      
+}
+
+
+#scholarship-form-container {
+    max-width: 800px; 
+}
+
+#scholarship-form-container h2 {
+    font-weight: bold;
+    color: #000;
+}
+
+
+#create-form form {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+/* Label Styling: Bold with Red Asterisk */
+#create-form label {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 25px;
+    display: block;
+}
+
+/* Input, Select, and Textarea Styling */
+#create-form input[type="text"],
+#create-form input[type="date"],
+#create-form select,
+#create-form textarea {
+    width: 100%;
+    max-width: 500px;
+    height:50px;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+
+#create-form select {
+    background-color: #ECEEEF; 
+    border: none;
+}
+
+#create-form button[type="submit"] {
+    background-color: #034EA1; 
+    color: white;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: fit-content;
+    margin-top: 40px;
+    transition: background-color 0.2s;
+}
+
+#create-form button[type="submit"]:hover {
+    background-color: #023670;
+}
+
+/* Error and Help text */
+.helptext {
+    color: #666;
+    margin-top: 5px;
+}
+
+.errorlist {
+    color: #EC1C24;
+    list-style: none;
+    padding: 0;
+    font-weight: bold;
+    margin-top: 5px;
 }

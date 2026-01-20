@@ -1,0 +1,126 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+#Manage {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+#Manage h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
+.scholarship-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.scholarship-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+}
+
+.scholarship-item:last-child {
+    border-bottom: none;
+}
+
+.scholarship-item:hover {
+    background-color: #fcfcfc;
+}
+
+.scholarship-name {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+}
+
+.btn-edit {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #fff;
+    color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-edit:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.empty-state {
+    text-align: center;
+    color: #6c757d;
+    padding: 40px 0;
+}
+
+/* The List Container */
+.scholarship-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* Individual Scholarship Row (Matching the image) */
+.scholarship-item {
+    display: flex;
+    justify-content: space-between; /* Name on left, buttons on right */
+    align-items: center;
+    background-color: #ECEEEF;      /* Light grey background from image */
+    padding: 20px 30px;
+    border-radius: 10px;            /* Rounded corners */
+    max-width: 600px;               /* Limit width to match image style */
+    margin-bottom: 10px;
+}
+
+.scholarship-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #000;
+}
+
+/* Button Group on the right */
+.scholarship-item div {
+    display: flex;
+    gap: 30px;                      /* Large gap between Edit and Delete */
+}
+
+/* Edit & Delete Buttons */
+.btn-edit, .btn-delete {
+    background-color: #034EA1;      /* Solid blue from image */
+    color: white;
+    padding: 10px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    min-width: 80px;
+    text-align: center;
+}
+
+.btn-edit:hover, .btn-delete:hover {
+    background-color: #023670;      /* Darker blue on hover */
+}

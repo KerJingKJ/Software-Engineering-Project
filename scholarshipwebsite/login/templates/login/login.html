@@ -1,24 +1,36 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static 'login/css/login.css' %}" type="text/css" rel="stylesheet" />
     <title>Log In</title>
 </head>
-<body style="background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('{% static 'login/img/login-bg.jpg' %}');">
+
+<body
+    style="background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('{% static 'login/img/login-bg.jpg' %}');">
     <div id="container-login">
         <h2> Log in </h2>
+        <div id="login-form">
+        <form method="post">
+            {% csrf_token %}
 
-        <p> Email address </p>
-        <p> Password </p>
+            <p> Email address </p>
+            {{ form.email }}
 
-        <p> First time using? <a href = "{% url 'signup' %}">Sign up</p>
+            <p> Password </p>
+            {{ form.password }}
 
-        <a href = "{% url 'committee' %}" class="button">Login</a>
+            <br>
+
+            <button type="submit" class="button">Login</button>
+        </form>
+        </div>
+        <p> <a href="{% url 'forgot_password' %}">Forgot Password?</a></p>
+        <p> First time using? <a href="{% url 'signup' %}">Sign up</a></p>
     </div>
-    
-    
 </body>
+
 </html>
