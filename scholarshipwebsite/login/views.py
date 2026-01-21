@@ -39,8 +39,7 @@ def index(request):
                     email_domain = user.email.split('@')[-1]
                     
                     if 'student.mmu.edu.my' in email_domain:
-                         # Placeholder for student page
-                        return redirect('committee')
+                        return redirect('student')
                     elif 'admin.mmu.edu.my' in email_domain:
                         return redirect('/admin/')
                     elif 'reviewer.mmu.edu.my' in email_domain:
@@ -209,44 +208,40 @@ def logout_view(request):
     logout(request)
     return redirect('landingpage') 
 
-def manage_account(request):
-    # Determine which form to show based on the URL parameter ?tab=
-    active_tab = request.GET.get('tab', 'password')
-    
-    # For password change
-    password_form = PasswordChangeForm(request.user)
+@login_required(login_url='login')
+def change_password(request):
+    if request.method == 'POST':
+        # PasswordChangeForm requires the user object as the first argument
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Keeps the session active so the user isn't logged out
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('committee') 
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'login/change_password.html', {'form': form})
+
+@login_required(login_url='login')
+def update_security_questions(request):
+    # Fetch existing questions or None to create new ones
     try:
         instance = request.user.security_questions
     except UserSecurityQuestion.DoesNotExist:
         instance = None
-    security_form = SecurityQuestionForm(instance=instance)
 
-    if request.method == 'POST':
-        # Logic for Reset Password
-        if 'reset_password' in request.POST:
-            password_form = PasswordChangeForm(request.user, request.POST)
-            if password_form.is_valid():
-                user = password_form.save()
-                update_session_auth_hash(request, user) # Keeps user logged in
-                messages.success(request, 'Your password was successfully updated!')
-                return redirect('/manage-account/?tab=password')
-            else:
-                active_tab = 'password' # Stay on tab if error
-        
-        # Logic for Security Questions
-        elif 'reset_security' in request.POST:
-            security_form = SecurityQuestionForm(request.POST, instance=instance)
-            if security_form.is_valid():
-                security_question = security_form.save(commit=False)
-                security_question.user = request.user
-                security_question.save()
-                messages.success(request, 'Security questions updated successfully!')
-                return redirect('/manage-account/?tab=security')
-            else:
-                active_tab = 'security' # Stay on tab if error
+    if request.method == "POST":
+        form = SecurityQuestionForm(request.POST, instance=instance)
+        if form.is_valid():
+            security_question = form.save(commit=False)
+            security_question.user = request.user
+            security_question.save()
+            messages.success(request, 'Security questions updated successfully!')
+            return redirect('committee')
+    else:
+        form = SecurityQuestionForm(instance=instance)
 
-    return render(request, 'login/manage_account.html', {
-        'password_form': password_form, 
-        'security_form': security_form,
-        'active_tab': active_tab,
-    })
+    return render(request, "login/change_securityquestion.html", {"form": form})

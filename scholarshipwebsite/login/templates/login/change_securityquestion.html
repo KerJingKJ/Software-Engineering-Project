@@ -1,0 +1,59 @@
+{% extends 'committee/base.html' %}
+{% load static %}
+{% block content %}
+<link href="{% static 'login/css/change_password.css' %}" type="text/css" rel="stylesheet" />
+
+<div class="content-account">
+<div class="sidebar">
+    <a href = "{% url 'change_password' %}">Change Password</a>
+    <a href = "{% url 'update_security_questions' %}">Update Security Question</a>
+</div>
+
+
+<div class="settings-container">
+    <h2>Update Security Questions</h2>
+    <p class="text-muted">These questions will be used to recover your account if you forget your password.</p>
+    <hr>
+    <div id="setsecurity-form">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group mb-3">
+            {{ form.question_1.label_tag }}
+            {{ form.question_1 }}
+            {{ form.question_1.errors }}
+        </div>
+
+        <div class="form-group mb-3">
+            {{ form.answer_1.label_tag }}
+            {{ form.answer_1 }}
+            {{ form.answer_1.errors }}
+        </div>
+
+        <div class="form-group mb-3">
+            {{ form.question_2.label_tag }}
+            {{ form.question_2 }}
+            {{ form.question_2.errors }}
+        </div>
+
+        <div class="form-group mb-3">
+            {{ form.answer_2.label_tag }}
+            {{ form.answer_2 }}
+            {{ form.answer_2.errors }}
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="actions" style="margin-top: 20px;">
+            <button type="submit" class="button">Update Security Questions</button>
+            <a href="{% url 'committee' %}" class="button-2">Cancel</a>
+        </div>
+    </form>
+    </div>  
+</div>
+</div>
+{% endblock %}

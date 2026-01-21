@@ -74,6 +74,8 @@ html{
 
 #user-icon {
     margin-left: 650px;
+    max-width: 10%;
+    height: auto;
 }
 
 .user-btn {

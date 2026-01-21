@@ -17,5 +17,7 @@ urlpatterns = [
 
 
     #Manage Account URL
-    path('manageAccount', login_views.manage_account, name='manageAccount'),
+    path('changepassword/', login_views.change_password, name='change_password'),
+    path('changesecurityquestion/', login_views.update_security_questions, name='update_security_questions'),
+    
 ]
