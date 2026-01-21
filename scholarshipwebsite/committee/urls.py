@@ -17,7 +17,10 @@ urlpatterns = [
 
 
     #Manage Account URL
-    path('changepassword/', login_views.change_password, name='change_password'),
-    path('changesecurityquestion/', login_views.update_security_questions, name='update_security_questions'),
+    path('changepassword/', login_views.change_password, name='committee_change_password'),
+    path('changesecurityquestion/', login_views.update_security_questions, name='committee_update_security_questions'),
+
+    #Dashboard
+    path('api/', views.ChartData.as_view(), name='api_data'),
     
 ]

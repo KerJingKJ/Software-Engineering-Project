@@ -1,9 +1,18 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.views.generic import View
+ 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from django.db.models import Count
+from committee.models import Scholarship
+from student.models import Student, Application
+
 from committee.models import ScholarshipApplication
 from .models import EligibilityCheck
 
-def index(response, app_id=None):
+def review(response, app_id=None):
     if app_id:
         app = ScholarshipApplication.objects.filter(id=app_id).first()
     else:
@@ -30,10 +39,33 @@ def index(response, app_id=None):
             eligibility.save()
             return redirect('reviewer_with_id', app_id=app.id)
 
-    return render(response, "reviewer/reviewer.html", {'app': app, 'eligibility': eligibility})
+    return render(response, "reviewer/reviewScholarship.html", {'app': app, 'eligibility': eligibility})
 
-def review(response):
-    return render(response, "reviewer/reviewScholarship.html", {})
 
 def details(response):
     return render(response, "reviewer/reviewScholarship.html", {})
+
+def index(response):
+    return render(response, "reviewer/reviewer.html", {})
+
+
+## using rest_framework classes
+class ChartData(APIView):
+    authentication_classes = []
+    permission_classes = []
+ 
+    def get(self, request, format = None):
+        scholarships = Scholarship.objects.annotate(
+            app_count=Count('applications')
+        )
+
+        labels = [s.name for s in scholarships]
+        chartLabel = "Scholarship Application Volume"
+        chartdata = [s.app_count for s in scholarships]
+        total_applications = Application.objects.count()
+        data ={
+                     "labels":labels,
+                     "chartLabel":chartLabel,
+                     "chartdata":chartdata,
+             }
+        return Response(data)

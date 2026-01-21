@@ -3,10 +3,29 @@
 {% block content %}
 <link href="{% static 'login/css/change_password.css' %}" type="text/css" rel="stylesheet" />
 
+<div id="manageAccount-container">
+<h1> Manage Account </h1>
 <div class="content-account">
 <div class="sidebar">
-    <a href = "{% url 'change_password' %}">Change Password</a>
-    <a href = "{% url 'update_security_questions' %}">Update Security Question</a>
+   {% if '/reviewer/' in request.path %}
+        <a href="{% url 'reviewer_change_password' %}" 
+           class="{% if request.resolver_match.url_name == 'reviewer_change_password' %}active{% endif %}">
+           Change Password
+        </a>
+        <a href="{% url 'reviewer_update_security_questions' %}"
+           class="{% if request.resolver_match.url_name == 'reviewer_update_security_questions' %}active{% endif %}">
+           Update Security Question
+        </a>
+    {% else %}
+        <a href="{% url 'committee_change_password' %}" 
+           class="{% if request.resolver_match.url_name == 'committee_change_password' %}active{% endif %}">
+           Change Password
+        </a>
+        <a href="{% url 'committee_update_security_questions' %}"
+           class="{% if request.resolver_match.url_name == 'committee_update_security_questions' %}active{% endif %}">
+           Update Security Question
+        </a>
+    {% endif %}
 </div>
 
 
@@ -50,10 +69,16 @@
 
         <div class="actions" style="margin-top: 20px;">
             <button type="submit" class="button">Update Security Questions</button>
-            <a href="{% url 'committee' %}" class="button-2">Cancel</a>
+            {% if '/reviewer/' in request.path %}
+                    <a href="{% url 'reviewer' %}" class="button-2">Cancel</a>
+                
+            {% else %}
+                <a href="{% url 'committee' %}" class="button-2">Cancel</a>
+            {% endif %}
         </div>
     </form>
     </div>  
+</div>
 </div>
 </div>
 {% endblock %}

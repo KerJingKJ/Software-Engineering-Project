@@ -1,15 +1,170 @@
-{% extends 'reviewer/base.html'%}
+{% extends 'reviewer/base.html' %}
 {% block content %}
 {% load static %}
 
-<body>
-    
+<div class="container-fluid">
+<h1> Review Scholarship </h1>
+<div style="display: flex; height: 100vh;">
+    <!-- Left Pane: Application Details -->
+    <div style="flex: 1; overflow-y: auto; border-right: 1px solid #ccc; padding: 20px; background-color: #f9f9f9;">
+        <h2>Application Details</h2>
 
-    <section id="Review">
-    <h1>Review Scholarship</h1>    
-       
-    </section> 
+        {% if app %}
+        <div
+            style="background: white; border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 0;">{{ app.name }} (ID: {{
+                app.id }})</h3>
 
-</body>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <p><strong>Scholarship:</strong> {{ app.scholarship.name }}</p>
+                <p><strong>Status:</strong> {{ app.status }}</p>
+                <p><strong>IC No:</strong> {{ app.ic_no }}</p>
+                <p><strong>Email:</strong> {{ app.email_address }}</p>
+                <p><strong>Contact:</strong> {{ app.contact_number }}</p>
+                <p><strong>Date of Birth:</strong> {{ app.date_of_birth }}</p>
+                <p><strong>Age:</strong> {{ app.age }}</p>
+                <p><strong>Gender:</strong> {{ app.gender }}</p>
+                <p><strong>Race:</strong> {{ app.race }}</p>
+                <p><strong>Nationality:</strong> {{ app.nationality }}</p>
+                <p><strong>Programme:</strong> {{ app.programme }}</p>
+                <p><strong>Intake:</strong> {{ app.intake }}</p>
+                <p><strong>Qual:</strong> {{ app.highest_qualification }}</p>
+            </div>
 
+            <div style="margin-top: 10px;">
+                <p><strong>Home Address:</strong> {{ app.home_address }}</p>
+                <p><strong>Correspondence Address:</strong> {{ app.correspondence_address }}</p>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <p><strong>Personal Achievement:</strong><br> {{ app.personal_achievement }}</p>
+                <p><strong>Reason to Deserve:</strong><br> {{ app.reason_deserve }}</p>
+            </div>
+
+            <div style="margin-top: 15px; border-top: 1px solid #eee; pt-2;">
+                <strong>Documents:</strong>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li>Passport Photo: {% if app.passport_photo and app.passport_photo.url %}<a
+                            href="{{ app.passport_photo.url }}" target="_blank">View</a>{% else %}N/A{% endif %}</li>
+                    <li>Academic Result: {% if app.academic_result and app.academic_result.url %}<a
+                            href="{{ app.academic_result.url }}" target="_blank">View</a>{% else %}N/A{% endif %}</li>
+                    <li>Supporting Doc: {% if app.supporting_document and app.supporting_document.url %}<a
+                            href="{{ app.supporting_document.url }}" target="_blank">View</a>{% else %}N/A{% endif %}
+                    </li>
+                    <li>EA Form: {% if app.ea_form and app.ea_form.url %}<a href="{{ app.ea_form.url }}"
+                            target="_blank">View</a>{% else %}N/A{% endif %}</li>
+                    <li>Payslip: {% if app.payslip and app.payslip.url %}<a href="{{ app.payslip.url }}"
+                            target="_blank">View</a>{% else %}N/A{% endif %}</li>
+                </ul>
+            </div>
+        </div>
+        {% else %}
+        <p>No applications found.</p>
+        {% endif %}
+    </div>
+
+    <!-- Right Pane: Eligibility Check -->
+    <div style="flex: 1; padding: 20px; overflow-y: auto;">
+        <h2>Eligibility Checker</h2>
+        {% if app %}
+        <form method="post" action="{% url 'reviewer_with_id' app.id %}">
+            {% csrf_token %}
+            <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <th style="text-align: left;">Criteria</th>
+                    <th style="width: 50px;">Check</th>
+                </tr>
+                <tr>
+                    <td><strong>Citizenship:</strong> Malaysian</td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="citizenship_check" {{
+                            eligibility.citizenship_check|yesno:"checked," }}>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Programme Level:</strong> Foundation/Bachelor’s Degree
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="programme_level_check" {{
+                            eligibility.programme_level_check|yesno:"checked," }}>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Qualifying Exam:</strong>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">If Programme Level: Foundation, SPM/O-Level</td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="exam_foundation_spm" {{
+                            eligibility.exam_foundation_spm|yesno:"checked," }}>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">If Programme Level: Bachelor’s Degree, STPM A-Level/UEC</td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="exam_degree_stpm_uec" {{
+                            eligibility.exam_degree_stpm_uec|yesno:"checked," }}>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">If Programme Level: Bachelor’s Degree, Foundation/Matriculation or
+                        equivalents</td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="exam_degree_matriculation" {{
+                            eligibility.exam_degree_matriculation|yesno:"checked," }}>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <strong>Minimum Grades/CGPA:</strong>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">SPM/O-Level: 9As and above</td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="grade_spm" {{ eligibility.grade_spm|yesno:"checked," }}>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">STPM A-Level: 4A’s</td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="grade_stpm" {{ eligibility.grade_stpm|yesno:"checked," }}>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">UEC: 8A’s</td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="grade_uec" {{ eligibility.grade_uec|yesno:"checked," }}>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">Foundation / Matriculation or equivalents: CGPA 3.90 and above</td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="grade_foundation" {{ eligibility.grade_foundation|yesno:"checked,"
+                            }}>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Documents Verified</strong></td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="documents_verified" {{
+                            eligibility.documents_verified|yesno:"checked," }}>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <button type="submit" style="padding: 10px 20px; cursor: pointer;">Save Eligibility Check</button>
+        </form>
+        {% else %}
+        <p>Select an application to view eligibility check.</p>
+        {% endif %}
+    </div>
+</div>
+</div>
 {% endblock %}

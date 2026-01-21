@@ -11,6 +11,16 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
+from django.shortcuts import render
+from django.views.generic import View
+ 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from django.db.models import Count
+
+from student.models import Student, Application
+
 # Create your views here.
 @csrf_exempt
 def create_scholarship(request):
@@ -146,3 +156,24 @@ def decision_page(request, id):
             
     return render(request, "committee/decision.html", {'application': application, 'interview': interview})
 
+ 
+## using rest_framework classes
+class ChartData(APIView):
+    authentication_classes = []
+    permission_classes = []
+ 
+    def get(self, request, format = None):
+        scholarships = Scholarship.objects.annotate(
+            app_count=Count('applications')
+        )
+
+        labels = [s.name for s in scholarships]
+        chartLabel = "Scholarship Application Volume"
+        chartdata = [s.app_count for s in scholarships]
+        total_applications = Application.objects.count()
+        data ={
+                     "labels":labels,
+                     "chartLabel":chartLabel,
+                     "chartdata":chartdata,
+             }
+        return Response(data)
