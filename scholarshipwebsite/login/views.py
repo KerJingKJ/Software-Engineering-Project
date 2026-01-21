@@ -5,6 +5,9 @@ from .forms import SignUpForm, SecurityQuestionForm, LoginForm, ForgotPasswordFo
 from .models import UserSecurityQuestion, UserProfile
 from .models import SECURITY_QUESTION_CHOICES
 from django.contrib.auth import logout
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
 
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -36,8 +39,7 @@ def index(request):
                     email_domain = user.email.split('@')[-1]
                     
                     if 'student.mmu.edu.my' in email_domain:
-                         # Placeholder for student page
-                        return redirect('committee')
+                        return redirect('student')
                     elif 'admin.mmu.edu.my' in email_domain:
                         return redirect('/admin/')
                     elif 'reviewer.mmu.edu.my' in email_domain:
@@ -205,3 +207,53 @@ def logout_view(request):
     """
     logout(request)
     return redirect('landingpage') 
+
+# In your views.py (where these functions live)
+
+def get_dashboard_redirect(user):
+    """Helper function to determine the correct dashboard."""
+    if hasattr(user, 'student'): # If user is a student
+        return 'student_dashboard' 
+    elif user.groups.filter(name='Reviewer').exists() or 'reviewer' in user.username:
+        return 'reviewer' # The name of your reviewer home URL
+    return 'committee' # Default fallback
+
+@login_required(login_url='login')
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Password updated!')
+            
+            # Use the helper to redirect to the correct app
+            return redirect(get_dashboard_redirect(request.user)) 
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'login/change_password.html', {'form': form})
+
+@login_required(login_url='login')
+def update_security_questions(request):
+    try:
+        instance = request.user.security_questions
+    except UserSecurityQuestion.DoesNotExist:
+        instance = None
+    security_form = SecurityQuestionForm(instance=instance)
+    
+    if request.method == "POST":
+        form = SecurityQuestionForm(request.POST, instance=instance)
+        if form.is_valid():
+            security_question = form.save(commit=False)
+            security_question.user = request.user
+            security_question.save()
+            messages.success(request, 'Questions updated!')
+            
+            # Use the helper here too
+            return redirect(get_dashboard_redirect(request.user))
+    else:
+        form = SecurityQuestionForm(instance=instance)
+
+    return render(request, "login/change_securityquestion.html", {"form": form})

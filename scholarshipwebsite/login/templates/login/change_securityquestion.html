@@ -1,0 +1,84 @@
+{% extends 'committee/base.html' %}
+{% load static %}
+{% block content %}
+<link href="{% static 'login/css/change_password.css' %}" type="text/css" rel="stylesheet" />
+
+<div id="manageAccount-container">
+<h1> Manage Account </h1>
+<div class="content-account">
+<div class="sidebar">
+   {% if '/reviewer/' in request.path %}
+        <a href="{% url 'reviewer_change_password' %}" 
+           class="{% if request.resolver_match.url_name == 'reviewer_change_password' %}active{% endif %}">
+           Change Password
+        </a>
+        <a href="{% url 'reviewer_update_security_questions' %}"
+           class="{% if request.resolver_match.url_name == 'reviewer_update_security_questions' %}active{% endif %}">
+           Update Security Question
+        </a>
+    {% else %}
+        <a href="{% url 'committee_change_password' %}" 
+           class="{% if request.resolver_match.url_name == 'committee_change_password' %}active{% endif %}">
+           Change Password
+        </a>
+        <a href="{% url 'committee_update_security_questions' %}"
+           class="{% if request.resolver_match.url_name == 'committee_update_security_questions' %}active{% endif %}">
+           Update Security Question
+        </a>
+    {% endif %}
+</div>
+
+
+<div class="settings-container">
+    <h2>Update Security Questions</h2>
+    <p class="text-muted">These questions will be used to recover your account if you forget your password.</p>
+    <hr>
+    <div id="setsecurity-form">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group mb-3">
+            {{ form.question_1.label_tag }}
+            {{ form.question_1 }}
+            {{ form.question_1.errors }}
+        </div>
+
+        <div class="form-group mb-3">
+            {{ form.answer_1.label_tag }}
+            {{ form.answer_1 }}
+            {{ form.answer_1.errors }}
+        </div>
+
+        <div class="form-group mb-3">
+            {{ form.question_2.label_tag }}
+            {{ form.question_2 }}
+            {{ form.question_2.errors }}
+        </div>
+
+        <div class="form-group mb-3">
+            {{ form.answer_2.label_tag }}
+            {{ form.answer_2 }}
+            {{ form.answer_2.errors }}
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="actions" style="margin-top: 20px;">
+            <button type="submit" class="button">Update Security Questions</button>
+            {% if '/reviewer/' in request.path %}
+                    <a href="{% url 'reviewer' %}" class="button-2">Cancel</a>
+                
+            {% else %}
+                <a href="{% url 'committee' %}" class="button-2">Cancel</a>
+            {% endif %}
+        </div>
+    </form>
+    </div>  
+</div>
+</div>
+</div>
+{% endblock %}

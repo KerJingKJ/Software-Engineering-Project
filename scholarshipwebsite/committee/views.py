@@ -4,6 +4,22 @@ from .forms import ScholarshipForm
 from .models import Scholarship, ScholarshipApplication, Guardian, Interview, ApprovedApplication
 
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
+from django.shortcuts import render
+from django.views.generic import View
+ 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from django.db.models import Count
+
+from student.models import Student, Application
 
 # Create your views here.
 @csrf_exempt
@@ -45,6 +61,9 @@ def index(response):
 def manage(response):
     scholarships = Scholarship.objects.all()
     return render(response, "committee/manageScholarship.html", {"scholarships": scholarships})
+
+def manageAccount(response):
+    return render(response, "committee/manage_account.html", {})
 
 def create(response):
     return render(response, "committee/createScholarship.html", {})
@@ -136,3 +155,25 @@ def decision_page(request, id):
             return redirect('decision_page', id=id)
             
     return render(request, "committee/decision.html", {'application': application, 'interview': interview})
+
+ 
+## using rest_framework classes
+class ChartData(APIView):
+    authentication_classes = []
+    permission_classes = []
+ 
+    def get(self, request, format = None):
+        scholarships = Scholarship.objects.annotate(
+            app_count=Count('applications')
+        )
+
+        labels = [s.name for s in scholarships]
+        chartLabel = "Scholarship Application Volume"
+        chartdata = [s.app_count for s in scholarships]
+        total_applications = Application.objects.count()
+        data ={
+                     "labels":labels,
+                     "chartLabel":chartLabel,
+                     "chartdata":chartdata,
+             }
+        return Response(data)

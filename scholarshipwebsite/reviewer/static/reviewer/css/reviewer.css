@@ -3,16 +3,23 @@ html{
     scroll-behavior:smooth;
 }
 
-
 .navbar {
   background-color: whitesmoke;
+  display: flex;
+  justify-content: space-between; /* This pushes left and right groups apart */
+  align-items: center;
+  padding: 0 20px;
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 98%; /* Full width */
+  margin-left: -10px;
 }
 
 .nav-list {
   list-style: none;
-  display: flex;           /* Horizontal layout */
-  align-items: center;     /* Vertically center items */
-  gap: 10px;               /* Space between items */
+  display: flex;          
+  align-items: center;     
+  width: 100%; 
   margin: 0;
   padding: 0;
 }
@@ -20,16 +27,22 @@ html{
 .nav-list li {
   display: flex;           
   align-items: center;    
-   gap: 20px;
+  gap: 20px;
    
 }
 
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-grow: 1; 
+}
+
 .dropdown {
-  display: relative;
-  width: 35px; /* Adjust width as needed */
+  position: relative;
+  width: 35px; 
   cursor: pointer;
-  padding: 6px 0; /* Adds clickable area around the bars */
-  margin-left: auto;
+
 }
 
 .dropdown a{
@@ -49,6 +62,11 @@ html{
   right: 0; /* let the content open towards left side*/
 }
 
+.container-fluid{
+  margin-top: 50px; 
+  padding: 20px;
+}
+
 .dropdown:hover .content{
   display: block;
 }
@@ -66,14 +84,44 @@ html{
 
 .bar1, .bar2, .bar3 {
   width: 100%;
-  height: 5px; /* Height of each bar */
-  background-color: #333; /* Color of the bars */
-  margin: 6px 0; /* Space between the bars */
-  transition: 0.4s; /* Smooth transition for potential animations (e.g., hover/click) */
+  height: 5px; 
+  background-color: #333; 
+  margin: 6px 0;
+  transition: 0.4s; 
+}
+
+#user-icon {
+  margin-right: 20px; /* Space between icon and hamburger */
+}
+
+#user-icon img {
+    width: 35px; /* Control size explicitly */
+    height: auto;
 }
 
 
 #Dashboard h1, #Review h1{
   text-align: left;
   font-size: 30px;
+}
+
+.container-fluid{
+  padding: 20px;
+  margin-top: 50px;
+}
+
+.row{
+  display: flex;       
+  flex-wrap: wrap;    
+  gap: 20px;         
+  justify-content: center;
+}
+
+
+.col-md-6{
+  position: relative; 
+  flex: 1;            
+  min-width: 300px;   
+  max-width: 500px;   
+  height: 300px;
 }

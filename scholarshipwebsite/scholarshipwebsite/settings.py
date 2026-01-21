@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'committee',
     'reviewer',
     'student',
+    'rest_framework',
+    'chartjs',
 ]
 
 MIDDLEWARE = [
