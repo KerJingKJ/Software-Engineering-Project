@@ -233,7 +233,20 @@ def change_password(request):
             messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(request.user)
-    return render(request, 'login/change_password.html', {'form': form})
+
+    email_domain = request.user.email.split('@')[-1]
+    
+    if 'student.mmu.edu.my' in email_domain:
+        base_template = 'student/base.html'
+    elif 'reviewer.mmu.edu.my' in email_domain:
+        base_template = 'reviewer/base.html'
+    else:
+        base_template = 'committee/base.html'
+
+    return render(request, 'login/change_password.html', {
+        'form': form,
+        'base_template': base_template
+        })
 
 @login_required(login_url='login')
 def update_security_questions(request):
@@ -256,4 +269,16 @@ def update_security_questions(request):
     else:
         form = SecurityQuestionForm(instance=instance)
 
-    return render(request, "login/change_securityquestion.html", {"form": form})
+    email_domain = request.user.email.split('@')[-1]
+    
+    if 'student.mmu.edu.my' in email_domain:
+        base_template = 'student/base.html'
+    elif 'reviewer.mmu.edu.my' in email_domain:
+        base_template = 'reviewer/base.html'
+    else:
+        base_template = 'committee/base.html'
+
+    return render(request, "login/change_securityquestion.html", {
+        "form": form,
+        'base_template': base_template
+        })
