@@ -1,0 +1,37 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="form-container">
+
+    <h1 class="page-title" style="margin-left: 10px;">Scholarship Application Form</h1>
+
+    <div class="tabs-wrapper">
+        <a href="{% url 'applicationForm' %}" class="tab">Part 1</a>
+        <a href="{% url 'applicationForm_p2' %}" class="tab">Part 2</a>
+        <a href="{% url 'applicationForm_p3' %}" class="tab">Part 3</a>
+        <a href="#" class="tab active">Part 4: Your opinion</a>
+    </div>
+
+    <div class="form-content">
+        <form action="{% url 'applicationForm_status' %}" method="POST"> {% csrf_token %}
+            
+            <div class="form-vertical-row">
+                <label class="top-label">Tell us why you deserve the scholarship:</label>
+                <textarea class="form-input large-textarea" rows="10"></textarea>
+            </div>
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I agree to the [Terms & Conditions], [Privacy Policy], and [Accuracy Statement].</label>
+            </div>
+
+            <div class="button-group-center">
+                <a href="{% url 'applicationForm_p3' %}" class="btn-back">Back</a>
+                <button type="submit" class="btn-next">Submit</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
