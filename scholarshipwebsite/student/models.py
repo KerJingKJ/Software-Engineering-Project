@@ -196,8 +196,8 @@ class Application(models.Model):
 #     def __str__(self):
 #         return f"Application {self.id} - {self.status}"
 
-# by hui yee from committe models
 
+# by hui yee from committe models
 class Application(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -259,6 +259,7 @@ class Application(models.Model):
     def __str__(self):
         return f"{self.name} - {self.scholarship.name}"
 
+# by hui yee from committe models
 class Guardian(models.Model):
     application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='guardians')
     relationship = models.CharField(max_length=100)
@@ -285,6 +286,7 @@ class Guardian(models.Model):
     def __str__(self):
         return f"{self.name} ({self.relationship}) - {self.application.name}"
 
+# by hui yee from committe models
 class Interview(models.Model):
     application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='interviews')
     date = models.DateField()
@@ -297,6 +299,7 @@ class Interview(models.Model):
         return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"
 
 
+# by hui yee from committe models
 class Bookmark(models.Model):
     scholarship = models.ForeignKey(
         Scholarship,
@@ -343,6 +346,9 @@ class Bookmark(models.Model):
 #     def __str__(self):
 #         return f"Eligibility Check for {self.application.name}"
 
+
+# by hui yee from committe models
+# Not sure why we need this? Shouldnt these details be stored in interview?
 class ApprovedApplication(models.Model):
     """Stores approved student applications with interview details"""
     # Link to original application (optional, for reference)
