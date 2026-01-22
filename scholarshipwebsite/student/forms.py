@@ -194,6 +194,7 @@ class ApplicationForm(forms.ModelForm):
         
         # Make status hidden for new applications (students shouldn't set this)
         
+        # Make status hidden for new applications (students shouldn't set this)
         if not self.instance.pk:
             # Exclude status field entirely for new applications
             if 'status' in self.fields:
@@ -226,6 +227,13 @@ class ApplicationForm(forms.ModelForm):
         if submitted_date and submitted_date > date.today():
             raise forms.ValidationError("Submitted date cannot be in the future.")
         return submitted_date
+    
+#commented out for conflicts
+    # def clean_submitted_date(self):
+    #     submitted_date = self.cleaned_data.get('submitted_date')
+    #     if submitted_date and submitted_date > date.today():
+    #         raise forms.ValidationError("Submitted date cannot be in the future.")
+    #     return submitted_date
 
     # def clean_submitted_date(self):
     #     submitted_date = self.cleaned_data.get('submitted_date')
@@ -315,3 +323,34 @@ class ApplicationForm(forms.ModelForm):
     #     ('Diploma', 'Diploma'),
     #     ('Postgraduate', 'Postgraduate')
     # ], label="Education Level")
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data.get('date_of_birth')
+        if dob and dob >= date.today():
+            raise forms.ValidationError("Date of birth must be in the past.")
+        return dob
+    
+    def clean_intake(self):
+        intake = self.cleaned_data.get('intake')
+        if intake and intake < date.today():
+            raise forms.ValidationError("Intake date cannot be in the past.")
+        return intake
+    
+    def clean_age(self):
+        age = self.cleaned_data.get('age')
+        if age and (age < 0 or age > 150):
+            raise forms.ValidationError("Please enter a valid age.")
+        return age
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        dob = cleaned_data.get('date_of_birth')
+        age = cleaned_data.get('age')
+        
+        # Verify age matches date of birth
+        if dob and age:
+            today = date.today()
+            calculated_age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+            if abs(calculated_age - age) > 1:
+                raise forms.ValidationError("Age doesn't match the date of birth provided.")
+        
+        return cleaned_data
