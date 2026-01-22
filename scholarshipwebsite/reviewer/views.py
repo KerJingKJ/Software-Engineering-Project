@@ -8,7 +8,6 @@ from committee.models import Scholarship
 from student.models import Student, ScholarshipApplication
 from .models import EligibilityCheck
 
-# --- VIEWS ---
 
 def index(request):
     """

@@ -322,23 +322,51 @@ class Bookmark(models.Model):
         return f"Bookmark {self.id} - {self.date_added}"
     
 
-class EligibilityCheck(models.Model):
-    application = models.OneToOneField(Application, on_delete=models.CASCADE, related_name='eligibility_check')
-    citizenship_check = models.BooleanField(default=False)
-    programme_level_check = models.BooleanField(default=False)
+# class EligibilityCheck(models.Model):
+#     application = models.OneToOneField(Application, on_delete=models.CASCADE, related_name='eligibility_check')
+#     citizenship_check = models.BooleanField(default=False)
+#     programme_level_check = models.BooleanField(default=False)
     
-    # Qualifying Exam
-    exam_foundation_spm = models.BooleanField(default=False)
-    exam_degree_stpm_uec = models.BooleanField(default=False)
-    exam_degree_matriculation = models.BooleanField(default=False)
+#     # Qualifying Exam
+#     exam_foundation_spm = models.BooleanField(default=False)
+#     exam_degree_stpm_uec = models.BooleanField(default=False)
+#     exam_degree_matriculation = models.BooleanField(default=False)
     
-    # Minimum Grades
-    grade_spm = models.BooleanField(default=False)
-    grade_stpm = models.BooleanField(default=False)
-    grade_uec = models.BooleanField(default=False)
-    grade_foundation = models.BooleanField(default=False)
+#     # Minimum Grades
+#     grade_spm = models.BooleanField(default=False)
+#     grade_stpm = models.BooleanField(default=False)
+#     grade_uec = models.BooleanField(default=False)
+#     grade_foundation = models.BooleanField(default=False)
     
-    documents_verified = models.BooleanField(default=False)
+#     documents_verified = models.BooleanField(default=False)
+
+#     def __str__(self):
+#         return f"Eligibility Check for {self.application.name}"
+
+class ApprovedApplication(models.Model):
+    """Stores approved student applications with interview details"""
+    # Link to original application (optional, for reference)
+    original_application = models.ForeignKey(Application, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    # Student Info (copied from ScholarshipApplication)
+    scholarship_name = models.CharField(max_length=200)
+    student_name = models.CharField(max_length=200)
+    ic_no = models.CharField(max_length=20)
+    email_address = models.EmailField()
+    contact_number = models.CharField(max_length=20)
+    programme = models.CharField(max_length=200)
+    
+    # Interview Info (copied from Interview)
+    interview_date = models.DateField()
+    interview_time = models.CharField(max_length=20)
+    interview_timezone = models.CharField(max_length=50)
+    
+    # Approval Info
+    approved_at = models.DateTimeField(auto_now_add=True)
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        db_table = 'approved_applications'
 
     def __str__(self):
-        return f"Eligibility Check for {self.application.name}"
+        return f"{self.student_name} - {self.scholarship_name} (Approved)"

@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .forms import ScholarshipForm
 from .models import Scholarship, Interview, ApprovedApplication
 from student.models import ScholarshipApplication, Guardian
+from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
 
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -20,7 +21,7 @@ from rest_framework.response import Response
 
 from django.db.models import Count
 
-from student.models import Student, Application
+from student.models import Student, Application, Guardian, Interview, ApprovedApplication
 
 
 @csrf_exempt
@@ -78,22 +79,16 @@ def reviewApprove(response):
     return render(response, "committee/reviewApprove.html", {"applications": applications})
 
 def view_application_details(request, id):
-  #  application = get_object_or_404(ScholarshipApplication, pk=id)
     application = get_object_or_404(Application, pk=id)
-
-    context = {
-        'app': application,
-    }
-
-    return render(request, "committee/application_details_review.html",context)
+    return render(request, "committee/application_details_review.html", {'application': application})
 
 def view_family_background(request, id):
-    application = get_object_or_404(ScholarshipApplication, pk=id)
+    application = get_object_or_404(Application, pk=id)
     guardians = application.guardians.all()
     return render(request, "committee/family_background_review.html", {'application': application, 'guardians': guardians})
 
 def schedule_interview(request, id):
-    application = get_object_or_404(ScholarshipApplication, pk=id)
+    application = get_object_or_404(Application, pk=id)
     
     if request.method == "POST":
         date = request.POST.get('date')
@@ -124,7 +119,7 @@ def schedule_interview(request, id):
     return render(request, "committee/schedule_interview.html", {'application': application})
 
 def decision_page(request, id):
-    application = get_object_or_404(ScholarshipApplication, pk=id)
+    application = get_object_or_404(Application, pk=id)
     interview = Interview.objects.filter(application=application).first()
     
     if request.method == "POST":
