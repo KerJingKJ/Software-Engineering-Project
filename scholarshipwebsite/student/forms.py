@@ -71,6 +71,8 @@ from datetime import date
 
 
 class ApplicationForm(forms.ModelForm):
+    #             'supporting_document', 'personal_achievement', 'reason_deserve',
+    #        'ea_form', 'payslip' 
     class Meta:
         model = Application
         fields = [
@@ -78,8 +80,6 @@ class ApplicationForm(forms.ModelForm):
             'ic_no', 'age', 'date_of_birth', 'intake', 'programme',
             'nationality', 'race', 'gender', 'contact_number', 'email_address',
             'highest_qualification', 'passport_photo', 'academic_result',
-            'supporting_document', 'personal_achievement', 'reason_deserve',
-            'ea_form', 'payslip'
         ]
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
