@@ -1,152 +1,200 @@
-{% extends 'student/base.html' %}
-{% load static %}
-
-{% block content %}
+{% extends 'student/base.html' %} {% load static %} {% block content %}
 <div class="form-container">
-    
-    <h1 class="page-title" style="margin-left: 10px;">Scholarship Application Form</h1>
-    <hr class="divider">
-
-    <div class="form-row" style="margin-bottom: 30px;">
-        <label class="form-label">Scholarship Type:</label>
-        <select class="form-input large-select">
-            <option value="">Select Scholarship Type</option>
-            <option value="chancellor">MMU Chancellor's Scholarship</option>
-            <option value="merit">MMU Merit Scholarship</option>
-        </select>
+  <h1 class="page-title" style="margin-left: 10px">
+    Scholarship Application Form
+  </h1>
+  <hr class="divider" />
+  <form
+    action="{% url 'applicationForm' %}"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <div class="form-row" style="margin-bottom: 30px">
+      <label class="form-label">Scholarship Type:</label>
+      <select name="scholarship" class="form-input large-select">
+        <option value="">Select Scholarship Type</option>
+        <option value="chancellor">MMU Chancellor's Scholarship</option>
+        <option value="merit">MMU Merit Scholarship</option>
+      </select>
     </div>
 
     <div class="tabs-wrapper">
-        <div class="tab active">Part 1: Personal Information</div>
-        <div class="tab">Part 2</div>
-        <div class="tab">Part 3</div>
-        <div class="tab">Part 4</div>
+      <div class="tab active">Part 1: Personal Information</div>
+      <div class="tab">Part 2</div>
+      <div class="tab">Part 3</div>
+      <div class="tab">Part 4</div>
     </div>
 
     <div class="form-content">
-        <form action="{% url 'applicationForm' %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            
-            <div class="form-row">
-                <label>Name:</label>
-                <input type="text" class="form-input" placeholder="Enter your name" required>
-            </div>
+      {% csrf_token %}
 
-            <div class="form-row">
-                <label>Home Address:</label>
-                <textarea class="form-input" rows="3" required></textarea>
-            </div>
+      <div class="form-row">
+        <label>Name:</label>
+        <input
+          name="name"
+          type="text"
+          class="form-input"
+          placeholder="Enter your name"
+          required
+        />
+      </div>
 
-            <div class="form-row">
-                <label>Correspondence Address:</label>
-                <textarea class="form-input" rows="3"></textarea>
-            </div>
+      <div class="form-row">
+        <label>Home Address:</label>
+        <textarea
+          name="home_address"
+          class="form-input"
+          rows="3"
+          required
+        ></textarea>
+      </div>
 
-            <div class="form-row">
-                <label>IC No.:</label>
-                <input type="text" class="form-input" placeholder="Example: 001122143344" required>
-            </div>
+      <div class="form-row">
+        <label>Correspondence Address:</label>
+        <textarea
+          name="correspondence_address"
+          class="form-input"
+          rows="3"
+        ></textarea>
+      </div>
 
-            <div class="form-row">
-                <label>Age:</label>
-                <input type="number" class="form-input small-input" required>
-            </div>
+      <div class="form-row">
+        <label>IC No.:</label>
+        <input
+          name="ic_no"
+          type="text"
+          class="form-input"
+          placeholder="Example: 001122143344"
+          required
+        />
+      </div>
 
-            <div class="form-row">
-                <label>Date of Birth:</label>
-                <div class="date-inputs">
-                    <input type="text" placeholder="DD" required>
-                    <input type="text" placeholder="MM" required>
-                    <input type="text" placeholder="YYYY" required>
-                </div>
-            </div>
+      <div class="form-row">
+        <label>Age:</label>
+        <input
+          name="age"
+          type="number"
+          class="form-input small-input"
+          required
+        />
+      </div>
+      {% comment %}
+      <div class="form-row">
+        <label>Date of Birth:</label>
+        <div class="date-inputs">
+          <input type="text" placeholder="DD" required />
+          <input type="text" placeholder="MM" required />
+          <input type="text" placeholder="YYYY" required />
+        </div>
+      </div>
 
-            <div class="form-row">
-                <label>Intake:</label>
-                <div class="date-inputs">
-                    <input type="text" placeholder="DD" required>
-                    <input type="text" placeholder="MM" required>
-                    <input type="text" placeholder="YYYY" required>
-                </div>
-            </div>
+      <div class="form-row">
+        <label>Intake:</label>
+        <div class="date-inputs">
+          <input type="text" placeholder="DD" required />
+          <input type="text" placeholder="MM" required />
+          <input type="text" placeholder="YYYY" required />
+        </div>
+      </div>
+      {% endcomment %}
+      <div class="form-row">
+        <label>Date of Birth:</label>
+        <input type="date" name="date_of_birth" class="form-input" required />
+      </div>
 
-            <div class="form-row">
-                <label>Programme:</label>
-                <input type="text" class="form-input" placeholder="Enter your programme" required>
-            </div>
+      <div class="form-row">
+        <label>Intake:</label>
+        <input type="date" name="intake" class="form-input" required />
+      </div>
 
-            <div class="form-row">
-                <label>Nationality:</label>
-                <select class="form-input small-select" required>
-                    <option></option>
-                    <option>Malaysian</option>
-                    <option>Non-Malaysian</option>
-                </select>
-            </div>
+      <div class="form-row">
+        <label>Programme:</label>
+        <input
+          name="programme"
+          type="text"
+          class="form-input"
+          placeholder="Enter your programme"
+          required
+        />
+      </div>
 
-            <div class="form-row">
-                <label>Race:</label>
-                <select class="form-input small-select" required>
-                    <option></option>
-                    <option>Malay</option>
-                    <option>Chinese</option>
-                    <option>Indian</option>
-                    <option>Other</option>
-                </select>
-            </div>
+      <div class="form-row">
+        <label>Nationality:</label>
+        <select name="nationality" class="form-input small-select" required>
+          <option></option>
+          <option>Malaysian</option>
+          <option>Non-Malaysian</option>
+        </select>
+      </div>
 
-             <div class="form-row">
-                <label>Gender:</label>
-                <select class="form-input small-select" required>
-                    <option></option>
-                    <option>Male</option>
-                    <option>Female</option>
-                </select>
-            </div>
+      <div class="form-row">
+        <label>Race:</label>
+        <select name="race" class="form-input small-select" required>
+          <option></option>
+          <option>Malay</option>
+          <option>Chinese</option>
+          <option>Indian</option>
+          <option>Other</option>
+        </select>
+      </div>
 
-            <div class="form-row">
-                <label>Contact number(Mobile):</label>
-                <input type="text" class="form-input" placeholder="Example: 60123456789" required>
-            </div>
+      <div class="form-row">
+        <label>Gender:</label>
+        <select name="gender" class="form-input small-select" required>
+          <option></option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+      </div>
 
-            <div class="form-row">
-                <label>Household (Monthly Income): RM</label>
-                <input type="number" class="form-input medium-input" required>
-            </div>
+      <div class="form-row">
+        <label>Contact number(Mobile):</label>
+        <input
+          name="contact_number"
+          type="text"
+          class="form-input"
+          placeholder="Example: 60123456789"
+          required
+        />
+      </div>
 
-            <div class="form-row">
-                <label>Email Address:</label>
-                <input type="email" class="form-input" required>
-            </div>
+      <div class="form-row">
+        <label>Household (Monthly Income): RM</label>
+        <input type="number" class="form-input medium-input" required />
+      </div>
 
-            <div class="form-row">
-                <label>Upload your Passport Photo:</label>
-                <input type="file" class="file-input" required>
-            </div>
+      <div class="form-row">
+        <label>Email Address:</label>
+        <input name="email_address" type="email" class="form-input" required />
+      </div>
 
-            <div class="form-row align-top">
-                <label>Highest Qualification:</label>
-                <div class="stacked-inputs">
-                    <select class="form-input" required>
-                        <option>Select Qualification</option>
-                        <option>STPM</option>
-                        <option>Foundation</option>
-                    </select>
-                    <label class="sub-label">If other, please specify:</label>
-                    <input type="text" class="form-input">
-                </div>
-            </div>
+      <div class="form-row">
+        <label>Upload your Passport Photo:</label>
+        <input name="passport_photo" type="file" class="file-input" required />
+      </div>
 
-            <div class="form-row">
-                <label>Academic Result:</label>
-                <input type="file" class="file-input" required>
-            </div>
+      <div class="form-row align-top">
+        <label>Highest Qualification:</label>
+        <div class="stacked-inputs">
+          <select name="highest_qualification" class="form-input" required>
+            <option>Select Qualification</option>
+            <option>STPM</option>
+            <option>Foundation</option>
+          </select>
+          <label class="sub-label">If other, please specify:</label>
+          <input type="text" class="form-input" />
+        </div>
+      </div>
 
-            <div class="button-container">
-                <button type="submit" class="btn-next">Next</button>
-            </div>
+      <div class="form-row">
+        <label>Academic Result:</label>
+        <input name="academic_result" type="file" class="file-input" required />
+      </div>
 
-        </form>
+      <div class="button-container">
+        <button type="submit" class="btn-next">Next</button>
+      </div>
     </div>
+  </form>
 </div>
 {% endblock %}

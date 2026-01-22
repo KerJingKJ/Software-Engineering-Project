@@ -24,10 +24,12 @@ def eligibility(request):
 
 def application_form(request):
     if request.method == "POST":
-        form = ApplicationForm(request.POST)
+        form = ApplicationForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect("applicationForm_p2")
+        else:
+            print(form.errors)
     else:
         form = ApplicationForm()
 

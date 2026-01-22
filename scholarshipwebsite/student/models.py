@@ -101,7 +101,9 @@ class Application(models.Model):
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     
-    scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
+    # TODO implement this properly when scholarships are saving and displayed
+    # scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
+    scholarship = models.CharField(max_length=200)
     name = models.CharField(max_length=200)
     home_address = models.TextField()
     correspondence_address = models.TextField()
@@ -115,7 +117,8 @@ class Application(models.Model):
     RACE_CHOICES = [
         ('Malay', 'Malay'),
         ('Chinese', 'Chinese'),
-        ('India', 'India'),
+        ('Indian', 'Indian'),
+        ('Other', 'Other'),
     ]
     race = models.CharField(max_length=20, choices=RACE_CHOICES)
     
@@ -134,8 +137,8 @@ class Application(models.Model):
     academic_result = models.FileField(upload_to='academic_results/', null=True, blank=True)
     supporting_document = models.FileField(upload_to='supporting_docs/', null=True, blank=True)
     
-    personal_achievement = models.TextField()
-    reason_deserve = models.TextField()
+    personal_achievement = models.TextField(null=True, blank=True)
+    reason_deserve = models.TextField(null=True, blank=True)
     
     # These were requested in the second page but seem to belong to the application generally or maybe specific to guardians?
     # The prompt says "upload两个file一个是ea form和latest 3 months payslip" on the second page (family background).
