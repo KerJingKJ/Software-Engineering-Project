@@ -3,6 +3,7 @@ from django.contrib import admin
 from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
 from .models import Scholarship, Interview, ApprovedApplication
 from student.models import ScholarshipApplication, Guardian
+from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
 from .forms import ScholarshipForm
 
 

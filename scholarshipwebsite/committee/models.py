@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-
-
+from student.models import ScholarshipApplication, Guardian
+# Create your models here.
 class Scholarship(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
@@ -24,7 +24,6 @@ class Scholarship(models.Model):
         return self.name
 
 
-<<<<<<< HEAD
 # class ScholarshipApplication(models.Model):
 #     STATUS_CHOICES = [
 #         ('Pending', 'Pending'),
@@ -112,10 +111,7 @@ class Scholarship(models.Model):
 #     def __str__(self):
 #         return f"{self.name} ({self.relationship}) - {self.application.name}"
 # Import ScholarshipApplication and Guardian from student models
-=======
 
->>>>>>> f20e903 (feat: Implement initial core features for the scholarship website, including user authentication, student profiles, and committee/reviewer modules.)
-from student.models import ScholarshipApplication, Guardian
 
 
 # class Interview(models.Model):
@@ -137,7 +133,6 @@ class Interview(models.Model):
 #     def __str__(self):
 #         return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"
 
-<<<<<<< HEAD
 # class ApprovedApplication(models.Model):
 #     """Stores approved student applications with interview details"""
 #     # Link to original application (optional, for reference)
@@ -159,9 +154,8 @@ class Interview(models.Model):
 #     # Approval Info
 #     approved_at = models.DateTimeField(auto_now_add=True)
 #     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-=======
 class ApprovedApplication(models.Model):
-    
+    """Stores approved student applications with interview details"""
     original_application = models.ForeignKey(ScholarshipApplication, on_delete=models.SET_NULL, null=True, blank=True)
     
     scholarship_name = models.CharField(max_length=200)
@@ -177,7 +171,6 @@ class ApprovedApplication(models.Model):
     
     approved_at = models.DateTimeField(auto_now_add=True)
     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
->>>>>>> 177ef81 (feat: Implement reviewer eligibility checks with leadership and competition fields, add guardian details to scholarship applications, and include test data generation.)
 
 #     class Meta:
 #         db_table = 'approved_applications'
