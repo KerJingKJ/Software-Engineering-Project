@@ -14,5 +14,5 @@ urlpatterns = [
     path("applicationForm_p4/", views.application_form_p4, name="applicationForm_p4"),
     path("applicationForm_status/", views.application_form_status, name="applicationForm_status"),
     path("trackApplication/", views.track, name="trackApplication")
-
+    
 ]
