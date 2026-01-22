@@ -235,9 +235,9 @@ class Application(models.Model):
     highest_qualification = models.CharField(max_length=200)
     
     # Uploads
-    passport_photo = models.ImageField(upload_to='passport_photos/')
-    academic_result = models.FileField(upload_to='academic_results/')
-    supporting_document = models.FileField(upload_to='supporting_docs/')
+    passport_photo = models.ImageField(upload_to='passport_photos/', null=True, blank=True)
+    academic_result = models.FileField(upload_to='academic_results/', null=True, blank=True)
+    supporting_document = models.FileField(upload_to='supporting_docs/', null=True, blank=True)
     
     personal_achievement = models.TextField()
     reason_deserve = models.TextField()
@@ -250,11 +250,11 @@ class Application(models.Model):
     # I will put them on the Application model as requested by the structure "second page is family background... and need upload two files".
     # If it was per guardian, it would be in Guardian model. But usually it's attached to the application overall as "documents".
     # However, since they are financial docs, putting them on Application makes sense for "Family" proof.
-    ea_form = models.FileField(upload_to='ea_forms/')
-    payslip = models.FileField(upload_to='payslips/')
+    ea_form = models.FileField(upload_to='ea_forms/',null=True, blank=True)
+    payslip = models.FileField(upload_to='payslips/',null=True, blank=True)
 
     class Meta:
-        db_table = 'student_scholarship_application'
+        db_table = 'student_application'
 
     def __str__(self):
         return f"{self.name} - {self.scholarship.name}"
