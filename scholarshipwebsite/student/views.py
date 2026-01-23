@@ -63,8 +63,6 @@ def edit_application_form(request, id=-1, page=-1):
         if form.is_valid():
             form.save()
             return redirect("edit_application_form", id=id, page=(page+1))
-        else:
-            print(form.errors)
     else:
         form = ApplicationForm(instance=application)
 
