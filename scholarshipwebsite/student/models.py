@@ -1,8 +1,8 @@
-
+# models.py
 from django.db import models
 from django.utils import timezone
+from committee.models import Scholarship
 from django.contrib.auth.models import User
-
 
 class Student(models.Model):
     STUDENT_TYPE_CHOICES = [
@@ -20,32 +20,43 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student')
 
     current_gpa = models.FloatField(
-        help_text="Current Grade Point Average"
+        help_text="Current Grade Point Average",
+        null=True,
+        blank=True,
     )
 
     course = models.CharField(
         max_length=50,
+        null=True,
+        blank=True,
         help_text="Name of the enrolled course"
     )
 
     year_of_study = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
         help_text="Current year of study"
     )
 
     student_type = models.CharField(
         max_length=50,
         choices=STUDENT_TYPE_CHOICES,
+        null=True,
+        blank=True,
         help_text="Student types, either international student or local"
     )
 
     education_level = models.CharField(
         max_length=50,
         choices=EDUCATION_LEVEL_CHOICES,
+        null=True,
+        blank=True,
         help_text="Level of education: foundation, diploma, undergraduate or postgraduate"
     )
 
     extracurricular_activities = models.TextField(
         max_length=200,
+        null=True,
         blank=True,
         help_text="List of extracurricular activities"
     )
@@ -53,110 +64,6 @@ class Student(models.Model):
     def __str__(self):
         return f"Student {self.user.username}"
 
-
-from committee.models import Scholarship
-
-
-class ScholarshipApplication(models.Model):
-    STATUS_CHOICES = [
-        ('Pending', 'Pending'),
-        ('Approved', 'Approved'),
-        ('Rejected', 'Rejected'),
-    ]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-    
-    scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    home_address = models.TextField()
-    correspondence_address = models.TextField()
-    ic_no = models.CharField(max_length=20)
-    age = models.IntegerField()
-    date_of_birth = models.DateField()
-    intake = models.DateField()
-    programme = models.CharField(max_length=200)
-    nationality = models.CharField(max_length=100)
-    
-    RACE_CHOICES = [
-        ('Malay', 'Malay'),
-        ('Chinese', 'Chinese'),
-        ('India', 'India'),
-    ]
-    race = models.CharField(max_length=20, choices=RACE_CHOICES)
-    
-    GENDER_CHOICES = [
-        ('Female', 'Female'),
-        ('Male', 'Male'),
-    ]
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    
-    contact_number = models.CharField(max_length=20)
-    email_address = models.EmailField()
-    highest_qualification = models.CharField(max_length=200)
-    
-    
-    passport_photo = models.ImageField(upload_to='passport_photos/')
-    academic_result = models.FileField(upload_to='academic_results/')
-    supporting_document = models.FileField(upload_to='supporting_docs/')
-    
-    personal_achievement = models.TextField()
-    reason_deserve = models.TextField()
-    
-    ea_form = models.FileField(upload_to='ea_forms/')
-    payslip = models.FileField(upload_to='payslips/')
-    
-    submitted_date = models.DateField(default=timezone.now)
-
-    class Meta:
-        db_table = 'student_scholarship_application'
-
-    def __str__(self):
-        return f"{self.name} - {self.scholarship.name}"
-
-
-class Guardian(models.Model):
-    application = models.ForeignKey(ScholarshipApplication, on_delete=models.CASCADE, related_name='guardians')
-    relationship = models.CharField(max_length=100)
-    name = models.CharField(max_length=200)
-    ic_no = models.CharField(max_length=20)
-    date_of_birth = models.DateField()
-    age = models.IntegerField()
-    nationality = models.CharField(max_length=100)
-    
-    GENDER_CHOICES = [
-        ('Female', 'Female'),
-        ('Male', 'Male'),
-    ]
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    
-    address = models.TextField()
-    contact_number = models.CharField(max_length=20)
-    email_address = models.EmailField()
-    monthly_income = models.DecimalField(max_digits=12, decimal_places=2)
-
-    class Meta:
-        db_table = 'student_guardian'
-
-    def __str__(self):
-        return f"{self.name} ({self.relationship}) - {self.application.name}"
-
-
-class Application(models.Model):
-    scholarship = models.ForeignKey(
-        Scholarship,
-        on_delete=models.CASCADE,
-        related_name="applications"
-    )
-
-    student = models.ForeignKey(
-        Student,
-        on_delete=models.CASCADE,
-        related_name="applications"
-    )
-    
-    submitted_date = models.DateField(
-        default=timezone.now,
-        help_text="Date when the application was submitted" 
-    )
 
 # class Application(models.Model):
 #     scholarship = models.ForeignKey(
@@ -176,7 +83,6 @@ class Application(models.Model):
 #         default=timezone.now,  # Auto-set to current date
 #         help_text="Date when the application was submitted" 
 #     )
-
     
 #     status = models.CharField(
 #         max_length=50,
@@ -197,8 +103,14 @@ class Application(models.Model):
 #         return f"Application {self.id} - {self.status}"
 
 
+    # student_ID = models.CharField(
+    #     max_length=50,
+    #     help_text="Name of the enrolled course"
+    # )
+
 # by hui yee from committe models
 class Application(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
@@ -206,9 +118,7 @@ class Application(models.Model):
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     
-    # TODO implement this properly when scholarships are saving and displayed
-    # scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
-    scholarship = models.CharField(max_length=200)
+    scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     home_address = models.TextField()
     correspondence_address = models.TextField()
@@ -217,7 +127,9 @@ class Application(models.Model):
     date_of_birth = models.DateField()
     intake = models.DateField()
     programme = models.CharField(max_length=200)
-    nationality = models.CharField(max_length=100)
+    NATIONALITY_CHOICES = [('International Student', 'International Student'),
+        ('Local', 'Local')]
+    nationality = models.CharField(max_length=100, choices=NATIONALITY_CHOICES)
     
     RACE_CHOICES = [
         ('Malay', 'Malay'),
@@ -234,8 +146,15 @@ class Application(models.Model):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     
     contact_number = models.CharField(max_length=20)
+    monthly_income = models.DecimalField(max_digits=12, decimal_places=2)
     email_address = models.EmailField()
-    highest_qualification = models.CharField(max_length=200)
+    QUALIFICATION_CHOICES = choices=[
+        ('Foundation', 'Foundation'),
+        ('Undergraduate', 'Undergraduate'),
+        ('Diploma', 'Diploma'),
+        ('Postgraduate', 'Postgraduate')
+    ]
+    education_level = models.CharField(max_length=200, choices=QUALIFICATION_CHOICES)
     
     # Uploads
     passport_photo = models.ImageField(upload_to='passport_photos/', null=True, blank=True)
@@ -244,15 +163,6 @@ class Application(models.Model):
     
     personal_achievement = models.TextField(null=True, blank=True)
     reason_deserve = models.TextField(null=True, blank=True)
-    
-    # These were requested in the second page but seem to belong to the application generally or maybe specific to guardians?
-    # The prompt says "upload两个file一个是ea form和latest 3 months payslip" on the second page (family background).
-    # Since there are two guardians, but usually EA form/payslip is per household or per guardian? 
-    # The prompt says "upload two files... on the second page is family background". 
-    # Usually these documents are proof of income for the parents/guardians.
-    # I will put them on the Application model as requested by the structure "second page is family background... and need upload two files".
-    # If it was per guardian, it would be in Guardian model. But usually it's attached to the application overall as "documents".
-    # However, since they are financial docs, putting them on Application makes sense for "Family" proof.
     ea_form = models.FileField(upload_to='ea_forms/',null=True, blank=True)
     payslip = models.FileField(upload_to='payslips/',null=True, blank=True)
 
@@ -281,7 +191,6 @@ class Guardian(models.Model):
     address = models.TextField()
     contact_number = models.CharField(max_length=20)
     email_address = models.EmailField()
-    monthly_income = models.DecimalField(max_digits=12, decimal_places=2)
 
     class Meta:
         db_table = 'student_guardian'
@@ -301,7 +210,6 @@ class Interview(models.Model):
     def __str__(self):
         return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"
 
-
 # by hui yee from committe models
 class Bookmark(models.Model):
     scholarship = models.ForeignKey(
@@ -317,7 +225,7 @@ class Bookmark(models.Model):
     )
     
     date_added = models.DateField(
-        default=timezone.now,
+        default=timezone.now,  # Auto-set to current date
         help_text="Date when the bookmark was added" 
     )
 

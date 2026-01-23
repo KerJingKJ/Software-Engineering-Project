@@ -1,12 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-
-
-from .models import Application
+from .models import Application, Student
 from committee.models import Scholarship
 from .forms import ApplicationForm
-
-
+# Create your views here.
+# views.py
 
 def index(request):
     return render(request, "student/student.html", {})
@@ -35,10 +33,20 @@ def application_form(request):
 
     if request.method == "POST":
         form = ApplicationForm(request.POST, request.FILES)
+
         if form.is_valid():
-            application = form.save()
-            application_id = application.pk
-            return redirect("edit_application_form", id=application_id, page=2)
+            application = form.save(commit=False)
+            try:
+                application.student = request.user.student
+            except Student.DoesNotExist:
+                form.add_error(None, "Student profile not found.")
+                return render(
+                    request,
+                    "student/applicationForm.html",
+                    {"form": form, "scholarships": scholarships},
+                )
+            application.save()
+            return redirect("edit_application_form", id=application.pk, page=2)
         else:
             print(form.errors)
     else:
@@ -90,4 +98,4 @@ def edit_application_form(request, id=-1, page=-1):
 def trackApplication(request):
     return render(request, "student/trackApplication.html", {})
 
-
+# Create your views here.
