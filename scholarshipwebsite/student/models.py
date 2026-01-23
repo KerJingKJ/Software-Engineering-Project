@@ -206,9 +206,7 @@ class Application(models.Model):
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     
-    # TODO implement this properly when scholarships are saving and displayed
-    # scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
-    scholarship = models.CharField(max_length=200)
+    scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     home_address = models.TextField()
     correspondence_address = models.TextField()
@@ -217,7 +215,9 @@ class Application(models.Model):
     date_of_birth = models.DateField()
     intake = models.DateField()
     programme = models.CharField(max_length=200)
-    nationality = models.CharField(max_length=100)
+    NATIONALITY_CHOICES = [('International Student', 'International Student'),
+        ('Local', 'Local')]
+    nationality = models.CharField(max_length=100, choices=NATIONALITY_CHOICES)
     
     RACE_CHOICES = [
         ('Malay', 'Malay'),
@@ -234,8 +234,15 @@ class Application(models.Model):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     
     contact_number = models.CharField(max_length=20)
+    monthly_income = models.DecimalField(max_digits=12, decimal_places=2)
     email_address = models.EmailField()
-    highest_qualification = models.CharField(max_length=200)
+    QUALIFICATION_CHOICES = choices=[
+        ('Foundation', 'Foundation'),
+        ('Undergraduate', 'Undergraduate'),
+        ('Diploma', 'Diploma'),
+        ('Postgraduate', 'Postgraduate')
+    ]
+    education_level = models.CharField(max_length=200, choices=QUALIFICATION_CHOICES)
     
     # Uploads
     passport_photo = models.ImageField(upload_to='passport_photos/', null=True, blank=True)
@@ -281,7 +288,6 @@ class Guardian(models.Model):
     address = models.TextField()
     contact_number = models.CharField(max_length=20)
     email_address = models.EmailField()
-    monthly_income = models.DecimalField(max_digits=12, decimal_places=2)
 
     class Meta:
         db_table = 'student_guardian'
