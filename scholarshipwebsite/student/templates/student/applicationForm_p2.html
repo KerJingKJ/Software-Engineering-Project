@@ -30,10 +30,10 @@
       </div>
 
       <div class="button-group-center">
-        <a href="{% url 'applicationForm'  %}" class="btn-back">Back</a>
+        <a href="{% url 'edit_application_form' form.instance.pk 1 %}" class="btn-back">Back</a>
 
         <a
-          href="{% url 'applicationForm_p3'  %}"
+          href="{% url 'edit_application_form' form.instance.pk 3 %}"
           style="text-decoration: none"
           class="btn-next"
           >Next</a
