@@ -84,27 +84,27 @@ class ApplicationForm(forms.ModelForm):
         widgets = {
             'scholarship': forms.Select(attrs={
                 'class': 'form-input large-select',
-                'required': True,
+                
             }),
             'name': forms.TextInput(attrs={
                 'class': 'form-input',
                 'placeholder': 'Enter your name',
-                'required': True,
+                
             }),
             'home_address': forms.Textarea(attrs={
                 'class': 'form-input',
                 'rows': 3,
-                'required': True,
+                
             }),
             'correspondence_address': forms.Textarea(attrs={
                 'class': 'form-input',
                 'rows': 3,
-                'required': True,
+                
             }),
             'ic_no': forms.TextInput(attrs={
                 'class': 'form-input',
                 'placeholder': 'Example: 001122143344',
-                'required': True,
+                
             }),
             'age': forms.NumberInput(attrs={
                 'class': 'form-input small-input',
@@ -112,59 +112,64 @@ class ApplicationForm(forms.ModelForm):
             'date_of_birth': forms.DateInput(attrs={
                 'class': 'form-input',
                 'type': 'date',
-                'required': True,
+                
             }),
             'intake': forms.DateInput(attrs={
                 'class': 'form-input',
                 'type': 'date',
-                'required': True,
+                
             }),
             'programme': forms.TextInput(attrs={
                 'class': 'form-input',
                 'placeholder': 'Enter your programme',
-                'required': True,
+                
             }),
             'nationality': forms.Select(attrs={
                 'class': 'form-input small-select',
-                'required': True,
+                
             }),
             'race': forms.Select(attrs={
                 'class': 'form-input small-select',
-                'required': True,
+                
             }),
             'gender': forms.Select(attrs={
                 'class': 'form-input small-select',
-                'required': True,
+                
             }),
             'contact_number': forms.TextInput(attrs={
                 'class': 'form-input',
                 'placeholder': 'Example: 60123456789',
-                'required': True,
+                
             }),
             'email_address': forms.EmailInput(attrs={
                 'class': 'form-input',
-                'required': True,
+                
             }),
             'monthly_income': forms.NumberInput(attrs={
                 'class': 'form-input medium-input',
-                'required': True,
+                
             }),
             'passport_photo': forms.FileInput(attrs={
                 'class': 'file-input',
-                'required': True,
+                
             }),
             'education_level': forms.Select(attrs={
                 'class': 'form-input',
-                'required': True,
+                
             }),
             'academic_result': forms.FileInput(attrs={
                 'class': 'file-input',
-                'required': True,
+                
             }),
         }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+            
+        # Add HTML5 required attribute to required fields
+        for field_name, field in self.fields.items():
+            if field.required:
+                field.widget.attrs['required'] = 'required'
         
         # Make status hidden for new applications (students shouldn't set this)
         if not self.instance.pk:

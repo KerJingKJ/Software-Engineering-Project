@@ -5,9 +5,9 @@
   </h1>
 
   <div class="tabs-wrapper">
-    <a href="{% url 'applicationForm' form.instance.pk 1 %}" class="tab">Part 1</a>
-    <a href="{% url 'applicationForm_p2' form.instance.pk 2 %}" class="tab">Part 2</a>
-    <a href="{% url 'applicationForm_p3' form.instance.pk 3   %}" class="tab">Part 3</a>
+    <a href="{% url 'edit_application_form' form.instance.pk 1 %}" class="tab">Part 1</a>
+    <a href="{% url 'edit_application_form' form.instance.pk 2 %}" class="tab">Part 2</a>
+    <a href="{% url 'edit_application_form' form.instance.pk 3   %}" class="tab">Part 3</a>
     <a href="#" class="tab active">Part 4: Your opinion</a>
   </div>
 
@@ -31,7 +31,7 @@
       </div>
 
       <div class="button-group-center">
-        <a href="{% url 'applicationForm_p3' %}" class="btn-back">Back</a>
+        <a href="{% url 'edit_application_form' form.instance.pk 3 %}" class="btn-back">Back</a>
         <button type="submit" class="btn-next">Submit</button>
       </div>
     </form>
