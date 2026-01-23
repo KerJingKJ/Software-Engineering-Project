@@ -78,16 +78,89 @@ class ApplicationForm(forms.ModelForm):
         fields = [
             'scholarship', 'name', 'home_address', 'correspondence_address',
             'ic_no', 'age', 'date_of_birth', 'intake', 'programme',
-            'nationality', 'race', 'gender', 'contact_number', 'email_address',
-            'highest_qualification', 'passport_photo', 'academic_result',
+            'nationality', 'race', 'gender', 'contact_number', 'email_address','monthly_income',
+            'education_level', 'passport_photo', 'academic_result',
         ]
         widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
-            'intake': forms.DateInput(attrs={'type': 'date'}),
-            'home_address': forms.Textarea(attrs={'rows': 3}),
-            'correspondence_address': forms.Textarea(attrs={'rows': 3}),
-            'personal_achievement': forms.Textarea(attrs={'rows': 4}),
-            'reason_deserve': forms.Textarea(attrs={'rows': 4}),
+            'scholarship': forms.Select(attrs={
+                'class': 'form-input large-select',
+                'required': True,
+            }),
+            'name': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Enter your name',
+                'required': True,
+            }),
+            'home_address': forms.Textarea(attrs={
+                'class': 'form-input',
+                'rows': 3,
+                'required': True,
+            }),
+            'correspondence_address': forms.Textarea(attrs={
+                'class': 'form-input',
+                'rows': 3,
+                'required': True,
+            }),
+            'ic_no': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Example: 001122143344',
+                'required': True,
+            }),
+            'age': forms.NumberInput(attrs={
+                'class': 'form-input small-input',
+            }),
+            'date_of_birth': forms.DateInput(attrs={
+                'class': 'form-input',
+                'type': 'date',
+                'required': True,
+            }),
+            'intake': forms.DateInput(attrs={
+                'class': 'form-input',
+                'type': 'date',
+                'required': True,
+            }),
+            'programme': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Enter your programme',
+                'required': True,
+            }),
+            'nationality': forms.Select(attrs={
+                'class': 'form-input small-select',
+                'required': True,
+            }),
+            'race': forms.Select(attrs={
+                'class': 'form-input small-select',
+                'required': True,
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'form-input small-select',
+                'required': True,
+            }),
+            'contact_number': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Example: 60123456789',
+                'required': True,
+            }),
+            'email_address': forms.EmailInput(attrs={
+                'class': 'form-input',
+                'required': True,
+            }),
+            'monthly_income': forms.NumberInput(attrs={
+                'class': 'form-input medium-input',
+                'required': True,
+            }),
+            'passport_photo': forms.FileInput(attrs={
+                'class': 'file-input',
+                'required': True,
+            }),
+            'education_level': forms.Select(attrs={
+                'class': 'form-input',
+                'required': True,
+            }),
+            'academic_result': forms.FileInput(attrs={
+                'class': 'file-input',
+                'required': True,
+            }),
         }
     
     def __init__(self, *args, **kwargs):
@@ -98,6 +171,10 @@ class ApplicationForm(forms.ModelForm):
             # Exclude status field entirely for new applications
             if 'status' in self.fields:
                 del self.fields['status']
+        
+        # Disable scholarship field if already selected
+        if self.instance.pk and self.instance.scholarship:
+            self.fields['scholarship'].disabled = True
     
     def clean_date_of_birth(self):
         dob = self.cleaned_data.get('date_of_birth')
@@ -107,8 +184,8 @@ class ApplicationForm(forms.ModelForm):
     
     def clean_intake(self):
         intake = self.cleaned_data.get('intake')
-        if intake and intake < date.today():
-            raise forms.ValidationError("Intake date cannot be in the past.")
+        if intake and intake > date.today():
+            raise forms.ValidationError("Intake date cannot be in the future.")
         return intake
     
     def clean_age(self):
