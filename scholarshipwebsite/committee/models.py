@@ -24,14 +24,14 @@ class Scholarship(models.Model):
         return self.name
 
 
-# Import ScholarshipApplication and Guardian from student models
+# Import from student.models after Scholarship is defined
 from student.models import ScholarshipApplication, Guardian
 
 
 class Interview(models.Model):
     application = models.ForeignKey(ScholarshipApplication, on_delete=models.CASCADE, related_name='interviews')
     date = models.DateField()
-    interview_time = models.CharField(max_length=20, default='12:00 PM')  # e.g., "9:00 AM", "10:00 AM"
+    interview_time = models.CharField(max_length=20, default='12:00 PM')
     timezone = models.CharField(max_length=50)
     reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -40,10 +40,8 @@ class Interview(models.Model):
 
 class ApprovedApplication(models.Model):
     """Stores approved student applications with interview details"""
-    # Link to original application (optional, for reference)
     original_application = models.ForeignKey(ScholarshipApplication, on_delete=models.SET_NULL, null=True, blank=True)
     
-    # Student Info (copied from ScholarshipApplication)
     scholarship_name = models.CharField(max_length=200)
     student_name = models.CharField(max_length=200)
     ic_no = models.CharField(max_length=20)
@@ -51,12 +49,10 @@ class ApprovedApplication(models.Model):
     contact_number = models.CharField(max_length=20)
     programme = models.CharField(max_length=200)
     
-    # Interview Info (copied from Interview)
     interview_date = models.DateField()
     interview_time = models.CharField(max_length=20)
     interview_timezone = models.CharField(max_length=50)
     
-    # Approval Info
     approved_at = models.DateTimeField(auto_now_add=True)
     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 

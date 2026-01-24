@@ -1,8 +1,8 @@
 # models.py
 from django.db import models
 from django.utils import timezone
-from committee.models import Scholarship
 from django.contrib.auth.models import User
+
 
 class Student(models.Model):
     STUDENT_TYPE_CHOICES = [
@@ -54,7 +54,10 @@ class Student(models.Model):
         return f"Student {self.user.username}"
 
 
-# Moved from committee/models.py
+# Import Scholarship from committee - this import is placed here to avoid circular import
+from committee.models import Scholarship
+
+
 class ScholarshipApplication(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -109,7 +112,6 @@ class ScholarshipApplication(models.Model):
         return f"{self.name} - {self.scholarship.name}"
 
 
-# Moved from committee/models.py
 class Guardian(models.Model):
     application = models.ForeignKey(ScholarshipApplication, on_delete=models.CASCADE, related_name='guardians')
     relationship = models.CharField(max_length=100)
@@ -144,7 +146,6 @@ class Application(models.Model):
         related_name="applications"
     )
 
-    
     student = models.ForeignKey(
         Student,
         on_delete=models.CASCADE,
@@ -152,7 +153,7 @@ class Application(models.Model):
     )
     
     submitted_date = models.DateField(
-        default=timezone.now,  # Auto-set to current date
+        default=timezone.now,
         help_text="Date when the application was submitted" 
     )
     
@@ -174,6 +175,7 @@ class Application(models.Model):
     def __str__(self):
         return f"Application {self.id} - {self.status}"
 
+
 class Bookmark(models.Model):
     scholarship = models.ForeignKey(
         Scholarship,
@@ -188,7 +190,7 @@ class Bookmark(models.Model):
     )
     
     date_added = models.DateField(
-        default=timezone.now,  # Auto-set to current date
+        default=timezone.now,
         help_text="Date when the bookmark was added" 
     )
 
