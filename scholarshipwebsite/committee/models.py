@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 # Create your models here.
 class Scholarship(models.Model):
     name = models.CharField(max_length=200)
@@ -21,7 +23,6 @@ class Scholarship(models.Model):
     def __str__(self):
         return self.name
 
-from django.contrib.auth.models import User
 
 # class ScholarshipApplication(models.Model):
 #     STATUS_CHOICES = [
@@ -109,6 +110,9 @@ from django.contrib.auth.models import User
 
 #     def __str__(self):
 #         return f"{self.name} ({self.relationship}) - {self.application.name}"
+# Import ScholarshipApplication and Guardian from student models
+from student.models import ScholarshipApplication, Guardian
+
 
 # class Interview(models.Model):
 #     application = models.ForeignKey(ScholarshipApplication, on_delete=models.CASCADE, related_name='interviews')

@@ -1,7 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import ScholarshipForm
+<<<<<<< HEAD
 from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
+=======
+from .models import Scholarship, Interview, ApprovedApplication
+from student.models import ScholarshipApplication, Guardian
+>>>>>>> 9f86f0b (change model for applicationscholarship and guardian)
 
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required

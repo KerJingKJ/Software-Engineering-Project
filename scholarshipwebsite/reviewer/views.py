@@ -11,6 +11,7 @@ from student.models import Student, Application
 
 # from committee.models import ScholarshipApplication
 from student.models import Application
+from student.models import Student, Application, ScholarshipApplication
 from .models import EligibilityCheck
 
 def review(response, app_id=None):
