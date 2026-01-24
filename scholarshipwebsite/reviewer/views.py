@@ -37,6 +37,18 @@ def review(response, app_id=None):
             eligibility.grade_foundation = response.POST.get('grade_foundation') == 'on'
             
             eligibility.documents_verified = response.POST.get('documents_verified') == 'on'
+            
+            # Qualitative Scoring Matrix - A. Academic Excellence
+            eligibility.academic_borderline = response.POST.get('academic_borderline') == 'on'
+            eligibility.academic_competent = response.POST.get('academic_competent') == 'on'
+            eligibility.academic_superior = response.POST.get('academic_superior') == 'on'
+            eligibility.academic_elite = response.POST.get('academic_elite') == 'on'
+            
+            # Qualitative Scoring Matrix - B. Academic Rigor & Awards
+            eligibility.rigor_best_student = response.POST.get('rigor_best_student') == 'on'
+            eligibility.rigor_competitions = response.POST.get('rigor_competitions') == 'on'
+            eligibility.rigor_none = response.POST.get('rigor_none') == 'on'
+            
             eligibility.save()
             return redirect('reviewer_with_id', app_id=app.id)
 
