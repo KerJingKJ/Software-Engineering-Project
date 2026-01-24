@@ -7,9 +7,7 @@ from rest_framework.response import Response
 
 from django.db.models import Count
 from committee.models import Scholarship
-from student.models import Student, Application
-
-from committee.models import ScholarshipApplication
+from student.models import Student, Application, ScholarshipApplication
 from .models import EligibilityCheck
 
 def review(response, app_id=None):

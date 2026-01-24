@@ -54,6 +54,89 @@ class Student(models.Model):
         return f"Student {self.user.username}"
 
 
+# Moved from committee/models.py
+class ScholarshipApplication(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    
+    scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    home_address = models.TextField()
+    correspondence_address = models.TextField()
+    ic_no = models.CharField(max_length=20)
+    age = models.IntegerField()
+    date_of_birth = models.DateField()
+    intake = models.DateField()
+    programme = models.CharField(max_length=200)
+    nationality = models.CharField(max_length=100)
+    
+    RACE_CHOICES = [
+        ('Malay', 'Malay'),
+        ('Chinese', 'Chinese'),
+        ('India', 'India'),
+    ]
+    race = models.CharField(max_length=20, choices=RACE_CHOICES)
+    
+    GENDER_CHOICES = [
+        ('Female', 'Female'),
+        ('Male', 'Male'),
+    ]
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    
+    contact_number = models.CharField(max_length=20)
+    email_address = models.EmailField()
+    highest_qualification = models.CharField(max_length=200)
+    
+    # Uploads
+    passport_photo = models.ImageField(upload_to='passport_photos/')
+    academic_result = models.FileField(upload_to='academic_results/')
+    supporting_document = models.FileField(upload_to='supporting_docs/')
+    
+    personal_achievement = models.TextField()
+    reason_deserve = models.TextField()
+    
+    ea_form = models.FileField(upload_to='ea_forms/')
+    payslip = models.FileField(upload_to='payslips/')
+
+    class Meta:
+        db_table = 'student_scholarship_application'
+
+    def __str__(self):
+        return f"{self.name} - {self.scholarship.name}"
+
+
+# Moved from committee/models.py
+class Guardian(models.Model):
+    application = models.ForeignKey(ScholarshipApplication, on_delete=models.CASCADE, related_name='guardians')
+    relationship = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
+    ic_no = models.CharField(max_length=20)
+    date_of_birth = models.DateField()
+    age = models.IntegerField()
+    nationality = models.CharField(max_length=100)
+    
+    GENDER_CHOICES = [
+        ('Female', 'Female'),
+        ('Male', 'Male'),
+    ]
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    
+    address = models.TextField()
+    contact_number = models.CharField(max_length=20)
+    email_address = models.EmailField()
+    monthly_income = models.DecimalField(max_digits=12, decimal_places=2)
+
+    class Meta:
+        db_table = 'student_guardian'
+
+    def __str__(self):
+        return f"{self.name} ({self.relationship}) - {self.application.name}"
+
+
 class Application(models.Model):
     scholarship = models.ForeignKey(
         Scholarship,

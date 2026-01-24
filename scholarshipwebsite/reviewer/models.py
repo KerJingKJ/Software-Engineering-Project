@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from committee.models import ScholarshipApplication
+from student.models import ScholarshipApplication
 
 class EligibilityCheck(models.Model):
     application = models.OneToOneField(ScholarshipApplication, on_delete=models.CASCADE, related_name='eligibility_check')
