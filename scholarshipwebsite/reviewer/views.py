@@ -50,10 +50,33 @@ def review(response, app_id=None):
             eligibility.rigor_competitions = response.POST.get('rigor_competitions') == 'on'
             eligibility.rigor_none = response.POST.get('rigor_none') == 'on'
             
+            # Qualitative Scoring Matrix - B. Co-Curricular & Leadership
+            eligibility.leadership_leader = response.POST.get('leadership_leader') == 'on'
+            eligibility.leadership_subleader = response.POST.get('leadership_subleader') == 'on'
+            eligibility.leadership_secretary = response.POST.get('leadership_secretary') == 'on'
+            eligibility.leadership_committee = response.POST.get('leadership_committee') == 'on'
+            eligibility.leadership_member = response.POST.get('leadership_member') == 'on'
+            
+            # B. Co-Curricular & Leadership - 2) Competition/Event Achievement
+            eligibility.competition_national = response.POST.get('competition_national') == 'on'
+            eligibility.competition_state = response.POST.get('competition_state') == 'on'
+            eligibility.competition_university = response.POST.get('competition_university') == 'on'
+            eligibility.competition_participant = response.POST.get('competition_participant') == 'on'
+            
+            # C. Personal Statement / Essay Quality
+            eligibility.essay_compelling = response.POST.get('essay_compelling') == 'on'
+            eligibility.essay_generic = response.POST.get('essay_generic') == 'on'
+            eligibility.essay_poor = response.POST.get('essay_poor') == 'on'
+            
             eligibility.save()
-            return redirect('reviewer_with_id', app_id=app.id)
+            return redirect('review_step2', app_id=app.id)
 
     return render(response, "reviewer/reviewScholarship.html", {'app': app, 'eligibility': eligibility})
+
+
+def review_step2(response, app_id):
+    app = ScholarshipApplication.objects.filter(id=app_id).first()
+    return render(response, "reviewer/review_step2.html", {'app': app})
 
 
 def details(response):

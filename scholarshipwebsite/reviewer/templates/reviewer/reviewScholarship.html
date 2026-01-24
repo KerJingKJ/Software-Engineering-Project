@@ -8,8 +8,10 @@
         <div style="flex: 1; overflow-y: auto; border-right: 1px solid #ccc; padding: 20px; background-color: #f9f9f9;">
             <h2>Application Details</h2>
             {% if app %}
-            <div style="background: white; border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 0;">{{ app.name }} (ID: {{ app.id }})</h3>
+            <div
+                style="background: white; border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 0;">{{ app.name }} (ID: {{
+                    app.id }})</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <p><strong>Scholarship:</strong> {{ app.scholarship.name }}</p>
                     <p><strong>Status:</strong> {{ app.status }}</p>
@@ -33,15 +35,10 @@
                     <p><strong>Personal Achievement:</strong><br> {{ app.personal_achievement }}</p>
                     <p><strong>Reason to Deserve:</strong><br> {{ app.reason_deserve }}</p>
                 </div>
+                <!-- Documents Section Temporarily Removed due to persistent TemplateSyntaxError -->
                 <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
                     <strong>Documents:</strong>
-                    <ul style="list-style: none; padding-left: 0;">
-                        <li>Passport Photo: {% if app.passport_photo and app.passport_photo.url %}<a href="{{ app.passport_photo.url }}" target="_blank">View</a>{% else %}N/A{% endif %}</li>
-                        <li>Academic Result: {% if app.academic_result and app.academic_result.url %}<a href="{{ app.academic_result.url }}" target="_blank">View</a>{% else %}N/A{% endif %}</li>
-                        <li>Supporting Doc: {% if app.supporting_document and app.supporting_document.url %}<a href="{{ app.supporting_document.url }}" target="_blank">View</a>{% else %}N/A{% endif %}</li>
-                        <li>EA Form: {% if app.ea_form and app.ea_form.url %}<a href="{{ app.ea_form.url }}" target="_blank">View</a>{% else %}N/A{% endif %}</li>
-                        <li>Payslip: {% if app.payslip and app.payslip.url %}<a href="{{ app.payslip.url }}" target="_blank">View</a>{% else %}N/A{% endif %}</li>
-                    </ul>
+                    <p><em>(Documents section temporarily unavailable due to technical issue)</em></p>
                 </div>
             </div>
             {% else %}
@@ -49,46 +46,208 @@
             {% endif %}
         </div>
         <div style="flex: 1; padding: 20px; overflow-y: auto;">
-            <h2>Eligibility Checker</h2>
             {% if app %}
             <form method="post" action="{% url 'reviewer_with_id' app.id %}">
                 {% csrf_token %}
+                <h2>Eligibility Checker</h2>
                 <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
-                    <tr><th style="text-align: left;">Criteria</th><th style="width: 50px;">Check</th></tr>
-                    <tr><td><strong>Citizenship:</strong> Malaysian</td><td style="text-align: center;"><input type="checkbox" name="citizenship_check" {{ eligibility.citizenship_check|yesno:"checked," }}></td></tr>
-                    <tr><td><strong>Programme Level:</strong> Foundation/Bachelor's Degree</td><td style="text-align: center;"><input type="checkbox" name="programme_level_check" {{ eligibility.programme_level_check|yesno:"checked," }}></td></tr>
-                    <tr><td><strong>Qualifying Exam:</strong></td><td></td></tr>
-                    <tr><td style="padding-left: 20px;">If Programme Level: Foundation, SPM/O-Level</td><td style="text-align: center;"><input type="checkbox" name="exam_foundation_spm" {{ eligibility.exam_foundation_spm|yesno:"checked," }}></td></tr>
-                    <tr><td style="padding-left: 20px;">If Programme Level: Bachelor's Degree, STPM A-Level/UEC</td><td style="text-align: center;"><input type="checkbox" name="exam_degree_stpm_uec" {{ eligibility.exam_degree_stpm_uec|yesno:"checked," }}></td></tr>
-                    <tr><td style="padding-left: 20px;">If Programme Level: Bachelor's Degree, Foundation/Matriculation or equivalents</td><td style="text-align: center;"><input type="checkbox" name="exam_degree_matriculation" {{ eligibility.exam_degree_matriculation|yesno:"checked," }}></td></tr>
-                    <tr><td><strong>Minimum Grades/CGPA:</strong></td><td></td></tr>
-                    <tr><td style="padding-left: 20px;">SPM/O-Level: 9As and above</td><td style="text-align: center;"><input type="checkbox" name="grade_spm" {{ eligibility.grade_spm|yesno:"checked," }}></td></tr>
-                    <tr><td style="padding-left: 20px;">STPM A-Level: 4A's</td><td style="text-align: center;"><input type="checkbox" name="grade_stpm" {{ eligibility.grade_stpm|yesno:"checked," }}></td></tr>
-                    <tr><td style="padding-left: 20px;">UEC: 8A's</td><td style="text-align: center;"><input type="checkbox" name="grade_uec" {{ eligibility.grade_uec|yesno:"checked," }}></td></tr>
-                    <tr><td style="padding-left: 20px;">Foundation / Matriculation or equivalents: CGPA 3.90 and above</td><td style="text-align: center;"><input type="checkbox" name="grade_foundation" {{ eligibility.grade_foundation|yesno:"checked," }}></td></tr>
-                    <tr><td><strong>Documents Verified</strong></td><td style="text-align: center;"><input type="checkbox" name="documents_verified" {{ eligibility.documents_verified|yesno:"checked," }}></td></tr>
+                    <tr>
+                        <th style="text-align: left;">Criteria</th>
+                        <th style="width: 50px;">Check</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Citizenship:</strong> Malaysian</td>
+                        <td style="text-align: center;"><input type="checkbox" name="citizenship_check" {{
+                                eligibility.citizenship_check|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Programme Level:</strong> Foundation/Bachelor's Degree</td>
+                        <td style="text-align: center;"><input type="checkbox" name="programme_level_check" {{
+                                eligibility.programme_level_check|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Qualifying Exam:</strong></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 20px;">If Programme Level: Foundation, SPM/O-Level</td>
+                        <td style="text-align: center;"><input type="checkbox" name="exam_foundation_spm" {{
+                                eligibility.exam_foundation_spm|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 20px;">If Programme Level: Bachelor's Degree, STPM A-Level/UEC</td>
+                        <td style="text-align: center;"><input type="checkbox" name="exam_degree_stpm_uec" {{
+                                eligibility.exam_degree_stpm_uec|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 20px;">If Programme Level: Bachelor's Degree, Foundation/Matriculation
+                            or equivalents</td>
+                        <td style="text-align: center;"><input type="checkbox" name="exam_degree_matriculation" {{
+                                eligibility.exam_degree_matriculation|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Minimum Grades/CGPA:</strong></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 20px;">SPM/O-Level: 9As and above</td>
+                        <td style="text-align: center;"><input type="checkbox" name="grade_spm" {{
+                                eligibility.grade_spm|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 20px;">STPM A-Level: 4A's</td>
+                        <td style="text-align: center;"><input type="checkbox" name="grade_stpm" {{
+                                eligibility.grade_stpm|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 20px;">UEC: 8A's</td>
+                        <td style="text-align: center;"><input type="checkbox" name="grade_uec" {{
+                                eligibility.grade_uec|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 20px;">Foundation / Matriculation or equivalents: CGPA 3.90 and above
+                        </td>
+                        <td style="text-align: center;"><input type="checkbox" name="grade_foundation" {{
+                                eligibility.grade_foundation|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Documents Verified</strong></td>
+                        <td style="text-align: center;"><input type="checkbox" name="documents_verified" {{
+                                eligibility.documents_verified|yesno:"checked," }}></td>
+                    </tr>
+                </table>
+
+                <h2 style="margin-top: 30px;">Qualitative Scoring Matrix</h2>
+                <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <th style="text-align: left;">Criteria</th>
+                        <th style="width: 50px;">Check</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>A. Academic Excellence</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding-left: 20px;">1) Academic Performance (Grades)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">(1) Borderline: CGPA 3.90 - 3.91 / Exactly 4As / 8As (UEC) /
+                            Exactly 9As (Mix of A/A-)</td>
+                        <td style="text-align: center;"><input type="checkbox" name="academic_borderline" {{
+                                eligibility.academic_borderline|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">(2) Competent: CGPA 3.92 - 3.94 / Exactly 9As (High A count)
+                        </td>
+                        <td style="text-align: center;"><input type="checkbox" name="academic_competent" {{
+                                eligibility.academic_competent|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">(3) Superior: CGPA 3.95 - 3.99 / Mix of A+ and A (9+ As)</td>
+                        <td style="text-align: center;"><input type="checkbox" name="academic_superior" {{
+                                eligibility.academic_superior|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">(4) Elite: CGPA 4.00 / 4 A* (A-Level) / Straight A+ (SPM)</td>
+                        <td style="text-align: center;"><input type="checkbox" name="academic_elite" {{
+                                eligibility.academic_elite|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding-left: 20px;">2) Academic Rigor & Awards</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">Received "Best Student" / Dean's List / Book Prize award.</td>
+                        <td style="text-align: center;"><input type="checkbox" name="rigor_best_student" {{
+                                eligibility.rigor_best_student|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">Participated in National/State Academic Competitions (Olympiad,
+                            Debate, Hackathon).</td>
+                        <td style="text-align: center;"><input type="checkbox" name="rigor_competitions" {{
+                                eligibility.rigor_competitions|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">None of the above.</td>
+                        <td style="text-align: center;"><input type="checkbox" name="rigor_none" {{
+                                eligibility.rigor_none|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>B. Co-Curricular & Leadership</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding-left: 20px;">1) Club/Society/Event Highest Position</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">Leader (President, Captain, Founder)</td>
+                        <td style="text-align: center;"><input type="checkbox" name="leadership_leader" {{
+                                eligibility.leadership_leader|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">Sub-leader (Vice-President, Vice-Captain, Co-Founder)</td>
+                        <td style="text-align: center;"><input type="checkbox" name="leadership_subleader" {{
+                                eligibility.leadership_subleader|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">Secretary/Treasurer</td>
+                        <td style="text-align: center;"><input type="checkbox" name="leadership_secretary" {{
+                                eligibility.leadership_secretary|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">Committee Chairs (Social, Marketing, Events)</td>
+                        <td style="text-align: center;"><input type="checkbox" name="leadership_committee" {{
+                                eligibility.leadership_committee|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">Member</td>
+                        <td style="text-align: center;"><input type="checkbox" name="leadership_member" {{
+                                eligibility.leadership_member|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding-left: 20px;">2) Competition/Event Achievement</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">National Level</td>
+                        <td style="text-align: center;"><input type="checkbox" name="competition_national" {{
+                                eligibility.competition_national|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">State Level</td>
+                        <td style="text-align: center;"><input type="checkbox" name="competition_state" {{
+                                eligibility.competition_state|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">University/District Level</td>
+                        <td style="text-align: center;"><input type="checkbox" name="competition_university" {{
+                                eligibility.competition_university|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;">Participant</td>
+                        <td style="text-align: center;"><input type="checkbox" name="competition_participant" {{
+                                eligibility.competition_participant|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>C. Personal Statement / Essay Quality</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;"><strong>Compelling:</strong> Unique story, clear goals, specific
+                            alignment with MMU/Scholarship values.</td>
+                        <td style="text-align: center;"><input type="checkbox" name="essay_compelling" {{
+                                eligibility.essay_compelling|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;"><strong>Generic:</strong> Standard answers, lacks specific
+                            examples.</td>
+                        <td style="text-align: center;"><input type="checkbox" name="essay_generic" {{
+                                eligibility.essay_generic|yesno:"checked," }}></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 40px;"><strong>Poor:</strong> Grammatical errors, off-topic, or too
+                            short.</td>
+                        <td style="text-align: center;"><input type="checkbox" name="essay_poor" {{
+                                eligibility.essay_poor|yesno:"checked," }}></td>
+                    </tr>
                 </table>
                 <br>
-                <button type="submit" style="padding: 10px 20px; cursor: pointer;">Save Eligibility Check</button>
-            </form>
-            <h2 style="margin-top: 30px;">Qualitative Scoring Matrix</h2>
-            <form method="post" action="{% url 'reviewer_with_id' app.id %}">
-                {% csrf_token %}
-                <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
-                    <tr><th style="text-align: left;">Criteria</th><th style="width: 50px;">Check</th></tr>
-                    <tr><td colspan="2"><strong>A. Academic Excellence</strong></td></tr>
-                    <tr><td colspan="2" style="padding-left: 20px;">1) Academic Performance (Grades)</td></tr>
-                    <tr><td style="padding-left: 40px;">(1) Borderline: CGPA 3.90 - 3.91 / Exactly 4As / 8As (UEC) / Exactly 9As (Mix of A/A-)</td><td style="text-align: center;"><input type="checkbox" name="academic_borderline" {{ eligibility.academic_borderline|yesno:"checked," }}></td></tr>
-                    <tr><td style="padding-left: 40px;">(2) Competent: CGPA 3.92 - 3.94 / Exactly 9As (High A count)</td><td style="text-align: center;"><input type="checkbox" name="academic_competent" {{ eligibility.academic_competent|yesno:"checked," }}></td></tr>
-                    <tr><td style="padding-left: 40px;">(3) Superior: CGPA 3.95 - 3.99 / Mix of A+ and A (9+ As)</td><td style="text-align: center;"><input type="checkbox" name="academic_superior" {{ eligibility.academic_superior|yesno:"checked," }}></td></tr>
-                    <tr><td style="padding-left: 40px;">(4) Elite: CGPA 4.00 / 4 A* (A-Level) / Straight A+ (SPM)</td><td style="text-align: center;"><input type="checkbox" name="academic_elite" {{ eligibility.academic_elite|yesno:"checked," }}></td></tr>
-                    <tr><td colspan="2" style="padding-left: 20px;">2) Academic Rigor & Awards</td></tr>
-                    <tr><td style="padding-left: 40px;">Received "Best Student" / Dean's List / Book Prize award.</td><td style="text-align: center;"><input type="checkbox" name="rigor_best_student" {{ eligibility.rigor_best_student|yesno:"checked," }}></td></tr>
-                    <tr><td style="padding-left: 40px;">Participated in National/State Academic Competitions (Olympiad, Debate, Hackathon).</td><td style="text-align: center;"><input type="checkbox" name="rigor_competitions" {{ eligibility.rigor_competitions|yesno:"checked," }}></td></tr>
-                    <tr><td style="padding-left: 40px;">None of the above.</td><td style="text-align: center;"><input type="checkbox" name="rigor_none" {{ eligibility.rigor_none|yesno:"checked," }}></td></tr>
-                </table>
-                <br>
-                <button type="submit" style="padding: 10px 20px; cursor: pointer;">Save Scoring Matrix</button>
+                <button type="submit" style="padding: 10px 20px; cursor: pointer;">Next</button>
             </form>
             {% else %}
             <p>Select an application to view eligibility check.</p>
