@@ -23,5 +23,5 @@ urlpatterns = [
     # path("scholarship/<int:id>/applicationForm_p2/", views.application_form_p2, name="applicationForm_p2"),
     # path("scholarship/<int:id>/applicationForm_p3/", views.application_form_p3, name="applicationForm_p3"),
     # path("scholarship/<int:id>/applicationForm_p4/", views.application_form_p4, name="applicationForm_p4"),
-    path("trackApplication/", views.track, name="trackApplication")
+    path("trackApplication/", views.trackApplication, name="trackApplication")
 ]

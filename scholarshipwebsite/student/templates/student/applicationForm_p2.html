@@ -14,30 +14,60 @@
   </div>
 
   <div class="form-content">
-    <form action="" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
+    {% comment %} <form action="" method="POST" enctype="multipart/form-data">
+      {% csrf_token %} {% endcomment %}
+  <form
+    method="POST"
+    enctype="multipart/form-data"
+  >
+        {% csrf_token %}
+        {% comment %} LOL. wacky workaround {% endcomment %}
+        <div style="display:none;">
+          {{ form.scholarship }}
+          {{ form.name }}
+          {{ form.home_address }}
+          {{ form.correspondence_address }}
+          {{ form.ic_no }}
+          {{ form.age }}
+          {{ form.date_of_birth }}
+          {{ form.intake }}
+          {{ form.programme }}
+          {{ form.nationality }}
+          {{ form.race }}
+          {{ form.gender }}
+          {{ form.contact_number }}
+          {{ form.monthly_income }}
+          {{ form.email_address }}
+          {{ form.passport_photo }}
+          {{ form.education_level }}
+          {{ form.academic_result }}
 
+          {{ form.reason_deserve }}
+        </div>
       <div class="form-vertical-row">
         <label class="top-label"
           >Briefly explain your personal achievement:</label
         >
-        <textarea class="form-input large-textarea" rows="8"></textarea>
+        {{ form.personal_achievement }}
+        {% comment %} <textarea class="form-input large-textarea" rows="8"></textarea> {% endcomment %}
       </div>
 
       <div class="form-vertical-row">
         <label class="top-label">Upload supporting document(s):</label>
-        <input type="file" class="file-input" style="width: 300px" />
+        {{ form.supporting_document }}
+        {% comment %} <input type="file" class="file-input" style="width: 300px" /> {% endcomment %}
       </div>
 
       <div class="button-group-center">
         <a href="{% url 'edit_application_form' form.instance.pk 1 %}" class="btn-back">Back</a>
 
-        <a
+        {% comment %} <a
           href="{% url 'edit_application_form' form.instance.pk 3 %}"
           style="text-decoration: none"
           class="btn-next"
           >Next</a
-        >
+        > {% endcomment %}
+        <button type="submit" class="btn-next">Next</button>
       </div>
     </form>
   </div>

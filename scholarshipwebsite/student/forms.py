@@ -79,7 +79,9 @@ class ApplicationForm(forms.ModelForm):
             'scholarship', 'name', 'home_address', 'correspondence_address',
             'ic_no', 'age', 'date_of_birth', 'intake', 'programme',
             'nationality', 'race', 'gender', 'contact_number', 'email_address','monthly_income',
-            'education_level', 'passport_photo', 'academic_result',
+            'education_level', 'passport_photo', 'academic_result', 
+            'personal_achievement', 'supporting_document',
+            'reason_deserve'
         ]
         widgets = {
             'scholarship': forms.Select(attrs={
@@ -160,6 +162,19 @@ class ApplicationForm(forms.ModelForm):
             'academic_result': forms.FileInput(attrs={
                 'class': 'file-input',
                 
+            }),
+            'personal_achievement': forms.Textarea(attrs={
+                'class': 'form-input large-textarea',
+                'rows': 8,
+                
+            }),
+            'supporting_document': forms.FileInput(attrs={
+                'class': 'file-input',
+                'style': 'width: 300px',
+            }),
+             'reason_deserve': forms.Textarea(attrs={
+                'class': 'form-input large-textarea',
+                'rows': 10,
             }),
         }
     

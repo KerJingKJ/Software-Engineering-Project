@@ -12,14 +12,41 @@
   </div>
 
   <div class="form-content">
-    <form action="{% url 'applicationForm_status' %}" method="POST">
-      {% csrf_token %}
+    <form
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+        <div style="display:none;">
+          {{ form.scholarship }}
+          {{ form.name }}
+          {{ form.home_address }}
+          {{ form.correspondence_address }}
+          {{ form.ic_no }}
+          {{ form.age }}
+          {{ form.date_of_birth }}
+          {{ form.intake }}
+          {{ form.programme }}
+          {{ form.nationality }}
+          {{ form.race }}
+          {{ form.gender }}
+          {{ form.contact_number }}
+          {{ form.monthly_income }}
+          {{ form.email_address }}
+          {{ form.passport_photo }}
+          {{ form.education_level }}
+          {{ form.academic_result }}
+
+          {{ form.personal_achievement }}
+          {{ form.supporting_document }}
+        </div>
 
       <div class="form-vertical-row">
         <label class="top-label"
           >Tell us why you deserve the scholarship:</label
         >
-        <textarea class="form-input large-textarea" rows="10"></textarea>
+        {{ form.reason_deserve }}
+        {% comment %} <textarea class="form-input large-textarea" rows="10"></textarea> {% endcomment %}
       </div>
 
       <div class="checkbox-container">
