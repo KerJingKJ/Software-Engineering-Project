@@ -55,6 +55,8 @@ def edit_application_form(request, id=-1, page=-1):
         if form.is_valid():
             form.save()
             return redirect("edit_application_form", id=id, page=(page+1))
+        else:
+            print(form.errors)
     else:
         form = ApplicationForm(instance=application)
 
@@ -67,8 +69,9 @@ def edit_application_form(request, id=-1, page=-1):
     elif page == 4:
         return render(request, "student/applicationForm_p4.html", {"form": form, "application":application})
     elif page == 5:
-        return redirect("track")
+        return redirect("trackApplication")
     else:
+        print (f"u stupid {page}")
         return redirect("application_form")
 
 
@@ -84,7 +87,7 @@ def edit_application_form(request, id=-1, page=-1):
 #     return render(request, "student/applicationForm_p4.html", {})
 
 
-def track(request):
+def trackApplication(request):
     return render(request, "student/trackApplication.html", {})
 
 # Create your views here.

@@ -5,40 +5,13 @@
   </h1>
   <hr class="divider" />
   <form
-    action="{% url 'applicationForm'  %}"
     method="POST"
     enctype="multipart/form-data"
   >
         {% csrf_token %}
     <div class="form-row" style="margin-bottom: 30px">
-      {% comment %} <label class="form-label">Scholarship Type:</label>
-      <select name="scholarship" class="form-input large-select">
-        <option value="">Select Scholarship Type</option>
-        <option value="chancellor">MMU Chancellor's Scholarship</option>
-        <option value="merit">MMU Merit Scholarship</option>
-      </select>
-      {% endcomment %}
       <label class="form-label">Scholarship Type:</label>
           {{ form.scholarship }}
-      {% comment %} <select
-        name="scholarship"
-        class="form-input large-select"
-        required
-        disabled
-      >
-        <option value="">Select Scholarship Type</option>
-
-        {% for s in scholarships %}
-        <option
-          value="{{ s.id }}"
-          {% if form.instance.scholarship and form.instance.scholarship.id == s.id %}
-          selected
-          {% endif %}
-        >
-          {{ s.name }}
-        </option>
-        {% endfor %}
-      </select> {% endcomment %}
     </div>
 
     <div class="tabs-wrapper">
@@ -53,162 +26,87 @@
       <div class="form-row">
         <label>Name:</label>
         {{ form.name }}
-        {% comment %} <input
-          name="name"
-          type="text"
-          class="form-input"
-          placeholder="Enter your name"
-          required
-        /> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Home Address:</label>
         {{ form.home_address }}
-        {% comment %} <textarea
-          name="home_address"
-          class="form-input"
-          rows="3"
-          required
-        ></textarea> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Correspondence Address:</label>
         {{ form.correspondence_address }}
-        {% comment %} <textarea
-          name="correspondence_address"
-          class="form-input"
-          rows="3"
-        ></textarea> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>IC No.:</label>
         {{ form.ic_no }}
-        {% comment %} <input
-          name="ic_no"
-          type="text"
-          class="form-input"
-          placeholder="Example: 001122143344"
-          required
-        /> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Age:</label>
         {{ form.age }}
-        {% comment %} <input
-          name="age"
-          type="number"
-          class="form-input small-input"
-          required
-        /> {% endcomment %}
       </div>
       <div class="form-row">
         <label>Date of Birth:</label>
         {{ form.date_of_birth }}
-        {% comment %} <input type="date" name="date_of_birth" class="form-input" required /> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Intake:</label>
         {{ form.intake }}
-        {% comment %} <input type="date" name="intake" class="form-input" required /> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Programme:</label>
         {{ form.programme }}
-        {% comment %} <input
-          name="programme"
-          type="text"
-          class="form-input"
-          placeholder="Enter your programme"
-          required
-        /> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Nationality:</label>
         {{ form.nationality }}
-        {% comment %} <select name="nationality" class="form-input small-select" required>
-          <option></option>
-          <option>Malaysian</option>
-          <option>Non-Malaysian</option>
-        </select> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Race:</label>
         {{ form.race }}
-        {% comment %} <select name="race" class="form-input small-select" required>
-          <option></option>
-          <option>Malay</option>
-          <option>Chinese</option>
-          <option>Indian</option>
-          <option>Other</option>
-        </select> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Gender:</label>
         {{ form.gender }}
-        {% comment %} <select name="gender" class="form-input small-select" required>
-          <option></option>
-          <option>Male</option>
-          <option>Female</option>
-        </select> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Contact number(Mobile):</label>
         {{ form.contact_number }}
-        {% comment %} <input
-          name="contact_number"
-          type="text"
-          class="form-input"
-          placeholder="Example: 60123456789"
-          required
-        /> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Household (Monthly Income): RM</label>
         {{ form.monthly_income }}
-        {% comment %} <input name="monthly_income" type="number" class="form-input medium-input" required /> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Email Address:</label>
         {{ form.email_address }}
-        {% comment %} <input name="email_address" type="email" class="form-input" required /> {% endcomment %}
       </div>
 
       <div class="form-row">
         <label>Upload your Passport Photo:</label>
         {{ form.passport_photo }}
-        {% comment %} <input name="passport_photo" type="file" class="file-input" required /> {% endcomment %}
       </div>
 
       <div class="form-row align-top">
         <label>Education Level:</label>
         <div class="stacked-inputs">
           {{ form.education_level }}
-          {% comment %} <select name="education_level" class="form-input" required>
-            <option>Select Qualification</option>
-            <option>STPM</option>
-            <option>Foundation</option>
-          </select> {% endcomment %}
-          {% comment %} <label class="sub-label">If other, please specify:</label>
-          <input type="text" class="form-input" /> {% endcomment %}
         </div>
       </div>
 
       <div class="form-row">
         <label>Academic Result:</label>
         {{ form.academic_result }}
-        {% comment %} <input name="academic_result" type="file" class="file-input" required /> {% endcomment %}
       </div>
 
       <div class="button-container">
