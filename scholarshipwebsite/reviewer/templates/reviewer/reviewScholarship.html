@@ -10,8 +10,9 @@
             {% if app %}
             <div
                 style="background: white; border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 0;">{{ app.name }} (ID: {{
-                    app.id }})</h3>
+                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 0;">
+                    {{ app.name }} (ID: {{ app.id }})
+                </h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <p><strong>Scholarship:</strong> {{ app.scholarship.name }}</p>
                     <p><strong>Status:</strong> {{ app.status }}</p>
