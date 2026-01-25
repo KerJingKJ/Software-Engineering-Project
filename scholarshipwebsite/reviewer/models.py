@@ -51,5 +51,24 @@ class EligibilityCheck(models.Model):
     essay_generic = models.BooleanField(default=False)        # Standard answers, lacks specific examples
     essay_poor = models.BooleanField(default=False)           # Grammatical errors, off-topic, or too short
 
+    # Step 2: Financial & Family Background Review
+    # 1. Data Integrity Check
+    integrity_income_check = models.BooleanField(default=False) # Income Proof Match
+
+    # 2. Financial Priority Scoring
+    FINANCIAL_PRIORITY_CHOICES = [
+        ('1', '(1) Low Need (T20)'),
+        ('2', '(2) Moderate Need (M40)'),
+        ('3', '(3) High Need (B40)'),
+        ('4', '(4) Critical Need (B40)'),
+    ]
+    financial_priority = models.CharField(max_length=2, choices=FINANCIAL_PRIORITY_CHOICES, blank=True, null=True)
+
+    # 3. Hardship & Burden Indicators
+    hardship_single_income = models.BooleanField(default=False)
+    hardship_large_family = models.BooleanField(default=False)
+    hardship_retiree = models.BooleanField(default=False)
+    hardship_medical = models.BooleanField(default=False)
+
     def __str__(self):
         return f"Eligibility Check for {self.application.name}"

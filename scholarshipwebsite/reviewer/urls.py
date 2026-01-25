@@ -8,6 +8,7 @@ urlpatterns = [
     path("<int:app_id>/", views.review, name="reviewer_with_id"),
     path("review/", views.review, name="review"),
     path("review/step2/<int:app_id>/", views.review_step2, name="review_step2"),
+    path("review/step3/<int:app_id>/", views.review_step3, name="review_step3"),
     path("details/", views.details, name="details"),
     path('logout/', login_views.logout_view, name='logout'),
     path("", landingpage_views.index, name='landingpage'),
