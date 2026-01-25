@@ -5,8 +5,8 @@ from landingpage import views as landingpage_views
 
 urlpatterns = [
     path("", views.index, name="reviewer"),
-    path("<int:app_id>/", views.review, name="reviewer_with_id"),
-    path("review/", views.review, name="review"),
+    path("<int:app_id>/", views.review_detail, name="reviewer_with_id"),
+    path("review/", views.review_list, name="review"),
     path("review/step2/<int:app_id>/", views.review_step2, name="review_step2"),
     path("review/step3/<int:app_id>/", views.review_step3, name="review_step3"),
     path("details/", views.details, name="details"),
