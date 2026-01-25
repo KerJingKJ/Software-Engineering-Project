@@ -1,51 +1,52 @@
-html{
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    scroll-behavior:smooth;
+html {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  scroll-behavior: smooth;
 }
 
 .navbar {
   background-color: whitesmoke;
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  position: fixed; 
-  top: 0; 
-  width: 98%; 
-  margin-left: -10px;
+  position: relative;
+  /* Changed from fixed to relative */
+  /* Top and width constraints removed for natural flow */
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .nav-list {
   list-style: none;
-  display: flex;          
-  align-items: center;     
-  width: 100%; 
+  display: flex;
+  align-items: center;
+  width: 100%;
   margin: 0;
   padding: 0;
 }
 
 .nav-list li {
-  display: flex;           
-  align-items: center;    
+  display: flex;
+  align-items: center;
   gap: 20px;
-   
+
 }
 
 .nav-left {
   display: flex;
   align-items: center;
   gap: 15px;
-  flex-grow: 1; 
+  flex-grow: 1;
 }
 
 .dropdown {
   position: relative;
-  width: 35px; 
+  width: 35px;
   cursor: pointer;
 
 }
 
-.dropdown a{
+.dropdown a {
   display: block;
   color: black;
   text-decoration: none;
@@ -53,75 +54,78 @@ html{
   border-radius: 15px;
 }
 
-.content{
-  position:absolute;
+.content {
+  position: absolute;
   display: none;
-  background-color:#EEF1F1;
+  background-color: #EEF1F1;
   min-width: 200px;
   border-radius: 15px;
-  right: 0; 
+  right: 0;
 }
 
-.container-fluid{
-  margin-top: 50px; 
+.container-fluid {
+  margin-top: 50px;
   padding: 20px;
 }
 
-.dropdown:hover .content{
+.dropdown:hover .content {
   display: block;
 }
 
 
 
-.dropdown:hover button{
+.dropdown:hover button {
   background-color: rgb(186, 184, 184);
 
 }
 
-.dropdown a:hover{
+.dropdown a:hover {
   background-color: rgb(186, 184, 184);
 }
 
-.bar1, .bar2, .bar3 {
+.bar1,
+.bar2,
+.bar3 {
   width: 100%;
-  height: 5px; 
-  background-color: #333; 
+  height: 5px;
+  background-color: #333;
   margin: 6px 0;
-  transition: 0.4s; 
+  transition: 0.4s;
 }
 
 #user-icon {
-  margin-right: 20px; 
+  margin-right: 20px;
 }
 
 #user-icon img {
-    width: 35px; 
-    height: auto;
+  width: 35px;
+  height: auto;
 }
 
 
-#Dashboard h1, #Review h1{
+#Dashboard h1,
+#Review h1 {
   text-align: left;
   font-size: 30px;
 }
 
-.container-fluid{
+.container-fluid {
   padding: 20px;
   margin-top: 50px;
 }
 
-.row{
-  display: flex;       
-  flex-wrap: wrap;    
-  gap: 20px;         
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
   justify-content: center;
 }
 
 
-.col-md-6{
-  position: relative; 
-  flex: 1;            
-  min-width: 300px;   
-  max-width: 500px;   
+.col-md-6 {
+  position: relative;
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
   height: 300px;
 }
