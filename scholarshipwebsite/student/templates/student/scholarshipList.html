@@ -17,27 +17,23 @@
                 </tr>
             </thead>
             <tbody>
+                {% for scholarship in scholarships %}
                 <tr>
-                    <td><a href="{% url 'scholarship_details' %}?id=chancellor">MMU Chancellor’s Scholarship</a></td>
-                    <td>100% discount of tuition fees & monthly allowance</td>
-                    <td>Foundation & Undergraduate</td>
-                    <td>Local</td>
-                    <td>Open</td>
+                    <td>
+                        <a href="{% url 'scholarship_details' scholarship.id %}">
+                            {{ scholarship.name }}
+                        </a>
+                    </td>
+                    <td>{{ scholarship.description }}</td>
+                    <td>{{ scholarship.education_level }}</td>
+                    <td>{{ scholarship.student_type }}</td>
+                    <td>{{ scholarship.status }}</td>
                 </tr>
+                {% empty %}
                 <tr>
-                    <td>MMU President’s Scholarship</td>
-                    <td>100% discount of tuition fees</td>
-                    <td>Foundation & Undergraduate</td>
-                    <td>Local</td>
-                    <td>Closed</td>
+                    <td colspan="5">No scholarships available at the moment.</td>
                 </tr>
-                <tr>
-                    <td><a href="{% url 'scholarship_details' %}?id=merit">MMU Merit Scholarship</a></td>
-                    <td>Discount of tuition fees of : 50% / 30% / 25%</td>
-                    <td>Undergraduate</td>
-                    <td>Local</td>
-                    <td>Open</td>
-                </tr>
+                {% endfor %}
                 </tbody>
         </table>
     </div>

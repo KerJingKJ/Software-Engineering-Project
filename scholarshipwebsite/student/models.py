@@ -1,6 +1,7 @@
 # models.py
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 from committee.models import Scholarship
 from django.contrib.auth.models import User
 

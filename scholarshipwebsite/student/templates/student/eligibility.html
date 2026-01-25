@@ -6,66 +6,44 @@
     
     <h1 class="page-title">Eligibility Checker</h1>
 
-    <div class="checker-form">
-        
-        <div class="form-group">
-            <label for="study-level">Study Level:</label>
-            <select id="study-level" class="form-select">
-                <option value="" disabled selected>Select Level</option>
-                <option value="foundation">Foundation</option>
-                <option value="diploma">Diploma</option>
-                <option value="degree">Degree</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="academic-result">Academic Result (CGPA):</label>
-            <select id="academic-result" class="form-select">
-                <option value="" disabled selected>Select Range</option>
-                <option value="4.00">3.75 - 4.00</option>
-                <option value="3.50">3.50 - 3.74</option>
-                <option value="3.00">3.00 - 3.49</option>
-                <option value="2.50">Below 3.00</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="extra-curricular">Active in extracurricular activities?</label>
-            <select id="extra-curricular" class="form-select">
-                <option value="" disabled selected>Select Option</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-            </select>
-        </div>
-
-        <button class="btn-check" onclick="showResults()">Check Eligibility</button>
+    <div class="student-summary" style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+        <h3>Checking Eligibility For:</h3>
+        <p><strong>Name:</strong> {{ request.user.get_full_name }}</p>
+        <p><strong>Current GPA:</strong> {{ student.current_gpa }}</p>
+        <p><strong>Education Level:</strong> {{ student.education_level }}</p>
+        <p><strong>Type:</strong> {{ student.student_type }}</p>
     </div>
 
-    <div id="results-section" class="results-wrapper" style="display: none;">
-        <h3 class="results-label">List of scholarships:</h3>
+    <div class="results-section">
+        <h2>Scholarships You Are Eligible For</h2>
         
-        <div class="cards-grid">
-            <div class="result-card">
-                <div class="result-header">MMU Merit Scholarship</div>
-                <div class="result-body">
-                    <p>Up to 50% Tuition Waiver</p>
-                </div>
+        {% if eligible_scholarships %}
+            <table class="scholarship-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead>
+                    <tr style="background-color: #003366; color: white; text-align: left;">
+                        <th style="padding: 12px;">Scholarship Name</th>
+                        <th style="padding: 12px;">Amount/Coverage</th>
+                        <th style="padding: 12px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for scholarship in eligible_scholarships %}
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px;">{{ scholarship.scholarship_name }}</td>
+                        <td style="padding: 12px;">{{ scholarship.description|truncatewords:10 }}</td>
+                        <td style="padding: 12px;">
+                            <a href="{% url 'scholarship_details' scholarship.id %}" class="btn-view" style="color: #003366; font-weight: bold;">View Details</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="no-results" style="text-align: center; padding: 40px; color: #666;">
+                <p>Based on your current profile, we couldn't find any matching scholarships.</p>
+                <p>Try updating your profile if your GPA or details have changed.</p>
             </div>
-
-            <div class="result-card">
-                <div class="result-header">MMU Talent Scholarship</div>
-                <div class="result-body">
-                    <p>For active sports/music achievements</p>
-                </div>
-            </div>
-
-            <div class="result-card">
-                <div class="result-header">Siblings Discount</div>
-                <div class="result-body">
-                    <p>10% Discount on Tuition Fees</p>
-                </div>
-            </div>
-        </div>
+        {% endif %}
     </div>
 
     <div class="action-buttons">
@@ -74,16 +52,4 @@
     </div>
 
 </div>
-
-<script>
-    function showResults() {
-        // In the real backend, this would check the database.
-        // For now, we just unhide the div to simulate logic.
-        const results = document.getElementById('results-section');
-        results.style.display = 'block';
-        
-        // Smooth scroll to results
-        results.scrollIntoView({ behavior: 'smooth' });
-    }
-</script>
 {% endblock %}

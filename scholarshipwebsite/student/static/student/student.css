@@ -436,39 +436,153 @@ html{
 /* BOOKMARK PAGE IMPROVEMENTS                           */
 /* ---------------------------------------------------- */
 
-.page-subtitle {
-    margin-top: -20px;
+.bookmark-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.page-header {
     margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.page-header h1 {
+    color: #003366; /* Match your theme blue */
+    margin-bottom: 5px;
+}
+
+/* Grid Layout */
+.bookmark-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* Card Style */
+.scholarship-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    position: relative;
+    overflow: hidden;
+}
+
+.scholarship-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+/* Card Content */
+.scholarship-card h3 {
+    color: #003366;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    line-height: 1.4;
+}
+
+.scholarship-card .description {
     color: #666;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    flex-grow: 1;
 }
 
-/* Status Badges - Makes "Open" green and "Closed" red */
-.status-open {
-    color: #28a745; /* Green */
-    font-weight: 700;
+.meta-info {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.status-closed {
-    color: #dc3545; /* Red */
-    font-weight: 700;
+/* Status Badge */
+.status-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: bold;
 }
 
-/* The 'Remove' Button */
-.btn-remove {
-    background-color: #ffe6e6; /* Very light red background */
-    color: #d93025; /* Dark red text */
-    border: 1px solid #d93025;
-    padding: 8px 16px;
+.status-badge.active { background-color: #e6f4ea; color: #1e7e34; }
+.status-badge.closed { background-color: #fce8e6; color: #c53030; }
+
+/* Buttons */
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto; /* Pushes buttons to bottom */
+}
+
+.btn-view {
+    flex: 1;
+    text-align: center;
+    background-color: #003366;
+    color: white;
+    padding: 10px;
     border-radius: 6px;
-    cursor: pointer;
+    text-decoration: none;
     font-weight: 600;
-    transition: all 0.2s ease;
+    transition: background 0.3s;
+}
+
+.btn-view:hover {
+    background-color: #002244;
+}
+
+.btn-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    color: #d9534f;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s;
 }
 
 .btn-remove:hover {
-    background-color: #d93025; /* Solid red on hover */
+    background-color: #fff5f5;
+    border-color: #d9534f;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
+
+.empty-icon {
+    width: 60px;
+    opacity: 0.5;
+    margin-bottom: 20px;
+}
+
+.btn-browse {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 25px;
+    background-color: #003366;
     color: white;
+    text-decoration: none;
+    border-radius: 5px;
 }
 
 /* ---------------------------------------------------- */
