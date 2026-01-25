@@ -11,14 +11,29 @@ from student.models import Student, Application, ScholarshipApplication
 from .models import EligibilityCheck
 from django.contrib import messages
 
-def review(request, app_id=None):
-    if app_id:
-        app = ScholarshipApplication.objects.filter(id=app_id).first()
-    else:
-        app = ScholarshipApplication.objects.first()
+def review_list(request):
+    applications = ScholarshipApplication.objects.all().order_by('submitted_date')
     
+    for app in applications:
+        if app.status == 'Approved':
+            app.dashboard_status = 'Approved'
+            app.dashboard_class = 'approved'
+        elif app.status == 'Rejected':
+            app.dashboard_status = 'Rejected'
+            app.dashboard_class = 'rejected'
+        elif f'review_{app.id}' in request.session:
+            app.dashboard_status = 'In Progress'
+            app.dashboard_class = 'in-progress'
+        else:
+            app.dashboard_status = 'To Review'
+            app.dashboard_class = 'to-review'
+            
+    return render(request, "reviewer/review_list.html", {'applications': applications})
+
+def review_detail(request, app_id):
+    app = ScholarshipApplication.objects.filter(id=app_id).first()
     if not app:
-        return redirect('reviewer')
+        return redirect('review')
 
     if request.method == "POST":
         data = request.session.get(f'review_{app.id}', {})
@@ -273,23 +288,30 @@ def details(request):
     return render(request, "reviewer/reviewScholarship.html", {})
 
 def index(request):
-    applications = ScholarshipApplication.objects.all().order_by('submitted_date')
-    
-    for app in applications:
-        if app.status == 'Approved':
-            app.dashboard_status = 'Approved'
-            app.dashboard_class = 'approved'
-        elif app.status == 'Rejected':
-            app.dashboard_status = 'Rejected'
-            app.dashboard_class = 'rejected'
-        elif f'review_{app.id}' in request.session:
-            app.dashboard_status = 'In Progress'
-            app.dashboard_class = 'in-progress'
-        else:
-            app.dashboard_status = 'To Review'
-            app.dashboard_class = 'to-review'
-            
-    return render(request, "reviewer/reviewer.html", {'applications': applications})
+    return render(request, "reviewer/reviewer.html", {})
+
+def review(request, app_id=None):
+    if app_id:
+        app = ScholarshipApplication.objects.filter(id=app_id).first()
+    else:
+        # If no ID, render the list view
+        applications = ScholarshipApplication.objects.all().order_by('submitted_date')
+        
+        for app in applications:
+            if app.status == 'Approved':
+                app.dashboard_status = 'Approved'
+                app.dashboard_class = 'approved'
+            elif app.status == 'Rejected':
+                app.dashboard_status = 'Rejected'
+                app.dashboard_class = 'rejected'
+            elif f'review_{app.id}' in request.session:
+                app.dashboard_status = 'In Progress'
+                app.dashboard_class = 'in-progress'
+            else:
+                app.dashboard_status = 'To Review'
+                app.dashboard_class = 'to-review'
+                
+        return render(request, "reviewer/review_list.html", {'applications': applications})
 
 
 class ChartData(APIView):
