@@ -104,6 +104,8 @@ class ScholarshipApplication(models.Model):
     
     ea_form = models.FileField(upload_to='ea_forms/')
     payslip = models.FileField(upload_to='payslips/')
+    
+    submitted_date = models.DateField(default=timezone.now)
 
     class Meta:
         db_table = 'student_scholarship_application'

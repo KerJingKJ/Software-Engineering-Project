@@ -144,38 +144,82 @@ def review_step3(request, app_id):
     data = request.session.get(f'review_{app.id}', {})
     
     score = 0
-    if data.get('academic_elite'): score += 30
-    elif data.get('academic_superior'): score += 25
-    elif data.get('academic_competent'): score += 20
-    elif data.get('academic_borderline'): score += 15
+    eligibility_checked = (
+        data.get('citizenship_check') and 
+        data.get('programme_level_check') and 
+        (data.get('exam_foundation_spm') or data.get('exam_degree_stpm_uec') or data.get('exam_degree_matriculation')) and
+        (data.get('grade_spm') or data.get('grade_stpm') or data.get('grade_uec') or data.get('grade_foundation')) and
+        data.get('documents_verified')
+    )
+    if eligibility_checked:
+        score += 5
+
+    if data.get('integrity_income_check'):
+        score += 5
+
+    if data.get('academic_elite'):
+        score += 30
+    elif data.get('academic_superior'):
+        score += 22
+    elif data.get('academic_competent'):
+        score += 15
+    elif data.get('academic_borderline'):
+        score += 8
     
-    if data.get('rigor_best_student'): score += 5
-    if data.get('rigor_competitions'): score += 5
+    if data.get('rigor_best_student'):
+        score += 5
+    if data.get('rigor_competitions'):
+        score += 5
     
-    if data.get('leadership_leader'): score += 20
-    elif data.get('leadership_subleader'): score += 15
-    elif data.get('leadership_secretary'): score += 10
-    elif data.get('leadership_committee'): score += 5
-    elif data.get('leadership_member'): score += 2
+    leadership_score = 0
+    if data.get('leadership_leader'):
+        leadership_score += 12
+    elif data.get('leadership_subleader'):
+        leadership_score += 9
+    elif data.get('leadership_secretary'):
+        leadership_score += 7
+    elif data.get('leadership_committee'):
+        leadership_score += 5
+    elif data.get('leadership_member'):
+        leadership_score += 2
     
-    if data.get('competition_national'): score += 20
-    elif data.get('competition_state'): score += 15
-    elif data.get('competition_university'): score += 10
-    elif data.get('competition_participant'): score += 5
+    if data.get('competition_national'):
+        leadership_score += 8
+    elif data.get('competition_state'):
+        leadership_score += 6
+    elif data.get('competition_university'):
+        leadership_score += 4
+    elif data.get('competition_participant'):
+        leadership_score += 2
     
-    if data.get('essay_compelling'): score += 10
-    elif data.get('essay_generic'): score += 5
+    score += min(leadership_score, 20)
     
+    financial_score = 0
     fp = data.get('financial_priority')
-    if fp == '4': score += 10
-    elif fp == '3': score += 8
-    elif fp == '2': score += 5
-    elif fp == '1': score += 2
+    if fp == '4':
+        financial_score += 15
+    elif fp == '3':
+        financial_score += 11
+    elif fp == '2':
+        financial_score += 7
+    elif fp == '1':
+        financial_score += 3
     
-    if data.get('hardship_single_income'): score += 2.5
-    if data.get('hardship_large_family'): score += 2.5
-    if data.get('hardship_retiree'): score += 2.5
-    if data.get('hardship_medical'): score += 2.5
+    hardship_indicator = (
+        data.get('hardship_single_income') or 
+        data.get('hardship_large_family') or 
+        data.get('hardship_retiree') or 
+        data.get('hardship_medical')
+    )
+    if hardship_indicator:
+        financial_score += 5
+    
+    score += min(financial_score, 20)
+    
+    if data.get('essay_compelling'):
+        score += 10
+    elif data.get('essay_generic'):
+        score += 5
     
     total_score = int(score)
 
@@ -188,21 +232,28 @@ def review_step3(request, app_id):
             return redirect('review_step2', app_id=app.id)
 
         if 'save' in request.POST or 'approve' in request.POST or 'reject' in request.POST:
+            print(f"DEBUG: Processing form submission. POST keys: {request.POST.keys()}")
+            
             ec, _ = EligibilityCheck.objects.get_or_create(application=app)
             for key, val in data.items():
                 if hasattr(ec, key):
                     setattr(ec, key, val)
             ec.total_marks = total_score
             ec.save()
+            print("DEBUG: EligibilityCheck saved.")
             
             if 'approve' in request.POST:
-                app.status = "Approved"
-                app.save()
+                print("DEBUG: Approving application...")
+                ScholarshipApplication.objects.filter(id=app.id).update(status='Approved')
+                # app.status = "Approved"
+                # app.save()
+                print(f"DEBUG: Application approved via update().")
                 messages.success(request, f"Application for {app.name} has been APPROVED and saved.")
                 return redirect('reviewer')
             elif 'reject' in request.POST:
-                app.status = "Rejected"
-                app.save()
+                ScholarshipApplication.objects.filter(id=app.id).update(status='Rejected')
+                # app.status = "Rejected"
+                # app.save()
                 messages.error(request, f"Application for {app.name} has been REJECTED.")
                 return redirect('reviewer')
             else:
@@ -222,7 +273,23 @@ def details(request):
     return render(request, "reviewer/reviewScholarship.html", {})
 
 def index(request):
-    return render(request, "reviewer/reviewer.html", {})
+    applications = ScholarshipApplication.objects.all().order_by('submitted_date')
+    
+    for app in applications:
+        if app.status == 'Approved':
+            app.dashboard_status = 'Approved'
+            app.dashboard_class = 'approved'
+        elif app.status == 'Rejected':
+            app.dashboard_status = 'Rejected'
+            app.dashboard_class = 'rejected'
+        elif f'review_{app.id}' in request.session:
+            app.dashboard_status = 'In Progress'
+            app.dashboard_class = 'in-progress'
+        else:
+            app.dashboard_status = 'To Review'
+            app.dashboard_class = 'to-review'
+            
+    return render(request, "reviewer/reviewer.html", {'applications': applications})
 
 
 class ChartData(APIView):
