@@ -1,4 +1,4 @@
-# forms.py
+
 from django import forms
 from .models import Application
 from datetime import date
@@ -187,6 +187,7 @@ class ApplicationForm(forms.ModelForm):
                 field.widget.attrs['required'] = 'required'
         
         # Make status hidden for new applications (students shouldn't set this)
+        
         if not self.instance.pk:
             # Exclude status field entirely for new applications
             if 'status' in self.fields:
@@ -213,6 +214,11 @@ class ApplicationForm(forms.ModelForm):
         if age and (age < 0 or age > 150):
             raise forms.ValidationError("Please enter a valid age.")
         return age
+    def clean_submitted_date(self):
+        submitted_date = self.cleaned_data.get('submitted_date')
+        if submitted_date and submitted_date > date.today():
+            raise forms.ValidationError("Submitted date cannot be in the future.")
+        return submitted_date
     
     def clean(self):
         cleaned_data = super().clean()
@@ -227,3 +233,35 @@ class ApplicationForm(forms.ModelForm):
                 raise forms.ValidationError("Age doesn't match the date of birth provided.")
         
         return cleaned_data
+        if interview_status == 'Completed' and status != 'Approved':
+            raise forms.ValidationError("Interview must be completed for approved applications.")
+        
+        return cleaned_data
+    
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        
+        
+        if not instance.submitted_date:
+            instance.submitted_date = date.today()
+        
+        
+        if not instance.pk: 
+            instance.status = 'Pending'
+        
+        if commit:
+            instance.save()
+        return instance
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

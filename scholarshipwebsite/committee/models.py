@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-# Create your models here.
+
 class Scholarship(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
@@ -24,6 +24,7 @@ class Scholarship(models.Model):
         return self.name
 
 
+<<<<<<< HEAD
 # class ScholarshipApplication(models.Model):
 #     STATUS_CHOICES = [
 #         ('Pending', 'Pending'),
@@ -111,6 +112,9 @@ class Scholarship(models.Model):
 #     def __str__(self):
 #         return f"{self.name} ({self.relationship}) - {self.application.name}"
 # Import ScholarshipApplication and Guardian from student models
+=======
+
+>>>>>>> f20e903 (feat: Implement initial core features for the scholarship website, including user authentication, student profiles, and committee/reviewer modules.)
 from student.models import ScholarshipApplication, Guardian
 
 
@@ -157,7 +161,7 @@ class Interview(models.Model):
 #     approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 =======
 class ApprovedApplication(models.Model):
-    """Stores approved student applications with interview details"""
+    
     original_application = models.ForeignKey(ScholarshipApplication, on_delete=models.SET_NULL, null=True, blank=True)
     
     scholarship_name = models.CharField(max_length=200)

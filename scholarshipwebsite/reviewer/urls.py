@@ -13,10 +13,10 @@ urlpatterns = [
     path('logout/', login_views.logout_view, name='logout'),
     path("", landingpage_views.index, name='landingpage'),
 
-    #Manage Account URL
+    
     path('changepassword/', login_views.change_password, name='reviewer_change_password'),
     path('changesecurityquestion/', login_views.update_security_questions, name='reviewer_update_security_questions'),
 
-    #Dashboard
+    
     path('api/', views.ChartData.as_view(), name='api_data'),
 ]
