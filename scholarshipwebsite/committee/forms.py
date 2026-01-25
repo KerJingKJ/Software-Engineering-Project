@@ -17,7 +17,7 @@ class ScholarshipForm(forms.ModelForm):
 
     class Meta:
         model = Scholarship
-        fields = ['name', 'description', 'criteria', 'deadline'] # removed open_for
+        fields = ['name', 'description', 'criteria', 'deadline'] 
         widgets = {
             'deadline': forms.DateInput(attrs={'type': 'date'}),
         }
@@ -25,7 +25,7 @@ class ScholarshipForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ScholarshipForm, self).__init__(*args, **kwargs)
         if self.instance.pk and self.instance.open_for:
-            # Try to split open_for assuming format "Type, Level"
+            
             parts = self.instance.open_for.split(', ')
             if len(parts) >= 2:
                 self.fields['student_type'].initial = parts[0]
@@ -34,10 +34,10 @@ class ScholarshipForm(forms.ModelForm):
     def clean_name(self):
         name = self.cleaned_data.get('name')
         if name:
-            # Check if a scholarship with this name exists
+            
             qs = Scholarship.objects.filter(name=name)
             
-            # If editing an existing instance, exclude it from the check
+            
             if self.instance.pk:
                 qs = qs.exclude(pk=self.instance.pk)
             
@@ -56,7 +56,7 @@ class ScholarshipForm(forms.ModelForm):
         instance = super(ScholarshipForm, self).save(commit=False)
         student_type = self.cleaned_data.get('student_type')
         education_level = self.cleaned_data.get('education_level')
-        # Combine the fields
+        
         instance.open_for = f"{student_type}, {education_level}"
         
         if commit:

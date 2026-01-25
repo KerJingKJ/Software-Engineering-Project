@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-# Create your models here.
+
 class Scholarship(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
@@ -24,7 +24,7 @@ class Scholarship(models.Model):
         return self.name
 
 
-# Import from student.models after Scholarship is defined
+
 from student.models import ScholarshipApplication, Guardian
 
 
@@ -39,7 +39,7 @@ class Interview(models.Model):
         return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"
 
 class ApprovedApplication(models.Model):
-    """Stores approved student applications with interview details"""
+    
     original_application = models.ForeignKey(ScholarshipApplication, on_delete=models.SET_NULL, null=True, blank=True)
     
     scholarship_name = models.CharField(max_length=200)

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.generic import View
- 
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -9,142 +9,233 @@ from django.db.models import Count
 from committee.models import Scholarship
 from student.models import Student, Application, ScholarshipApplication
 from .models import EligibilityCheck
+from django.contrib import messages
 
-def review(response, app_id=None):
+def review(request, app_id=None):
     if app_id:
         app = ScholarshipApplication.objects.filter(id=app_id).first()
     else:
         app = ScholarshipApplication.objects.first()
     
-    eligibility = None
-    if app:
-        eligibility, created = EligibilityCheck.objects.get_or_create(application=app)
+    if not app:
+        return redirect('reviewer')
 
-        if response.method == "POST":
-            eligibility.citizenship_check = response.POST.get('citizenship_check') == 'on'
-            eligibility.programme_level_check = response.POST.get('programme_level_check') == 'on'
-            
-            eligibility.exam_foundation_spm = response.POST.get('exam_foundation_spm') == 'on'
-            eligibility.exam_degree_stpm_uec = response.POST.get('exam_degree_stpm_uec') == 'on'
-            eligibility.exam_degree_matriculation = response.POST.get('exam_degree_matriculation') == 'on'
-            
-            eligibility.grade_spm = response.POST.get('grade_spm') == 'on'
-            eligibility.grade_stpm = response.POST.get('grade_stpm') == 'on'
-            eligibility.grade_uec = response.POST.get('grade_uec') == 'on'
-            eligibility.grade_foundation = response.POST.get('grade_foundation') == 'on'
-            
-            eligibility.documents_verified = response.POST.get('documents_verified') == 'on'
-            
-            # Qualitative Scoring Matrix - A. Academic Excellence
-            eligibility.academic_borderline = response.POST.get('academic_borderline') == 'on'
-            eligibility.academic_competent = response.POST.get('academic_competent') == 'on'
-            eligibility.academic_superior = response.POST.get('academic_superior') == 'on'
-            eligibility.academic_elite = response.POST.get('academic_elite') == 'on'
-            
-            # Qualitative Scoring Matrix - B. Academic Rigor & Awards
-            eligibility.rigor_best_student = response.POST.get('rigor_best_student') == 'on'
-            eligibility.rigor_competitions = response.POST.get('rigor_competitions') == 'on'
-            eligibility.rigor_none = response.POST.get('rigor_none') == 'on'
-            
-            # Qualitative Scoring Matrix - B. Co-Curricular & Leadership
-            eligibility.leadership_leader = response.POST.get('leadership_leader') == 'on'
-            eligibility.leadership_subleader = response.POST.get('leadership_subleader') == 'on'
-            eligibility.leadership_secretary = response.POST.get('leadership_secretary') == 'on'
-            eligibility.leadership_committee = response.POST.get('leadership_committee') == 'on'
-            eligibility.leadership_member = response.POST.get('leadership_member') == 'on'
-            
-            # B. Co-Curricular & Leadership - 2) Competition/Event Achievement
-            eligibility.competition_national = response.POST.get('competition_national') == 'on'
-            eligibility.competition_state = response.POST.get('competition_state') == 'on'
-            eligibility.competition_university = response.POST.get('competition_university') == 'on'
-            eligibility.competition_participant = response.POST.get('competition_participant') == 'on'
-            
-            # C. Personal Statement / Essay Quality
-            eligibility.essay_compelling = response.POST.get('essay_compelling') == 'on'
-            eligibility.essay_generic = response.POST.get('essay_generic') == 'on'
-            eligibility.essay_poor = response.POST.get('essay_poor') == 'on'
-            
-            eligibility.save()
-            return redirect('review_step2', app_id=app.id)
-
-    return render(response, "reviewer/reviewScholarship.html", {'app': app, 'eligibility': eligibility})
-
-
-def review_step2(response, app_id):
-    app = ScholarshipApplication.objects.filter(id=app_id).first()
-    eligibility, created = EligibilityCheck.objects.get_or_create(application=app)
-    print(f"DEBUG: Eligibility={eligibility}, Integrity={getattr(eligibility, 'integrity_income_check', 'MISSING')}")
+    if request.method == "POST":
+        data = request.session.get(f'review_{app.id}', {})
+        
+        step1_fields = [
+            'citizenship_check', 'programme_level_check', 'exam_foundation_spm',
+            'exam_degree_stpm_uec', 'exam_degree_matriculation', 'grade_spm',
+            'grade_stpm', 'grade_uec', 'grade_foundation', 'documents_verified',
+            'academic_borderline', 'academic_competent', 'academic_superior', 'academic_elite',
+            'rigor_best_student', 'rigor_competitions', 'rigor_none',
+            'leadership_leader', 'leadership_subleader', 'leadership_secretary',
+            'leadership_committee', 'leadership_member', 'competition_national',
+            'competition_state', 'competition_university', 'competition_participant'
+        ]
+        
+        for f in step1_fields:
+            data[f] = request.POST.get(f) == 'on'
+        
+        request.session[f'review_{app.id}'] = data
+        messages.success(request, "Step 1 progress cached.")
+        return redirect('review_step2', app_id=app.id)
     
-    if response.method == "POST":
-        eligibility.integrity_income_check = response.POST.get('integrity_income_check') == 'on'
-        
-        eligibility.financial_priority = response.POST.get('financial_priority')
-        
-        eligibility.hardship_single_income = response.POST.get('hardship_single_income') == 'on'
-        eligibility.hardship_large_family = response.POST.get('hardship_large_family') == 'on'
-        eligibility.hardship_retiree = response.POST.get('hardship_retiree') == 'on'
-        eligibility.hardship_medical = response.POST.get('hardship_medical') == 'on'
-        
-        eligibility.save()
-        # Redirect case:
-        if 'previous' in response.POST:
-             return redirect('reviewer_with_id', app_id=app.id)
+    existing_data = request.session.get(f'review_{app.id}')
+    if existing_data is None:
+        ec = EligibilityCheck.objects.filter(application=app).first()
+        if ec:
+            existing_data = {f: getattr(ec, f) for f in [
+                'citizenship_check', 'programme_level_check', 'exam_foundation_spm',
+                'exam_degree_stpm_uec', 'exam_degree_matriculation', 'grade_spm',
+                'grade_stpm', 'grade_uec', 'grade_foundation', 'documents_verified',
+                'academic_borderline', 'academic_competent', 'academic_superior', 'academic_elite',
+                'rigor_best_student', 'rigor_competitions', 'rigor_none',
+                'leadership_leader', 'leadership_subleader', 'leadership_secretary',
+                'leadership_committee', 'leadership_member', 'competition_national',
+                'competition_state', 'competition_university', 'competition_participant'
+            ]}
         else:
-             # Next button was clicked
-             # Ideally redirect to Step 3, but for now we can stay or go back to dashboard/step 3 placeholder
-             # Since User said "Step 3 not done", let's redirect to a placeholder Step 3 or back to Step 2 for now.
-             # Or better, create a temporary Step 3 view/url.
-             # For this task, let's redirect to a simple "Done" or stay on Step 2 with a success message?
-             # The user flow is Step 1 -> Step 2 -> Step 3.
-             # I'll redirect to a "step 3" URL that I haven't implemented yet? 
-             # No, better to redirect to a simple valid placeholder. 
-             # For now, let's assume there is a step 3 coming. I'll make a dummy redirect or just refresh.
-             # Actually, user said "Step 3 will have a save button".
-             # I will redirect to a placeholder step 3 route.
-             return redirect('review_step3', app_id=app.id)
+            existing_data = {}
 
     context = {
         'app': app,
-        'eligibility': eligibility,
-        'guardians': app.guardians.all(),
-        'integrity_checked': getattr(eligibility, 'integrity_income_check', False),
-        'financial_priority': getattr(eligibility, 'financial_priority', None),
-        'hardship_single': getattr(eligibility, 'hardship_single_income', False),
-        'hardship_large': getattr(eligibility, 'hardship_large_family', False),
-        'hardship_retiree': getattr(eligibility, 'hardship_retiree', False),
-        'hardship_medical': getattr(eligibility, 'hardship_medical', False),
+        'data': existing_data,
+        'c_attr': 'checked' if existing_data.get('citizenship_check') else '',
+        'pl_attr': 'checked' if existing_data.get('programme_level_check') else '',
+        'efs_attr': 'checked' if existing_data.get('exam_foundation_spm') else '',
+        'eds_attr': 'checked' if existing_data.get('exam_degree_stpm_uec') else '',
+        'edm_attr': 'checked' if existing_data.get('exam_degree_matriculation') else '',
+        'gspm_attr': 'checked' if existing_data.get('grade_spm') else '',
+        'gstpm_attr': 'checked' if existing_data.get('grade_stpm') else '',
+        'guec_attr': 'checked' if existing_data.get('grade_uec') else '',
+        'gf_attr': 'checked' if existing_data.get('grade_foundation') else '',
+        'dv_attr': 'checked' if existing_data.get('documents_verified') else '',
+        'ab_attr': 'checked' if existing_data.get('academic_borderline') else '',
+        'ac_attr': 'checked' if existing_data.get('academic_competent') else '',
+        'as_attr': 'checked' if existing_data.get('academic_superior') else '',
+        'ae_attr': 'checked' if existing_data.get('academic_elite') else '',
+        'rbs_attr': 'checked' if existing_data.get('rigor_best_student') else '',
+        'rc_attr': 'checked' if existing_data.get('rigor_competitions') else '',
+        'rn_attr': 'checked' if existing_data.get('rigor_none') else '',
+        'll_attr': 'checked' if existing_data.get('leadership_leader') else '',
+        'ls_attr': 'checked' if existing_data.get('leadership_subleader') else '',
+        'lsec_attr': 'checked' if existing_data.get('leadership_secretary') else '',
+        'lcom_attr': 'checked' if existing_data.get('leadership_committee') else '',
+        'lm_attr': 'checked' if existing_data.get('leadership_member') else '',
+        'cn_attr': 'checked' if existing_data.get('competition_national') else '',
+        'cs_attr': 'checked' if existing_data.get('competition_state') else '',
+        'cu_attr': 'checked' if existing_data.get('competition_university') else '',
+        'cp_attr': 'checked' if existing_data.get('competition_participant') else '',
     }
-    return render(response, "reviewer/review_step2.html", context)
-
-def review_step3(response, app_id):
-      app = ScholarshipApplication.objects.filter(id=app_id).first()
-      return HttpResponse("<h1>Step 3: Personal Statement / Essay Quality (Coming Soon)</h1>")
+    return render(request, "reviewer/reviewScholarship.html", context)
 
 
-def details(response):
-    return render(response, "reviewer/reviewScholarship.html", {})
+def review_step2(request, app_id):
+    app = ScholarshipApplication.objects.get(id=app_id)
+    data = request.session.get(f'review_{app.id}', {})
+    
+    if request.method == "POST":
+        fields = [
+            'integrity_income_check', 'hardship_single_income', 'hardship_large_family',
+            'hardship_retiree', 'hardship_medical', 'essay_compelling', 'essay_generic', 'essay_poor'
+        ]
+        for f in fields:
+            data[f] = request.POST.get(f) == 'on'
+        
+        data['financial_priority'] = request.POST.get('financial_priority')
+        
+        request.session[f'review_{app.id}'] = data
+        messages.success(request, "Step 2 progress cached.")
+        
+        if 'previous' in request.POST:
+            return redirect('reviewer_with_id', app_id=app.id)
+        return redirect('review_step3', app_id=app.id)
 
-def index(response):
-    return render(response, "reviewer/reviewer.html", {})
+    guardians = app.guardians.all()
+    total_income = sum(g.monthly_income for g in guardians)
+    family_members = guardians.count() + 1
+    pci = total_income / family_members if family_members > 0 else 0
+
+    context = {
+        'app': app,
+        'data': data,
+        'total_income_str': f"{total_income:,.2f}",
+        'family_count': family_members,
+        'pci_str': f"{pci:,.2f}",
+        'integrity_attr': 'checked' if data.get('integrity_income_check') else '',
+        'fp_1_attr': 'checked' if data.get('financial_priority') == '1' else '',
+        'fp_2_attr': 'checked' if data.get('financial_priority') == '2' else '',
+        'fp_3_attr': 'checked' if data.get('financial_priority') == '3' else '',
+        'fp_4_attr': 'checked' if data.get('financial_priority') == '4' else '',
+        'hs_attr': 'checked' if data.get('hardship_single_income') else '',
+        'hl_attr': 'checked' if data.get('hardship_large_family') else '',
+        'hr_attr': 'checked' if data.get('hardship_retiree') else '',
+        'hm_attr': 'checked' if data.get('hardship_medical') else '',
+        'ec_attr': 'checked' if data.get('essay_compelling') else '',
+        'eg_attr': 'checked' if data.get('essay_generic') else '',
+        'ep_attr': 'checked' if data.get('essay_poor') else '',
+    }
+    return render(request, "reviewer/review_step2.html", context)
 
 
-## using rest_framework classes
+def review_step3(request, app_id):
+    app = ScholarshipApplication.objects.get(id=app_id)
+    data = request.session.get(f'review_{app.id}', {})
+    
+    score = 0
+    if data.get('academic_elite'): score += 30
+    elif data.get('academic_superior'): score += 25
+    elif data.get('academic_competent'): score += 20
+    elif data.get('academic_borderline'): score += 15
+    
+    if data.get('rigor_best_student'): score += 5
+    if data.get('rigor_competitions'): score += 5
+    
+    if data.get('leadership_leader'): score += 20
+    elif data.get('leadership_subleader'): score += 15
+    elif data.get('leadership_secretary'): score += 10
+    elif data.get('leadership_committee'): score += 5
+    elif data.get('leadership_member'): score += 2
+    
+    if data.get('competition_national'): score += 20
+    elif data.get('competition_state'): score += 15
+    elif data.get('competition_university'): score += 10
+    elif data.get('competition_participant'): score += 5
+    
+    if data.get('essay_compelling'): score += 10
+    elif data.get('essay_generic'): score += 5
+    
+    fp = data.get('financial_priority')
+    if fp == '4': score += 10
+    elif fp == '3': score += 8
+    elif fp == '2': score += 5
+    elif fp == '1': score += 2
+    
+    if data.get('hardship_single_income'): score += 2.5
+    if data.get('hardship_large_family'): score += 2.5
+    if data.get('hardship_retiree'): score += 2.5
+    if data.get('hardship_medical'): score += 2.5
+    
+    total_score = int(score)
+
+    if request.method == "POST":
+        comment = request.POST.get('reviewer_comment', '')
+        data['reviewer_comment'] = comment
+        request.session[f'review_{app.id}'] = data
+
+        if 'previous' in request.POST:
+            return redirect('review_step2', app_id=app.id)
+
+        if 'save' in request.POST or 'approve' in request.POST or 'reject' in request.POST:
+            ec, _ = EligibilityCheck.objects.get_or_create(application=app)
+            for key, val in data.items():
+                if hasattr(ec, key):
+                    setattr(ec, key, val)
+            ec.total_marks = total_score
+            ec.save()
+            
+            if 'approve' in request.POST:
+                app.status = "Approved"
+                app.save()
+                messages.success(request, f"Application for {app.name} has been APPROVED and saved.")
+                return redirect('reviewer')
+            elif 'reject' in request.POST:
+                app.status = "Rejected"
+                app.save()
+                messages.error(request, f"Application for {app.name} has been REJECTED.")
+                return redirect('reviewer')
+            else:
+                messages.success(request, "Progress permanently saved to database.")
+                return redirect('review_step3', app_id=app.id)
+
+    ec_db = EligibilityCheck.objects.filter(application=app).first()
+    context = {
+        'app': app,
+        'eligibility': {'reviewer_comment': data.get('reviewer_comment', ec_db.reviewer_comment if ec_db else '')},
+        'score': total_score,
+    }
+    return render(request, "reviewer/review_step3.html", context)
+
+
+def details(request):
+    return render(request, "reviewer/reviewScholarship.html", {})
+
+def index(request):
+    return render(request, "reviewer/reviewer.html", {})
+
+
 class ChartData(APIView):
     authentication_classes = []
     permission_classes = []
  
-    def get(self, request, format = None):
+    def get(self, request, format=None):
         scholarships = Scholarship.objects.annotate(
             app_count=Count('applications')
         )
-
-        labels = [s.name for s in scholarships]
-        chartLabel = "Scholarship Application Volume"
-        chartdata = [s.app_count for s in scholarships]
-        total_applications = Application.objects.count()
-        data ={
-                     "labels":labels,
-                     "chartLabel":chartLabel,
-                     "chartdata":chartdata,
-             }
+        data = {
+            "labels": [s.name for s in scholarships],
+            "chartLabel": "Scholarship Application Volume",
+            "chartdata": [s.app_count for s in scholarships],
+        }
         return Response(data)

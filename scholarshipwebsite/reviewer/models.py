@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
 from student.models import ScholarshipApplication
 
 class EligibilityCheck(models.Model):
@@ -8,12 +8,12 @@ class EligibilityCheck(models.Model):
     citizenship_check = models.BooleanField(default=False)
     programme_level_check = models.BooleanField(default=False)
     
-    # Qualifying Exam
+    
     exam_foundation_spm = models.BooleanField(default=False)
     exam_degree_stpm_uec = models.BooleanField(default=False)
     exam_degree_matriculation = models.BooleanField(default=False)
     
-    # Minimum Grades
+    
     grade_spm = models.BooleanField(default=False)
     grade_stpm = models.BooleanField(default=False)
     grade_uec = models.BooleanField(default=False)
@@ -21,41 +21,41 @@ class EligibilityCheck(models.Model):
     
     documents_verified = models.BooleanField(default=False)
     
-    # Qualitative Scoring Matrix - A. Academic Excellence
-    academic_borderline = models.BooleanField(default=False)  # CGPA 3.90-3.91 / Exactly 4As / 8As (UEC) / Exactly 9As (Mix of A/A-)
-    academic_competent = models.BooleanField(default=False)   # CGPA 3.92-3.94 / Exactly 9As (High A count)
-    academic_superior = models.BooleanField(default=False)    # CGPA 3.95-3.99 / Mix of A+ and A (9+ As)
-    academic_elite = models.BooleanField(default=False)       # CGPA 4.00 / 4 A* (A-Level) / Straight A+ (SPM)
     
-    # Qualitative Scoring Matrix - B. Academic Rigor & Awards
-    rigor_best_student = models.BooleanField(default=False)   # Received "Best Student" / Dean's List / Book Prize award
-    rigor_competitions = models.BooleanField(default=False)   # Participated in National/State Academic Competitions
-    rigor_none = models.BooleanField(default=False)           # None of the above
+    academic_borderline = models.BooleanField(default=False)  
+    academic_competent = models.BooleanField(default=False)   
+    academic_superior = models.BooleanField(default=False)    
+    academic_elite = models.BooleanField(default=False)       
     
-    # Qualitative Scoring Matrix - B. Co-Curricular & Leadership
-    # Club/Society/Event Highest Position
-    leadership_leader = models.BooleanField(default=False)        # Leader (President, Captain, Founder)
-    leadership_subleader = models.BooleanField(default=False)     # Sub-leader (Vice-President, Vice-Captain, Co-Founder)
-    leadership_secretary = models.BooleanField(default=False)     # Secretary/Treasurer
-    leadership_committee = models.BooleanField(default=False)     # Committee Chairs (Social, Marketing, Events)
-    leadership_member = models.BooleanField(default=False)        # Member
     
-    # B. Co-Curricular & Leadership - 2) Competition/Event Achievement
-    competition_national = models.BooleanField(default=False)     # National Level
-    competition_state = models.BooleanField(default=False)        # State Level
-    competition_university = models.BooleanField(default=False)   # University/District Level
-    competition_participant = models.BooleanField(default=False)  # Participant
+    rigor_best_student = models.BooleanField(default=False)   
+    rigor_competitions = models.BooleanField(default=False)   
+    rigor_none = models.BooleanField(default=False)           
+    
+    
+    
+    leadership_leader = models.BooleanField(default=False)        
+    leadership_subleader = models.BooleanField(default=False)     
+    leadership_secretary = models.BooleanField(default=False)     
+    leadership_committee = models.BooleanField(default=False)     
+    leadership_member = models.BooleanField(default=False)        
+    
+    
+    competition_national = models.BooleanField(default=False)     
+    competition_state = models.BooleanField(default=False)        
+    competition_university = models.BooleanField(default=False)   
+    competition_participant = models.BooleanField(default=False)  
 
-    # Qualitative Scoring Matrix - C. Personal Statement / Essay Quality
-    essay_compelling = models.BooleanField(default=False)     # Unique story, clear goals, specific alignment
-    essay_generic = models.BooleanField(default=False)        # Standard answers, lacks specific examples
-    essay_poor = models.BooleanField(default=False)           # Grammatical errors, off-topic, or too short
+    
+    essay_compelling = models.BooleanField(default=False)     
+    essay_generic = models.BooleanField(default=False)        
+    essay_poor = models.BooleanField(default=False)           
 
-    # Step 2: Financial & Family Background Review
-    # 1. Data Integrity Check
-    integrity_income_check = models.BooleanField(default=False) # Income Proof Match
+    
+    
+    integrity_income_check = models.BooleanField(default=False) 
 
-    # 2. Financial Priority Scoring
+    
     FINANCIAL_PRIORITY_CHOICES = [
         ('1', '(1) Low Need (T20)'),
         ('2', '(2) Moderate Need (M40)'),
@@ -64,11 +64,15 @@ class EligibilityCheck(models.Model):
     ]
     financial_priority = models.CharField(max_length=2, choices=FINANCIAL_PRIORITY_CHOICES, blank=True, null=True)
 
-    # 3. Hardship & Burden Indicators
+    
     hardship_single_income = models.BooleanField(default=False)
     hardship_large_family = models.BooleanField(default=False)
     hardship_retiree = models.BooleanField(default=False)
     hardship_medical = models.BooleanField(default=False)
+
+    
+    total_marks = models.IntegerField(default=0)
+    reviewer_comment = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"Eligibility Check for {self.application.name}"

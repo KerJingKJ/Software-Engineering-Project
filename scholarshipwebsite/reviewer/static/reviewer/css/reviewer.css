@@ -6,12 +6,12 @@ html{
 .navbar {
   background-color: whitesmoke;
   display: flex;
-  justify-content: space-between; /* This pushes left and right groups apart */
+  justify-content: space-between; 
   align-items: center;
   padding: 0 20px;
-  position: fixed; /* Set the navbar to fixed position */
-  top: 0; /* Position the navbar at the top of the page */
-  width: 98%; /* Full width */
+  position: fixed; 
+  top: 0; 
+  width: 98%; 
   margin-left: -10px;
 }
 
@@ -59,7 +59,7 @@ html{
   background-color:#EEF1F1;
   min-width: 200px;
   border-radius: 15px;
-  right: 0; /* let the content open towards left side*/
+  right: 0; 
 }
 
 .container-fluid{
@@ -91,11 +91,11 @@ html{
 }
 
 #user-icon {
-  margin-right: 20px; /* Space between icon and hamburger */
+  margin-right: 20px; 
 }
 
 #user-icon img {
-    width: 35px; /* Control size explicitly */
+    width: 35px; 
     height: auto;
 }
 

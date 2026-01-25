@@ -3,8 +3,8 @@ html{
     scroll-behavior:smooth;
 }
 
-/* 1. Main Navbar Container */
-/* 1. Main Navbar Container */
+
+
 .navbar {
     background-color: whitesmoke;
     display: flex;
@@ -31,19 +31,17 @@ html{
     padding: 0;
 }
 
-/* Remove these lines - they're causing the issue */
-/* .nav-list, .nav-right{
-  display: inline-block;
-} */
 
-/* 2. Left Group (Logo + Text) */
+
+
+
 .nav-left {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-/* 4. Text Styling */
+
 .nav-left h3 {
     margin: 0;
     font-size: 1.2rem;
@@ -60,15 +58,15 @@ html{
     cursor: pointer;
 }
 
-/* 5. Keep your existing Dropdown CSS below... */
+
 .dropdown {
     position: relative;
-    width: 35px; /* Adjust width as needed */
+    width: 35px; 
     cursor: pointer;
-    padding: 6px 0; /* Adds clickable area around the bars */
+    padding: 6px 0; 
     margin-right: auto;
 }
-/* ... (rest of your dropdown/bar styles) */
+
 
 .dropdown a{
   display: block;
@@ -84,7 +82,7 @@ html{
   background-color:#EEF1F1;
   min-width: 200px;
   border-radius: 15px;
-  right: 0; /* let the content open towards left side*/
+  right: 0; 
 }
 
 .dropdown:hover .content{
@@ -104,15 +102,15 @@ html{
 
 .bar1, .bar2, .bar3 {
   width: 100%;
-  height: 5px; /* Height of each bar */
-  background-color: #333; /* Color of the bars */
-  margin: 6px 0; /* Space between the bars */
-  transition: 0.4s; /* Smooth transition for potential animations (e.g., hover/click) */
+  height: 5px; 
+  background-color: #333; 
+  margin: 6px 0; 
+  transition: 0.4s; 
 }
 
-/* ---------------------------------------------------- */
-/* STUDENT HOMEPAGE STYLING                             */
-/* ---------------------------------------------------- */
+
+
+
 .container {
   background-color: #034ea1;
   width: 100%;
@@ -126,14 +124,14 @@ html{
     font-weight: 800;
     font-size: 72px;
     line-height: 120%;
-/* or 86px */
+
     display: flex;
     align-items: center;
     text-align: center;
     letter-spacing: -0.03em;
 
-    padding: 20px 20px 0px 30px; /* Top, Right, Bottom=0, Left */
-    margin-bottom: 0; /* Ensure no margin pushes the buttons down */
+    padding: 20px 20px 0px 30px; 
+    margin-bottom: 0; 
     color: #ffffff;
 }
 
@@ -154,7 +152,7 @@ html{
   width: 400px;
   padding: 20px;
   color: white;
-  font-weight: 800; /* Bold text */
+  font-weight: 800; 
   font-size: 20px;
   text-decoration: none;
   border: none;
@@ -174,7 +172,7 @@ html{
   background-color: grey;
 }
 
-/* 1. The Main Card Wrapper */
+
 .card-wrapper {
     width: 98%;
     margin: 30px auto;
@@ -242,9 +240,9 @@ html{
     background-color: #003d82;
 }
 
-/* ---------------------------------------------------- */
-/* SCHOLARSHIP LIST PAGE STYLING                        */
-/* ---------------------------------------------------- */
+
+
+
 
 .list-container {
     width: 95%;
@@ -255,7 +253,7 @@ html{
 }
 
 .page-title {
-    font-size: 50px; /* Large, bold title like in the image */
+    font-size: 50px; 
     font-weight: 600;
     margin-bottom: 30px;
     color: #000;
@@ -263,10 +261,10 @@ html{
     margin-left: 0;
 }
 
-/* Table Styling */
+
 .table-wrapper {
-    overflow-x: auto; /* Allows table to scroll on small screens */
-    border: 1px solid #ccc; /* Outer grey border */
+    overflow-x: auto; 
+    border: 1px solid #ccc; 
     border-radius: 4px;
     width: 100%;
 }
@@ -280,35 +278,35 @@ html{
 .scholarship-table td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #ccc; /* Horizontal lines between rows */
-    border-right: 1px solid #ccc; /* Vertical lines between columns */
+    border-bottom: 1px solid #ccc; 
+    border-right: 1px solid #ccc; 
     vertical-align: top;
     color: #333;
 }
 
-/* Remove right border from the last column */
+
 .scholarship-table th:last-child, 
 .scholarship-table td:last-child {
     border-right: none;
 }
 
-/* Header Styling */
+
 .scholarship-table th {
-    background-color: #f0f0f0; /* Light grey header background */
+    background-color: #f0f0f0; 
     font-weight: 700;
     color: #000;
 }
 
-/* Navigation Buttons at the Bottom */
+
 .action-buttons {
     display: flex;
     justify-content: center;
-    gap: 150px; /* Wide gap between buttons */
+    gap: 150px; 
     margin-top: 40px;
 }
 
 .btn-nav {
-    background-color: #004b93; /* MMU Blue */
+    background-color: #004b93; 
     color: white;
     text-decoration: none;
     padding: 15px 40px;
@@ -319,12 +317,12 @@ html{
 }
 
 .btn-nav:hover {
-    background-color: #00366b; /* Darker blue on hover */
+    background-color: #00366b; 
 }
 
-/* ---------------------------------------------------- */
-/* SCHOLARSHIP DETAIL PAGE STYLING                      */
-/* ---------------------------------------------------- */
+
+
+
 
 .detail-container {
     width: 90%;
@@ -340,7 +338,7 @@ html{
     margin-bottom: 20px;
 }
 
-/* Header with Icon */
+
 .scholarship-header {
     display: flex;
     align-items: center;
@@ -354,15 +352,15 @@ html{
     margin: 0;
 }
 
-/* The Image Styling */
+
 .bookmark-icon {
-    width: 28px;  /* Control the size here */
-    height: auto; /* Keeps the aspect ratio correct */
+    width: 28px;  
+    height: auto; 
     cursor: pointer;
     transition: transform 0.2s ease;
 }
 
-/* Hover effect: Slight zoom */
+
 .bookmark-icon:hover {
     transform: scale(1.1);
 }
@@ -385,33 +383,33 @@ html{
     margin-top: 25px;
 }
 
-/* --- COMPLEX TABLE STYLING --- */
+
 .criteria-table {
     width: 100%;
-    border-collapse: collapse; /* Merges borders */
-    border: 1px solid #0056b3; /* The Blue Outline */
+    border-collapse: collapse; 
+    border: 1px solid #0056b3; 
     margin-bottom: 20px;
-    border-radius: 5px; /* Note: rounded corners on collapsed tables are tricky, usually require a wrapper, but simple border works for now */
+    border-radius: 5px; 
 }
 
 .criteria-table td {
     padding: 15px;
-    border: 1px solid #aaa; /* Inner grey lines */
+    border: 1px solid #aaa; 
     vertical-align: middle;
 }
 
-/* Remove side borders for the outer edges to replicate the 'box' look */
+
 .criteria-table tr:first-child td { border-top: none; }
 .criteria-table tr:last-child td { border-bottom: none; }
 .criteria-table td:first-child { border-left: none; }
 .criteria-table td:last-child { border-right: none; }
 
-/* Column Specifics */
+
 .col-left { width: 40%; }
 .col-center { width: 30%; text-align: center; }
 .col-right { width: 30%; text-align: center; font-size: 1.1rem; }
 
-/* --- NOTES SECTION --- */
+
 .notes-section {
     margin-top: 40px;
 }
@@ -430,11 +428,11 @@ html{
     margin-bottom: 5px;
 }
 
-/* Reuse your existing action-buttons CSS from the previous step */
 
-/* ---------------------------------------------------- */
-/* BOOKMARK PAGE IMPROVEMENTS                           */
-/* ---------------------------------------------------- */
+
+
+
+
 
 .page-subtitle {
     margin-top: -20px;
@@ -443,21 +441,21 @@ html{
     font-size: 1.1rem;
 }
 
-/* Status Badges - Makes "Open" green and "Closed" red */
+
 .status-open {
-    color: #28a745; /* Green */
+    color: #28a745; 
     font-weight: 700;
 }
 
 .status-closed {
-    color: #dc3545; /* Red */
+    color: #dc3545; 
     font-weight: 700;
 }
 
-/* The 'Remove' Button */
+
 .btn-remove {
-    background-color: #ffe6e6; /* Very light red background */
-    color: #d93025; /* Dark red text */
+    background-color: #ffe6e6; 
+    color: #d93025; 
     border: 1px solid #d93025;
     padding: 8px 16px;
     border-radius: 6px;
@@ -467,13 +465,13 @@ html{
 }
 
 .btn-remove:hover {
-    background-color: #d93025; /* Solid red on hover */
+    background-color: #d93025; 
     color: white;
 }
 
-/* ---------------------------------------------------- */
-/* ELIGIBILITY CHECKER PAGE STYLING                     */
-/* ---------------------------------------------------- */
+
+
+
 
 .eligibility-container {
     width: 90%;
@@ -482,13 +480,13 @@ html{
     font-family: 'Inter', sans-serif;
 }
 
-/* Form Layout */
+
 .checker-form {
     margin-bottom: 50px;
 }
 
 .form-group {
-    margin-bottom: 25px; /* Spacing between rows */
+    margin-bottom: 25px; 
 }
 
 .form-group label {
@@ -496,7 +494,7 @@ html{
     font-weight: 600;
     margin-right: 15px;
     display: inline-block;
-    min-width: 250px; /* Aligns dropdowns nicely */
+    min-width: 250px; 
 }
 
 .form-select {
@@ -504,11 +502,11 @@ html{
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 250px; /* Fixed width for dropdowns */
+    width: 250px; 
     background-color: white;
 }
 
-/* The 'Check Eligibility' Button */
+
 .btn-check {
     margin-top: 10px;
     background-color: #004b93;
@@ -526,7 +524,7 @@ html{
     background-color: #00366b;
 }
 
-/* Results Area */
+
 .results-label {
     font-size: 1.3rem;
     font-weight: 700;
@@ -535,14 +533,14 @@ html{
 
 .cards-grid {
     display: flex;
-    gap: 30px; /* Space between cards */
-    flex-wrap: wrap; /* Allows wrapping on small screens */
+    gap: 30px; 
+    flex-wrap: wrap; 
     justify-content: flex-start;
 }
 
-/* Individual Result Cards */
+
 .result-card {
-    border: 2px solid #0056b3; /* MMU Blue Border */
+    border: 2px solid #0056b3; 
     border-radius: 12px;
     width: 250px;
     background-color: white;
@@ -551,16 +549,16 @@ html{
 }
 
 .result-header {
-    background-color: white; /* Header is white with blue border below */
+    background-color: white; 
     padding: 15px;
     font-size: 1.1rem;
     font-weight: 700;
     text-align: center;
-    border-bottom: 2px solid #0056b3; /* The line separating header/body */
+    border-bottom: 2px solid #0056b3; 
 }
 
 .result-body {
-    height: 150px; /* Fixed height like in screenshot */
+    height: 150px; 
     padding: 15px;
     text-align: center;
     display: flex;
@@ -569,9 +567,9 @@ html{
     color: #555;
 }
 
-/* ---------------------------------------------------- */
-/* APPLICATION FORM STYLING                             */
-/* ---------------------------------------------------- */
+
+
+
 
 .form-container {
     width: 100%;
@@ -585,67 +583,67 @@ html{
     margin-bottom: 30px;
 }
 
-/* --- TABS --- */
+
 .tabs-wrapper {
     display: flex;
     width: 100%;
-    border: 3px solid #0056b3; /* Blue border around the whole strip */
+    border: 3px solid #0056b3; 
 }
 
 .tab {
-    flex: 1; /* Makes all tabs equal width */
+    flex: 1; 
     text-align: center;
     padding: 15px;
     font-weight: 600;
     color: #0056b3;
     background-color: white;
     cursor: pointer;
-    border-right: 3px solid #0056b3; /* Divider between tabs */
+    border-right: 3px solid #0056b3; 
 }
 
 .tab:last-child {
     border-right: none;
 }
 
-/* Active Tab Style (Solid Blue) */
+
 .tab.active {
     background-color: #0056b3;
     color: white;
 }
 
 .tab.active:hover {
-    background-color: #00366b; /* A darker shade of blue */
-    color: white; /* Keep text white */
+    background-color: #00366b; 
+    color: white; 
 }
-/* --- FORM FIELDS --- */
+
 .form-content {
     margin-top: 40px;
 }
 
 .form-row {
     display: flex;
-    align-items: center; /* Aligns label and input vertically */
+    align-items: center; 
     margin-bottom: 20px;
     margin-left: 20px;
 }
 
 .form-row label {
-    width: 30%; /* Label takes 30% width */
+    width: 30%; 
     font-weight: 700;
     font-size: 1rem;
     color: #000;
 }
 
 .form-row.align-top {
-    align-items: flex-start; /* This keeps "Highest Qualification" at the top */
+    align-items: flex-start; 
 }
 
-/* Generic Inputs */
+
 .form-input {
-    width: 70%; /* Input takes 70% width */
+    width: 70%; 
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px; /* Rounded corners like image */
+    border-radius: 5px; 
     background-color: #fff;
 }
 
@@ -654,13 +652,13 @@ html{
     border-color: #0056b3;
 }
 
-/* Specific Sizes */
+
 .large-select { width: 400px; }
 .small-input { width: 100px; }
 .small-select { width: 200px; }
 .medium-input { width: 250px; }
 
-/* Date Inputs (DD MM YYYY) */
+
 .date-inputs {
     display: flex;
     gap: 10px;
@@ -674,16 +672,16 @@ html{
     border-radius: 5px;
 }
 
-/* File Upload Button Styling */
+
 .file-input {
     border: 1px solid #999;
     padding: 5px;
-    background-color: #ccc; /* Grey background for button */
+    background-color: #ccc; 
     border-radius: 5px;
     width: auto;
 }
 
-/* Stacked Inputs (Qualification) */
+
 .stacked-inputs {
     width: 70%;
     display: flex;
@@ -698,10 +696,10 @@ html{
     margin-top: 5px;
 }
 
-/* --- NEXT BUTTON --- */
+
 .button-container {
     display: flex;
-    justify-content: flex-end; /* Pushes button to right */
+    justify-content: flex-end; 
     margin-top: 40px;
 }
 
@@ -720,25 +718,25 @@ html{
     background-color: #00366b;
 }
 
-/* ---------------------------------------------------- */
-/* PART 2 & BUTTON UPDATES                              */
-/* ---------------------------------------------------- */
 
-/* Make tabs look like links but without the underline */
+
+
+
+
 .tab {
     text-decoration: none; 
     color: #0056b3;
-    display: block; /* Ensures the whole box is clickable */
+    display: block; 
 }
 
 .tab:hover {
-    background-color: #f0f8ff; /* Light hover effect */
+    background-color: #f0f8ff; 
 }
 
-/* Vertical Form Layout (Label on top of input) */
+
 .form-vertical-row {
     display: flex;
-    flex-direction: column; /* Stack vertically */
+    flex-direction: column; 
     gap: 10px;
     margin-bottom: 30px;
     margin-left: 20px;
@@ -751,47 +749,47 @@ html{
 }
 
 .large-textarea {
-    width: 100%; /* Full width */
-    max-width: 800px; /* Optional limit */
-    resize: vertical; /* User can stretch it down but not sideways */
+    width: 100%; 
+    max-width: 800px; 
+    resize: vertical; 
     padding: 15px;
     font-family: 'Inter', sans-serif;
 }
 
-/* CENTERED BUTTON GROUP */
+
 .button-group-center {
     display: flex;
-    justify-content: center; /* Centers the buttons in the middle of the page */
-    gap: 20px; /* Space between Back and Next buttons */
+    justify-content: center; 
+    gap: 20px; 
     margin-top: 50px;
 }
 
-/* New Back Button Style */
+
 .btn-back {
-    background-color: #6c757d; /* Grey color */
+    background-color: #6c757d; 
     color: white;
     padding: 12px 40px;
     border: none;
     border-radius: 5px;
     font-weight: 700;
     cursor: pointer;
-    text-decoration: none; /* Removes link underline */
+    text-decoration: none; 
     font-size: 1rem;
     display: inline-block;
     transition: background-color 0.2s;
 }
 
 .btn-back:hover {
-    background-color: #5a6268; /* Darker grey on hover */
+    background-color: #5a6268; 
 }
 
-/* ---------------------------------------------------- */
-/* PART 3 & 4 STYLING                                   */
-/* ---------------------------------------------------- */
 
-/* Part 3: Guardian Cards (Blue Background) */
+
+
+
+
 .guardian-card {
-    background-color: #72aee6; /* Light Blue from screenshot */
+    background-color: #72aee6; 
     padding: 25px;
     border-radius: 8px;
     margin-bottom: 30px;
@@ -808,7 +806,7 @@ html{
     font-weight: 600;
 }
 
-/* Part 3: Documents Section (White with Border) */
+
 .docs-section {
     border: 2px solid #0056b3;
     padding: 25px;
@@ -819,7 +817,7 @@ html{
     background-color: white;
 }
 
-/* Part 4: Checkbox Alignment */
+
 .checkbox-container {
     display: flex;
     align-items: center;
@@ -834,9 +832,9 @@ html{
     height: 18px;
     accent-color: #000;
 }
-/* ---------------------------------------------------- */
-/* STATUS PAGE STYLING                                  */
-/* ---------------------------------------------------- */
+
+
+
 
 .status-container {
     width: 90%;
@@ -846,7 +844,7 @@ html{
     text-align: center;
 }
 
-/* Success Header */
+
 .status-header {
     margin-bottom: 50px;
 }
@@ -854,12 +852,12 @@ html{
 .success-icon {
     width: 100px;
     height: 100px;
-    background-color: #28a745; /* Green */
+    background-color: #28a745; 
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px auto; /* Centers the icon */
+    margin: 0 auto 20px auto; 
     box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
 }
 
@@ -869,7 +867,7 @@ html{
     margin-top: -10px;
 }
 
-/* --- PROGRESS BAR (The Stepper) --- */
+
 .progress-track {
     margin-bottom: 50px;
 }
@@ -878,22 +876,22 @@ html{
     counter-reset: step;
     padding: 0;
     display: flex;
-    justify-content: space-between; /* Spreads steps evenly */
+    justify-content: space-between; 
     list-style-type: none;
 }
 
 .progressbar li {
     position: relative;
     text-align: center;
-    width: 25%; /* 4 steps = 25% each */
+    width: 25%; 
     font-size: 0.9rem;
     color: #777;
     font-weight: 600;
 }
 
-/* The Circles */
+
 .progressbar li:before {
-    content: counter(step); /* Numbers 1, 2, 3... */
+    content: counter(step); 
     counter-increment: step;
     width: 30px;
     height: 30px;
@@ -904,28 +902,28 @@ html{
     margin: 0 auto 10px auto;
     border-radius: 50%;
     background-color: white;
-    z-index: 2; /* Sits on top of the line */
+    z-index: 2; 
     position: relative;
 }
 
-/* The Connecting Lines */
+
 .progressbar li:after {
     content: '';
     position: absolute;
     width: 100%;
     height: 2px;
     background-color: #ddd;
-    top: 15px; /* Aligns with middle of circle */
+    top: 15px; 
     left: -50%;
-    z-index: 0; /* Behind the circle */
+    z-index: 0; 
 }
 
-/* First step doesn't need a line to the left */
+
 .progressbar li:first-child:after {
     content: none;
 }
 
-/* ACTIVE STATE (Green) */
+
 .progressbar li.active {
     color: #28a745;
 }
@@ -936,15 +934,15 @@ html{
     color: white;
 }
 
-/* If you want to show completed steps, add a class .completed similar to .active */
 
-/* --- SUMMARY CARD --- */
+
+
 .status-card {
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 30px;
-    text-align: left; /* Text inside card is left-aligned */
+    text-align: left; 
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     margin-bottom: 40px;
 }
@@ -956,7 +954,7 @@ html{
 
 .summary-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two columns */
+    grid-template-columns: 1fr 1fr; 
     gap: 20px;
     margin-top: 20px;
 }
@@ -979,7 +977,7 @@ html{
 
 .status-badge.pending {
     display: inline-block;
-    background-color: #ffc107; /* Yellow/Orange for Pending */
+    background-color: #ffc107; 
     color: #333;
     padding: 5px 12px;
     border-radius: 15px;

@@ -24,25 +24,17 @@ class SignUpForm(forms.Form):
         confirm_password = cleaned_data.get("confirm_password")
 
         if password and confirm_password:
-            # Check if passwords match
             if password != confirm_password:
                 self.add_error('confirm_password', "Passwords do not match.")
 
-            # Check password complexity
-            # 1. At least 8 characters
             if len(password) < 8:
                 self.add_error('password', "Password must be at least 8 characters long.")
             
-            # 2. At least one uppercase letter
             if not any(char.isupper() for char in password):
                 self.add_error('password', "Password must contain at least one uppercase letter.")
 
-            # 3. At least one punctuation/special character
-            # Using checks for non-alphanumeric characters excluding standard spaces if desired, 
-            # or specifically verifying against a set of punctuation.
-            # Here we check for any character that is not a letter or number.
             if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-                 self.add_error('password', "Password must contain at least one special character/punctuation.")
+                self.add_error('password', "Password must contain at least one special character/punctuation.")
 
 
         return cleaned_data

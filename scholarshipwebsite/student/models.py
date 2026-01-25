@@ -1,4 +1,4 @@
-# models.py
+
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -54,7 +54,7 @@ class Student(models.Model):
         return f"Student {self.user.username}"
 
 
-# Import Scholarship from committee - this import is placed here to avoid circular import
+
 from committee.models import Scholarship
 
 
@@ -94,7 +94,7 @@ class ScholarshipApplication(models.Model):
     email_address = models.EmailField()
     highest_qualification = models.CharField(max_length=200)
     
-    # Uploads
+    
     passport_photo = models.ImageField(upload_to='passport_photos/')
     academic_result = models.FileField(upload_to='academic_results/')
     supporting_document = models.FileField(upload_to='supporting_docs/')

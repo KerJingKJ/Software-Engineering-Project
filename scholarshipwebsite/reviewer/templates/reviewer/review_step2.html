@@ -1,7 +1,7 @@
 {% extends 'reviewer/base.html' %}
 {% block content %}
 <style>
-    /* Custom styles for the review page */
+    
     .review-container {
         display: flex;
         flex-direction: row;
@@ -92,7 +92,7 @@
         display: block;
     }
 
-    /* Rubric styles preserved */
+    
     .rubric-section {
         border: 1px solid #7da5d8;
         border-radius: 8px;
@@ -187,7 +187,7 @@
     <h1>Scholarship Review - Step 2</h1>
 
     <div class="review-container">
-        <!-- Left Column: Applicant Form -->
+        
         <div class="column">
             <div class="column-header">Applicant Form</div>
             <div class="scrollable-content">
@@ -199,15 +199,21 @@
 
                     <div class="info-row">
                         <span class="info-label">Relationship:</span>
-                        <div class="info-value">{{ guardian.relationship }}</div>
+                        <div class="info-value">
+                            {{ guardian.relationship }}
+                        </div>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Name:</span>
-                        <div class="info-value">{{ guardian.name }}</div>
+                        <div class="info-value">
+                            {{ guardian.name }}
+                        </div>
                     </div>
                     <div class="info-row">
                         <span class="info-label">IC Number:</span>
-                        <div class="info-value">{{ guardian.ic_no }}</div>
+                        <div class="info-value">
+                            {{ guardian.ic_no }}
+                        </div>
                     </div>
                     <div class="info-row">
                         <span class="info-label" style="width: auto; min-width: 100px;">Date of Birth:</span>
@@ -215,77 +221,210 @@
                             {{ guardian.date_of_birth }}
                         </div>
                         <span class="info-label" style="width: auto; min-width: 40px; margin-right: 10px;">Age:</span>
-                        <div class="info-value" style="width: 60px; flex: none;">{{ guardian.age }}</div>
+                        <div class="info-value" style="width: 60px; flex: none;">
+                            {{ guardian.age }}
+                        </div>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Nationality:</span>
-                        <div class="info-value">{{ guardian.nationality }}</div>
+                        <div class="info-value">
+                            {{ guardian.nationality }}
+                        </div>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Gender:</span>
-                        <div class="info-value">{{ guardian.gender }}</div>
+                        <div class="info-value">
+                            {{ guardian.gender }}
+                        </div>
                     </div>
                     <div class="info-row" style="align-items: flex-start;">
                         <span class="info-label" style="margin-top: 5px;">Address:</span>
-                        <div class="info-value" style="height: auto; min-height: 60px;">{{ guardian.address }}</div>
+                        <div class="info-value" style="height: auto; min-height: 60px;">
+                            {{ guardian.address }}
+                        </div>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Contact number:</span>
-                        <div class="info-value">{{ guardian.contact_number }}</div>
+                        <div class="info-value">
+                            {{ guardian.contact_number }}
+                        </div>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Email Address:</span>
-                        <div class="info-value">{{ guardian.email_address }}</div>
+                        <div class="info-value">
+                            {{ guardian.email_address }}
+                        </div>
                     </div>
                 </div>
                 {% empty %}
                 <p>No Guardian Information Available.</p>
                 {% endfor %}
 
-                <!-- Supporting Documents -->
+                
                 <div class="guardian-card" style="background-color: white; border: 2px solid #2b5797; padding: 15px;">
                     <span class="docs-header">Supporting Documents:</span>
                     <div><strong>Upload</strong></div>
                     <div style="margin-top: 5px;">
                         <strong>EA Form:</strong>
-                        {% if app.ea_form and app.ea_form.name %}
-                        <a href="{{ app.ea_form.url }}" target="_blank">ea.pdf</a>
-                        {% else %}
-                        N/A
-                        {% endif %}
+                        {% if app.ea_form and app.ea_form.name %}<a href="{{ app.ea_form.url }}"
+                            target="_blank">ea.pdf</a>{% else %}N/A{% endif %}
                     </div>
                     <div style="margin-top: 5px;">
                         <strong>Latest 3 months payslip:</strong>
-                        {% if app.payslip and app.payslip.name %}
-                        <a href="{{ app.payslip.url }}" target="_blank">payslip.pdf</a>
-                        {% else %}
-                        N/A
-                        {% endif %}
+                        {% if app.payslip and app.payslip.name %}<a href="{{ app.payslip.url }}"
+                            target="_blank">payslip.pdf</a>{% else %}N/A{% endif %}
                     </div>
                 </div>
 
             </div>
         </div>
 
-        <!-- Right Column: Criteria Rubrics -->
+        
         <div class="column">
             <div class="column-header">Criteria Rubrics</div>
             <div class="scrollable-content">
                 <form method="post" action="">
                     {% csrf_token %}
 
-                    <p style="color: red; padding: 10px;">
-                        (Rubrics section disabled temporarily due to technical issue. Please proceed.)
-                    </p>
-
-                    <!-- 1. Data Integrity Check (Commented out) -->
-                    <!--
-                    <div class="rubric-section">
-                        ...
+                    
+                    <div class="rubric-section" style="border: 2px solid #2b5797;">
+                        <div class="rubric-title">1. Data Integrity Check</div>
+                        <div class="rubric-box"
+                            style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <div style="font-weight: bold; margin-bottom: 5px;">Income Proof Match:</div>
+                                <div style="font-size: 0.9rem; color: #444;">Uploaded "EA Form" and "Payslip" match the
+                                    declared figures.</div>
+                            </div>
+                            <input {{ integrity_attr }} type="checkbox" name="integrity_income_check"
+                                style="width: 20px; height: 20px;">
+                        </div>
                     </div>
-                    -->
 
-                    <!-- Footer / Navigation -->
+                    
+                    <div class="rubric-section" style="border: 2px solid #2b5797;">
+                        <div class="rubric-title">2. Financial Priority Scoring</div>
+                        <div class="rubric-box">
+                            <div style="font-weight: bold; margin-bottom: 15px;">
+                                <div style="margin-bottom: 10px;">Calculate using PCI, Formula:</div>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <div
+                                        style="display: flex; flex-direction: column; align-items: center; min-width: 200px;">
+                                        <div
+                                            style="border-bottom: 2px solid black; padding: 0 10px; width: 100%; text-align: center;">
+                                            RM {{ total_income_str }} (Total Income)
+                                        </div>
+                                        <div style="padding: 2px 10px 0 10px; font-size: 0.85rem;">
+                                            {{ family_count }} (Family Members)
+                                        </div>
+                                    </div>
+                                    <div style="color: #2b5797; font-size: 1.2rem;">
+                                        <strong>= RM {{ pci_str }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="font-size: 0.9rem; margin-bottom: 15px; line-height: 1.4;">
+                                (1) Low Need (T20): PCI > <b>RM 5,000</b><br>
+                                (2) Moderate Need (M40): PCI <b>RM 2,501 - RM 5,000</b><br>
+                                (3) High Need (B40): PCI <b>RM 1,201 - RM 2,500</b><br>
+                                (4) Critical Need (B40): PCI < <b>RM 1,200</b>
+                            </div>
+
+                            <div class="pci-options">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="radio" name="financial_priority" value="1" {{ fp_1_attr }}>
+                                    (1) Low Need (T20)
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="radio" name="financial_priority" value="2" {{ fp_2_attr }}>
+                                    (2) Moderate Need (M40)
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="radio" name="financial_priority" value="3" {{ fp_3_attr }}>
+                                    (3) High Need (B40)
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="radio" name="financial_priority" value="4" {{ fp_4_attr }}>
+                                    (4) Critical Need (B40)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="rubric-section" style="border: 2px solid #2b5797;">
+                        <div class="rubric-title">3. Hardship & Burden Indicators</div>
+                        <div class="rubric-box">
+                            <div class="checkbox-group">
+                                <label class="checkbox-item" style="cursor: pointer;">
+                                    <input type="checkbox" name="hardship_single_income" {{ hs_attr }}>
+                                    <div>
+                                        <div style="font-weight: bold;">Single Income/Single Parent</div>
+                                        <div style="font-size: 0.85rem; color: #555;">Only one breadwinner listed</div>
+                                    </div>
+                                </label>
+                                <label class="checkbox-item" style="cursor: pointer;">
+                                    <input type="checkbox" name="hardship_large_family" {{ hl_attr }}>
+                                    <div>
+                                        <div style="font-weight: bold;">Large Family</div>
+                                        <div style="font-size: 0.85rem; color: #555;">5+ dependents (siblings) listed in
+                                            the full form</div>
+                                    </div>
+                                </label>
+                                <label class="checkbox-item" style="cursor: pointer;">
+                                    <input type="checkbox" name="hardship_retiree" {{ hr_attr }}>
+                                    <div>
+                                        <div style="font-weight: bold;">Retiree/Pensioner</div>
+                                        <div style="font-size: 0.85rem; color: #555;">Guardian age is >60 or listed as
+                                            "Pensioner"</div>
+                                    </div>
+                                </label>
+                                <label class="checkbox-item" style="cursor: pointer;">
+                                    <input type="checkbox" name="hardship_medical" {{ hm_attr }}>
+                                    <div>
+                                        <div style="font-weight: bold;">Medical Burden</div>
+                                        <div style="font-size: 0.85rem; color: #555;">Evidence of chronic illness in the
+                                            family</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="rubric-section" style="border: 2px solid #2b5797;">
+                        <div class="rubric-title">C. Personal Statement / Essay Quality</div>
+                        <div class="rubric-box">
+                            <div class="checkbox-group">
+                                <label class="checkbox-item" style="cursor: pointer;">
+                                    <input {{ ec_attr }} type="checkbox" name="essay_compelling">
+                                    <div>
+                                        <div style="font-weight: bold;">Compelling</div>
+                                        <div style="font-size: 0.85rem; color: #555;">Unique story, clear goals,
+                                            specific alignment with MMU/Scholarship values.</div>
+                                    </div>
+                                </label>
+                                <label class="checkbox-item" style="cursor: pointer;">
+                                    <input {{ eg_attr }} type="checkbox" name="essay_generic">
+                                    <div>
+                                        <div style="font-weight: bold;">Generic</div>
+                                        <div style="font-size: 0.85rem; color: #555;">Standard answers, lacks specific
+                                            examples.</div>
+                                    </div>
+                                </label>
+                                <label class="checkbox-item" style="cursor: pointer;">
+                                    <input {{ ep_attr }} type="checkbox" name="essay_poor">
+                                    <div>
+                                        <div style="font-weight: bold;">Poor</div>
+                                        <div style="font-size: 0.85rem; color: #555;">Grammatical errors, off-topic, or
+                                            too short.</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    
                     <div class="nav-buttons">
                         <button type="submit" name="previous" class="btn-nav btn-prev">Previous</button>
                         <button type="submit" name="next" class="btn-nav btn-next">Next</button>
