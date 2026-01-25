@@ -6,9 +6,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static 'reviewer/css/reviewer.css' %}" type="text/css" rel="stylesheet" />
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <title>Reviewer</title>
+    <style>
+        /* Force relative positioning to override any cached CSS */
+        .navbar {
+            position: relative !important;
+            margin-bottom: 0 !important;
+            width: 100% !important;
+            top: auto !important;
+        }
+
+        body {
+            padding-top: 0 !important;
+        }
+    </style>
 </head>
 
 <body>
