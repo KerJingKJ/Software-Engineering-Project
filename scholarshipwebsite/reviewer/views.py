@@ -76,7 +76,53 @@ def review(response, app_id=None):
 
 def review_step2(response, app_id):
     app = ScholarshipApplication.objects.filter(id=app_id).first()
-    return render(response, "reviewer/review_step2.html", {'app': app})
+    eligibility, created = EligibilityCheck.objects.get_or_create(application=app)
+    print(f"DEBUG: Eligibility={eligibility}, Integrity={getattr(eligibility, 'integrity_income_check', 'MISSING')}")
+    
+    if response.method == "POST":
+        eligibility.integrity_income_check = response.POST.get('integrity_income_check') == 'on'
+        
+        eligibility.financial_priority = response.POST.get('financial_priority')
+        
+        eligibility.hardship_single_income = response.POST.get('hardship_single_income') == 'on'
+        eligibility.hardship_large_family = response.POST.get('hardship_large_family') == 'on'
+        eligibility.hardship_retiree = response.POST.get('hardship_retiree') == 'on'
+        eligibility.hardship_medical = response.POST.get('hardship_medical') == 'on'
+        
+        eligibility.save()
+        # Redirect case:
+        if 'previous' in response.POST:
+             return redirect('reviewer_with_id', app_id=app.id)
+        else:
+             # Next button was clicked
+             # Ideally redirect to Step 3, but for now we can stay or go back to dashboard/step 3 placeholder
+             # Since User said "Step 3 not done", let's redirect to a placeholder Step 3 or back to Step 2 for now.
+             # Or better, create a temporary Step 3 view/url.
+             # For this task, let's redirect to a simple "Done" or stay on Step 2 with a success message?
+             # The user flow is Step 1 -> Step 2 -> Step 3.
+             # I'll redirect to a "step 3" URL that I haven't implemented yet? 
+             # No, better to redirect to a simple valid placeholder. 
+             # For now, let's assume there is a step 3 coming. I'll make a dummy redirect or just refresh.
+             # Actually, user said "Step 3 will have a save button".
+             # I will redirect to a placeholder step 3 route.
+             return redirect('review_step3', app_id=app.id)
+
+    context = {
+        'app': app,
+        'eligibility': eligibility,
+        'guardians': app.guardians.all(),
+        'integrity_checked': getattr(eligibility, 'integrity_income_check', False),
+        'financial_priority': getattr(eligibility, 'financial_priority', None),
+        'hardship_single': getattr(eligibility, 'hardship_single_income', False),
+        'hardship_large': getattr(eligibility, 'hardship_large_family', False),
+        'hardship_retiree': getattr(eligibility, 'hardship_retiree', False),
+        'hardship_medical': getattr(eligibility, 'hardship_medical', False),
+    }
+    return render(response, "reviewer/review_step2.html", context)
+
+def review_step3(response, app_id):
+      app = ScholarshipApplication.objects.filter(id=app_id).first()
+      return HttpResponse("<h1>Step 3: Personal Statement / Essay Quality (Coming Soon)</h1>")
 
 
 def details(response):
