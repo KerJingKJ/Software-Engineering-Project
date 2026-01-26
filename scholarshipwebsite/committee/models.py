@@ -8,14 +8,33 @@ class Scholarship(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     open_for = models.CharField(max_length=200)
+    education_level = models.CharField(
+        max_length=100, 
+        default="Undergraduate",
+        choices=[
+            ('Foundation', 'Foundation'),
+            ('Undergraduate', 'Undergraduate'),
+            ('Diploma', 'Diploma'),
+            ('Postgraduate', 'Postgraduate')
+        ]
+    )
+    student_type = models.CharField(
+        max_length=50, 
+        default="Local",
+        choices=[
+            ('International Student', 'International Student'),
+            ('Local', 'Local')
+        ]
+    )
+    min_gpa = models.DecimalField(max_digits=3, decimal_places=2, default=3.0)
     criteria = models.TextField()
     deadline = models.DateField()
 
-    def student_type(self):
-        return self.open_for.split(', ')[0] if self.open_for else ''
+    # def student_type(self):
+    #     return self.open_for.split(', ')[0] if self.open_for else ''
 
-    def education_level(self):
-        return self.open_for.split(', ')[1] if ', ' in self.open_for else ''
+    # def education_level(self):
+    #     return self.open_for.split(', ')[1] if ', ' in self.open_for else ''
     
     @property
     def status(self):

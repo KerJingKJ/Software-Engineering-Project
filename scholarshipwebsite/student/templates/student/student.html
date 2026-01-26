@@ -3,11 +3,11 @@
 {% block content %}
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
     <div class="container">
-        <h1>Welcome here, Name!!</h1>
+        <h1>Welcome here, {{ request.user.get_full_name|default:request.user.username }}!</h1>
         <ul>
             <li><a href="#explore" style="text-decoration: none;"><button class="btn btn-red">Explore Scholarships</button></li>
             <li><a href="{% url 'applicationForm' %}" style="text-decoration: none;"><button class="btn btn-red">Apply for Scholarship</button></a></li>
-            <li><a href="#eligibility" style="text-decoration: none;"><button class="btn btn-blue">Eligibility Checker</button></a></li>
+            <li><a href="{% url 'eligibility_check' %}" style="text-decoration: none;"><button class="btn btn-blue">Eligibility Checker</button></a></li>
             <li><button class="btn btn-grey">Scholarship Status: </button></li>
         </ul>
     </div>
@@ -25,7 +25,7 @@
         </div>
 
         <div class="card">
-            <a href="{% url 'eligibility' %}" style="text-decoration: none;"><h2 id="eligibility">Eligibility Checker</h2></a>
+            <a href="{% url 'eligibility_check' %}" style="text-decoration: none;"><h2 id="eligibility">Eligibility Checker</h2></a>
             <div class="card-body">
                 <table>
                     <tr>
@@ -56,7 +56,7 @@
                         </td>
                     </tr>
                 </table>
-                <a href="{% url 'eligibility' %}"><button class="btn-match">Match</button></a>
+                <a href="{% url 'eligibility_check' %}"><button class="btn-match">Match</button></a>
             </div>
         </div>
 

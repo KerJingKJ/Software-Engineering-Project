@@ -1,7 +1,12 @@
+from django.utils import timezone 
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .models import Application, Student
+# Create your views here.
+from django.contrib.auth.decorators import login_required
+from .models import Student, Bookmark
 from committee.models import Scholarship
+from .models import Application, Student
 from .forms import ApplicationForm
 # Create your views here.
 # views.py
@@ -10,20 +15,117 @@ def index(request):
     return render(request, "student/student.html", {})
 
 def scholarship_list(request):
-    return render(request, "student/scholarshipList.html", {})
-
-def eligibility(request):
-    return render(request, "student/eligibility.html", {})
+    # Fetch all scholarships from the database
+    scholarships = Scholarship.objects.all()
+    
+    # Pass them to the template
+    return render(request, "student/scholarshipList.html", {
+        'scholarships': scholarships
+    })
 
 def application_form_status(request):
     return render(request, "student/applicationForm_status.html", {})
 
-def scholarship_details(request, id):
-    return render(request, "student/scholarshipDetails.html", {})
+@login_required
+def eligibility_check(request):
+    try:
+        student = request.user.student
+    except Student.DoesNotExist:
+        return redirect('home')
 
-def bookmark_scholarship(request, id):
-    return render(request, "student/bookmarkScholarship.html", {})
+    # 1. Start with active scholarships
+    scholarships = Scholarship.objects.filter(deadline__gte=timezone.now().date())
 
+    # --- GET INPUTS (Use Form Data if available, otherwise use Student Profile) ---
+    search_level = request.GET.get('study_level') or student.education_level
+    search_gpa = request.GET.get('gpa')
+    
+    # Use profile GPA if form GPA is empty
+    if not search_gpa and student.current_gpa:
+        search_gpa = student.current_gpa
+
+    # 2. Filter by Level
+    if search_level:
+        scholarships = scholarships.filter(education_level=search_level)
+
+    # 3. Filter by GPA
+    if search_gpa:
+        scholarships = scholarships.filter(min_gpa__lte=search_gpa)
+
+    # 4. Filter by Student Type (Always stick to student's actual type for safety)
+    if student.student_type:
+        scholarships = scholarships.filter(student_type=student.student_type)
+
+    return render(request, 'student/eligibility.html', {
+        'student': student,
+        'eligible_scholarships': scholarships, 
+        # Pass these back so the form stays filled after searching
+        'search_level': search_level,
+        'search_gpa': search_gpa
+    })
+    
+@login_required
+def toggle_bookmark(request, scholarship_id):
+    """
+    Adds or removes a scholarship from the student's bookmarks.
+    """
+    # Get the logged-in student (handle case where admin/user has no student profile)
+    if not hasattr(request.user, 'student'):
+        messages.error(request, "Only students can bookmark scholarships.")
+        return redirect('scholarship_list') # Redirect non-students safely
+    student = request.user.student
+    scholarship = get_object_or_404(Scholarship, id=scholarship_id)
+
+    # Check if it's already bookmarked
+    bookmark = Bookmark.objects.filter(student=student, scholarship=scholarship).first()
+    
+    if bookmark:
+        bookmark.delete() # Remove if exists
+        messages.success(request, "Scholarship removed from bookmarks.")
+    else:
+        Bookmark.objects.create(student=student, scholarship=scholarship) # Add if not exists
+        messages.success(request, "Scholarship added to bookmarks.")
+    
+    # Redirect back to the page the user came from
+    return redirect(request.META.get('HTTP_REFERER', 'scholarship_list'))
+
+
+@login_required
+def scholarship_details(request, scholarship_id):
+    """
+    Displays details and checks if the scholarship is bookmarked.
+    """
+    scholarship = get_object_or_404(Scholarship, id=scholarship_id)
+    is_bookmarked = False
+
+    # Check if user is a student and has bookmarked this
+    if hasattr(request.user, 'student'):
+        is_bookmarked = Bookmark.objects.filter(
+            student=request.user.student, 
+            scholarship=scholarship
+        ).exists()
+
+    return render(request, 'student/scholarshipDetails.html', {
+        'scholarship': scholarship,
+        'is_bookmarked': is_bookmarked
+    })
+
+
+@login_required
+def bookmark_list(request):
+    """
+    Displays the list of bookmarked scholarships.
+    """
+    try:
+        student = request.user.student
+        # Get the list of bookmark objects
+        my_bookmarks = Bookmark.objects.filter(student=student).select_related('scholarship').order_by('-date_added')
+    except Student.DoesNotExist:
+        my_bookmarks = []
+
+    return render(request, 'student/bookmarkScholarship.html', {
+        'bookmarks': my_bookmarks
+    })
 
 def application_form(request):
     # db query via scholarship fk, if application exists. If exists, redirect to edit, or prefill info?
@@ -82,7 +184,7 @@ def edit_application_form(request, id=-1, page=-1):
         print (f"u stupid {page}")
         return redirect("application_form")
 
-
+# Create your views here.
 
 # def edit_application_form_p2(request, id, page):
 #     # application = Application.objects.filter(scholarship_id=id).first()
