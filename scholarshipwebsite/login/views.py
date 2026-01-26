@@ -20,13 +20,13 @@ def index(request):
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
             
-            # Check if user exists
+            
             user_obj = User.objects.filter(email=email).first()
             
             if user_obj is None:
                 messages.error(request, "User not found. Sign up for an account.")
             else:
-                # User exists, check password
+                
                 user = authenticate(username=user_obj.username, password=password)
                 
                 if user is not None:
@@ -36,7 +36,7 @@ def index(request):
                         return redirect('securityquestion')
 
                     
-                    # Role-based redirect logic
+                    
                     email_domain = user.email.split('@')[-1]
                     
                     if 'student.mmu.edu.my' in email_domain:
@@ -49,7 +49,7 @@ def index(request):
                     elif 'committee.mmu.edu.my' in email_domain:
                         return redirect('committee')
                     else:
-                        return redirect('committee') # Default fallback
+                        return redirect('committee') 
                 else:
                     messages.error(request, "Wrong password! Try again")
     else:
@@ -61,24 +61,28 @@ def signup(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
-            # Create User
+            
             username = form.cleaned_data['name']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             
-            # Create the user using create_user helper to handle hashing
+            
             user = User.objects.create_user(username=username, email=email, password=password)
             
+<<<<<<< HEAD
             # create student automatically
             email_domain = email.split('@')[-1]
             if email_domain == 'student.mmu.edu.my':
                 Student.objects.create(user=user)
 
             # Log the user in directly
+=======
+            
+>>>>>>> main
             from django.contrib.auth import login
             login(request, user)
             
-            # Redirect to security question page
+            
             return redirect("securityquestion")
     else:
         form = SignUpForm()
@@ -99,7 +103,7 @@ def securityquestion(request):
             security_question.user = request.user
             security_question.save()
 
-             # Role-based redirect logic
+             
             email_domain = request.user.email.split('@')[-1]
                     
             if 'admin.mmu.edu.my' in email_domain:
@@ -108,7 +112,7 @@ def securityquestion(request):
                 return redirect('reviewer')
             elif 'committee.mmu.edu.my' in email_domain:
                 return redirect('committee')
-            return redirect('setup_profile') # Redirect to profile setup
+            return redirect('setup_profile') 
     else:
         form = SecurityQuestionForm(instance=instance)
 
@@ -160,7 +164,7 @@ def verify_question(request):
         messages.error(request, "Security questions not set for this account.")
         return redirect('forgot_password')
 
-    # Get readable question text
+    
     q1_text = next(text for key, text in SECURITY_QUESTION_CHOICES if key == security_questions.question_1)
     q2_text = next(text for key, text in SECURITY_QUESTION_CHOICES if key == security_questions.question_2)
 
@@ -170,7 +174,7 @@ def verify_question(request):
             ans1 = form.cleaned_data['answer_1']
             ans2 = form.cleaned_data['answer_2']
             
-            # Verify answers (case-insensitive)
+            
             if (ans1.strip().lower() == security_questions.answer_1.strip().lower() and 
                 ans2.strip().lower() == security_questions.answer_2.strip().lower()):
                 request.session['reset_verified'] = True
@@ -196,7 +200,7 @@ def reset_password_confirm(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             
-            # Clear session
+            
             del request.session['reset_user_id']
             del request.session['reset_verified']
             
@@ -209,21 +213,19 @@ def reset_password_confirm(request):
 
 @login_required(login_url='login')
 def logout_view(request):
-    """
-    Logs out the user and redirects to login page.
-    """
+    
     logout(request)
     return redirect('landingpage') 
 
-# In your views.py (where these functions live)
+
 
 def get_dashboard_redirect(user):
-    """Helper function to determine the correct dashboard."""
-    if hasattr(user, 'student'): # If user is a student
+    
+    if hasattr(user, 'student'): 
         return 'student_dashboard' 
     elif user.groups.filter(name='Reviewer').exists() or 'reviewer' in user.username:
-        return 'reviewer' # The name of your reviewer home URL
-    return 'committee' # Default fallback
+        return 'reviewer' 
+    return 'committee' 
 
 @login_required(login_url='login')
 def change_password(request):
@@ -234,7 +236,7 @@ def change_password(request):
             update_session_auth_hash(request, user)
             messages.success(request, 'Password updated!')
             
-            # Use the helper to redirect to the correct app
+            
             return redirect(get_dashboard_redirect(request.user)) 
         else:
             messages.error(request, 'Please correct the error below.')
@@ -253,7 +255,7 @@ def change_password(request):
     return render(request, 'login/change_password.html', {
         'form': form,
         'base_template': base_template
-        })
+    })
 
 @login_required(login_url='login')
 def update_security_questions(request):
@@ -271,7 +273,7 @@ def update_security_questions(request):
             security_question.save()
             messages.success(request, 'Questions updated!')
             
-            # Use the helper here too
+            
             return redirect(get_dashboard_redirect(request.user))
     else:
         form = SecurityQuestionForm(instance=instance)
@@ -286,6 +288,6 @@ def update_security_questions(request):
         base_template = 'committee/base.html'
 
     return render(request, "login/change_securityquestion.html", {
-        "form": form,
+        'form': form,
         'base_template': base_template
         })

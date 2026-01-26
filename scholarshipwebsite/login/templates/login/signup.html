@@ -68,7 +68,7 @@
                 setupPasswordToggle('toggleConfirmPassword', 'id_confirm_password');
             </script>
 
-            <button type="submit" class="button">Next</button>
+            <button type="submit" class="button" "{% url 'securityquestion' %}">Next</button>
 
             {% if form.errors %}
             <div id="errorform">

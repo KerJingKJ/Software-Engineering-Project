@@ -1,15 +1,184 @@
 {% extends 'reviewer/base.html' %}
 {% block content %}
-{% load static %}
+<style>
+  .dashboard-container {
+    padding: 1rem;
+    /* Reverted to standard padding */
+    background-color: #f8f9fa;
+    /* Light grey background for contrast */
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
+  }
 
-<div class="container-fluid">
-  <h1>Dashboard</h1>
-  <div class="row">
-    <div class="col-md-6">
-      <canvas id="myChartline"></canvas>
+  .metric-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+    border-left: 5px solid #ccc;
+    height: 100%;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .metric-title {
+    color: #6c757d;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #343a40;
+  }
+
+  .chart-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .chart-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f1f1f1;
+    font-weight: 600;
+    color: #495057;
+    font-size: 1.1rem;
+  }
+
+  .chart-body {
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  /* Semantic Colors for Metrics */
+  .border-primary {
+    border-color: #007bff !important;
+  }
+
+  .border-success {
+    border-color: #28a745 !important;
+  }
+
+  .border-danger {
+    border-color: #dc3545 !important;
+  }
+
+  .border-warning {
+    border-color: #ffc107 !important;
+  }
+
+  .text-primary-custom {
+    color: #007bff;
+  }
+
+  .text-success-custom {
+    color: #28a745;
+  }
+
+  .text-danger-custom {
+    color: #dc3545;
+  }
+
+  .text-warning-custom {
+    color: #ffc107;
+  }
+</style>
+
+<div class="dashboard-container">
+  <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 3rem;">
+    <!-- Increased bottom margin -->
+    <h1 class="h3 text-dark">Scholarship Dashboard</h1>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="row" style="margin-bottom: 3rem;">
+    <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
+      <div class="metric-card border-primary">
+        <div class="metric-title text-primary-custom">Total Applications</div>
+        <div class="metric-value">{{ total_apps }}</div>
+      </div>
     </div>
-    <div class="col-md-6">
-      <canvas id="myChartBar"></canvas>
+    <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
+      <div class="metric-card border-success">
+        <div class="metric-title text-success-custom">Approved</div>
+        <div class="metric-value">{{ approved }}</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
+      <div class="metric-card border-danger">
+        <div class="metric-title text-danger-custom">Rejected</div>
+        <div class="metric-value">{{ rejected }}</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
+      <div class="metric-card border-warning">
+        <div class="metric-title text-warning-custom">Pending</div>
+        <div class="metric-value">{{ pending }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <!-- Charts Row 1 -->
+  <div class="row" style="margin-bottom: 3rem;">
+    <div class="col-lg-8 col-md-12">
+      <div class="chart-card">
+        <div class="chart-header">
+          <i class="fas fa-chart-line mr-2"></i> Application Growth Trend
+        </div>
+        <div class="chart-body">
+          <canvas id="growthChart" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-12">
+      <div class="chart-card">
+        <div class="chart-header">
+          <i class="fas fa-chart-pie mr-2"></i> Status Distribution
+        </div>
+        <div class="chart-body">
+          <canvas id="statusChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <!-- Charts Row 2 -->
+  <div class="row">
+    <div class="col-lg-6 col-md-12">
+      <div class="chart-card">
+        <div class="chart-header">
+          <i class="fas fa-university mr-2"></i> Popularity by Scholarship
+        </div>
+        <div class="chart-body">
+          <canvas id="scholarshipChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-12">
+      <div class="chart-card">
+        <div class="chart-header">
+          <i class="fas fa-user-graduate mr-2"></i> Applicant Demographics
+        </div>
+        <div class="chart-body">
+          <canvas id="educationChart"></canvas>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -21,98 +190,152 @@
     $.ajax({
       method: "GET",
       url: endpoint,
-      success: function(data) {
-        drawLineGraph(data, 'myChartline');
-        drawBarGraph(data, 'myChartBar');
-        console.log("drawing");
+      success: function (data) {
+        drawGrowthChart(data.growth_chart, 'growthChart');
+        drawStatusChart(data.status_chart, 'statusChart');
+        drawScholarshipChart(data.scholarship_chart, 'scholarshipChart');
+        drawEducationChart(data.education_chart, 'educationChart');
       },
-      error: function(error_data) {
-        console.log(error_data);
+      error: function (error_data) {
+        console.log("Error fetching chart data", error_data);
       }
     })
 
+    // Formatting Helpers
+    Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+    Chart.defaults.global.defaultFontColor = '#858796';
 
-    function drawLineGraph(data, id) {
-      var labels = data.labels;
-      var chartLabel = data.chartLabel;
-      var chartdata = data.chartdata;
+    function drawGrowthChart(data, id) {
       var ctx = document.getElementById(id).getContext('2d');
-      var chart = new Chart(ctx, {
-        // The type of chart we want to create
+      new Chart(ctx, {
         type: 'line',
-
-        // The data for our dataset
         data: {
-          labels: labels,
+          labels: data.labels,
           datasets: [{
-            label: chartLabel,
-            backgroundColor: '#034EA1',
-            borderColor: 'rgb(0, 0, 0)',
-            data: chartdata,
+            label: data.label,
+            data: data.data,
+            borderColor: '#4e73df',
+            backgroundColor: 'rgba(78, 115, 223, 0.05)',
+            pointRadius: 3,
+            pointBackgroundColor: '#4e73df',
+            pointBorderColor: '#4e73df',
+            pointHoverRadius: 3,
+            pointHoverBackgroundColor: '#4e73df',
+            pointHoverBorderColor: '#4e73df',
+            pointHitRadius: 10,
+            pointBorderWidth: 2,
+            borderWidth: 2,
+            fill: true
           }]
         },
-
-        // Configuration options go here
         options: {
+          maintainAspectRatio: true,
+          layout: { padding: { left: 10, right: 25, top: 25, bottom: 0 } },
           scales: {
-            xAxes: [{
-              display: true
-            }],
             yAxes: [{
-              ticks: {
-                beginAtZero: true
-              }
+              ticks: { beginAtZero: true, padding: 10 },
+              gridLines: { color: "rgb(234, 236, 244)", zeroLineColor: "rgb(234, 236, 244)", drawBorder: false, borderDash: [2], zeroLineBorderDash: [2] }
+            }],
+            xAxes: [{
+              gridLines: { display: false, drawBorder: false }
             }]
+          },
+          legend: { display: false },
+          tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            titleMarginBottom: 10,
+            titleFontColor: '#6e707e',
+            titleFontSize: 14,
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            intersect: false,
+            mode: 'index',
+            caretPadding: 10,
           }
         }
-
       });
     }
 
-    function drawBarGraph(data, id) {
-      var labels = data.labels;
-      var chartLabel = data.chartLabel;
-      var chartdata = data.chartdata;
+    function drawStatusChart(data, id) {
       var ctx = document.getElementById(id).getContext('2d');
-      var myChart = new Chart(ctx, {
-        type: 'bar',
+      new Chart(ctx, {
+        type: 'doughnut',
         data: {
-          labels: labels,
+          labels: data.labels,
           datasets: [{
-            label: chartLabel,
-            data: chartdata,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
+            data: data.data,
+            backgroundColor: ['#1cc88a', '#e74a3b', '#f6c23e'],
+            hoverBackgroundColor: ['#17a673', '#be2617', '#dda20a'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
           }]
         },
         options: {
+          maintainAspectRatio: false,
+          tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: true,
+            caretPadding: 10,
+          },
+          legend: { display: true, position: 'bottom' },
+          cutoutPercentage: 70,
+        }
+      });
+    }
+
+    function drawScholarshipChart(data, id) {
+      var ctx = document.getElementById(id).getContext('2d');
+      new Chart(ctx, {
+        type: 'horizontalBar',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: "Applications",
+            data: data.data,
+            backgroundColor: '#36b9cc',
+            hoverBackgroundColor: '#2c9faf',
+            barPercentage: 0.6,
+          }]
+        },
+        options: {
+          maintainAspectRatio: true,
           scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              }
-            }]
-          }
+            xAxes: [{ ticks: { beginAtZero: true }, gridLines: { display: false } }],
+            yAxes: [{ gridLines: { color: "rgb(234, 236, 244)", zeroLineColor: "rgb(234, 236, 244)", drawBorder: false, borderDash: [2], zeroLineBorderDash: [2] } }]
+          },
+          legend: { display: false }
+        }
+      });
+    }
+
+    function drawEducationChart(data, id) {
+      var ctx = document.getElementById(id).getContext('2d');
+      var colors = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'];
+
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            data: data.data,
+            backgroundColor: colors.slice(0, data.data.length),
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+          }]
+        },
+        options: {
+          maintainAspectRatio: true,
+          legend: { position: 'right' }
         }
       });
     }
   </script>
 </div>
-
-
 {% endblock %}
