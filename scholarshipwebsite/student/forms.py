@@ -77,7 +77,7 @@ class ApplicationForm(forms.ModelForm):
         model = Application
         fields = [
             'scholarship', 'name', 'home_address', 'correspondence_address',
-            'ic_no', 'age', 'date_of_birth', 'intake', 'programme', #'student_identification_number',
+            'ic_no', 'age', 'date_of_birth', 'intake', 'programme', 'student_identification_number',
             'nationality', 'race', 'gender', 'contact_number', 'email_address','monthly_income',
             'education_level', 'passport_photo', 'academic_result', 
             'personal_achievement', 'supporting_document',

@@ -162,6 +162,7 @@ def edit_application_form(request, id=-1, page=-1):
     scholarships = Scholarship.objects.all()
     scholarship = application.scholarship
     if request.method == "POST":
+        form = ApplicationForm(request.POST, request.FILES, instance=application)
         if page==3:
             form1 = GuardianForm(
                 request.POST, 
@@ -177,20 +178,16 @@ def edit_application_form(request, id=-1, page=-1):
             )
             
             # Validate both forms
-            if form1.is_valid() and form2.is_valid():
+            if form1.is_valid():
                 # Save first guardian
                 guardian1 = form1.save()
-                
+                application.guardian1 = guardian1
+
+            if form2.is_valid():
                 # Save second guardian
                 guardian2 = form2.save()
-                
-                # Link guardians to application
-                application.guardian1 = guardian1
                 application.guardian2 = guardian2
-                application.save()
-                
-                # return redirect('edit_application_form', id=application.id, page=page+1)
-        form = ApplicationForm(request.POST, request.FILES, instance=application)
+            application.save()
         if form.is_valid():
             form.save()
             return redirect("edit_application_form", id=id, page=(page+1))
