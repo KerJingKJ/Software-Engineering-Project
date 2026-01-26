@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-
+import re
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label="Email Address")
@@ -17,6 +17,16 @@ class SignUpForm(forms.Form):
         if User.objects.filter(username=name).exists():
             raise forms.ValidationError("Username is already taken.")
         return name
+    
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        # Check that the email ends with the allowed domain
+        if not email.endswith("@student.mmu.edu.my"):
+            raise forms.ValidationError("You must use your student MMU email address (@student.mmu.edu.my).")
+        # Optional: check if email already exists
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email is already registered.")
+        return email
 
     def clean(self):
         cleaned_data = super().clean()

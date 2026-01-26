@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from committee.models import Scholarship
-from student.models import Student, ScholarshipApplication
+from student.models import Student, Application
 from .models import EligibilityCheck
 
 
@@ -14,10 +14,10 @@ def index(request):
     Renders the main dashboard page.
     """
     # Calculate summary stats for cards
-    total_apps = ScholarshipApplication.objects.count()
-    approved = ScholarshipApplication.objects.filter(status='Approved').count()
-    rejected = ScholarshipApplication.objects.filter(status='Rejected').count()
-    pending = ScholarshipApplication.objects.exclude(status__in=['Approved', 'Rejected']).count()
+    total_apps = Application.objects.count()
+    approved = Application.objects.filter(status='Approved').count()
+    rejected = Application.objects.filter(status='Rejected').count()
+    pending = Application.objects.exclude(status__in=['Approved', 'Rejected']).count()
     
     context = {
         'total_apps': total_apps,
@@ -28,7 +28,7 @@ def index(request):
     return render(request, "reviewer/reviewer.html", context)
 
 def review_list(request):
-    applications = ScholarshipApplication.objects.all().order_by('submitted_date')
+    applications = Application.objects.all().order_by('submitted_date')
     
     for app in applications:
         # Determine display status based on session or DB
@@ -48,7 +48,7 @@ def review_list(request):
     return render(request, "reviewer/review_list.html", {'applications': applications})
 
 def review_detail(request, app_id):
-    app = ScholarshipApplication.objects.filter(id=app_id).first()
+    app = Application.objects.filter(id=app_id).first()
     if not app:
         return redirect('review')
 
@@ -102,14 +102,14 @@ def review_detail(request, app_id):
 def review_step2(request, app_id):
     # (Same implementation as before, abbreviated here to focus on dashboard)
     # Ideally should read from previous content, but since file was deleted I will do minimal restoration for compilation
-    app = ScholarshipApplication.objects.get(id=app_id)
+    app = Application.objects.get(id=app_id)
     return render(request, "reviewer/review_step2.html", {'app': app})
 
 def review_step3(request, app_id):
     # (Same implementation as before)
-    app = ScholarshipApplication.objects.get(id=app_id)
+    app = Application.objects.get(id=app_id)
     if 'approve' in request.POST:
-         ScholarshipApplication.objects.filter(id=app.id).update(status='Approved')
+         Application.objects.filter(id=app.id).update(status='Approved')
          return redirect('reviewer')
     return render(request, "reviewer/review_step3.html", {'app': app})
     
@@ -124,7 +124,7 @@ class ChartData(APIView):
  
     def get(self, request, format=None):
         # 1. Growth Chart: Cumulative Applications
-        daily_apps = ScholarshipApplication.objects.values('submitted_date').annotate(
+        daily_apps = Application.objects.values('submitted_date').annotate(
             count=Count('id')
         ).order_by('submitted_date')
         
@@ -138,12 +138,12 @@ class ChartData(APIView):
                 line_data.append(cumulative_count)
 
         # 2. Status Chart: Approved vs Rejected vs Pending
-        approved = ScholarshipApplication.objects.filter(status='Approved').count()
-        rejected = ScholarshipApplication.objects.filter(status='Rejected').count()
-        pending = ScholarshipApplication.objects.exclude(status__in=['Approved', 'Rejected']).count()
+        approved = Application.objects.filter(status='Approved').count()
+        rejected = Application.objects.filter(status='Rejected').count()
+        pending = Application.objects.exclude(status__in=['Approved', 'Rejected']).count()
         
         # 3. Popularity Chart: Apps per Scholarship
-        scholarships = Scholarship.objects.annotate(count=Count('scholarshipapplication'))
+        scholarships = Scholarship.objects.annotate(count=Count('application'))
         sch_labels = [s.name for s in scholarships]
         sch_data = [s.count for s in scholarships]
 
@@ -152,11 +152,11 @@ class ChartData(APIView):
         # Since ScholarshipApplication has 'programme', we can group by that for a demo, 
         # or use 'highest_qualification' if available in the model I saw earlier.
         # Looking at model: highest_qualification is available.
-        edu_levels = ScholarshipApplication.objects.values('highest_qualification').annotate(
+        edu_levels = Application.objects.values('education_level').annotate(
             count=Count('id')
         )
-        edu_labels = [e['highest_qualification'] for e in edu_levels if e['highest_qualification']]
-        edu_data = [e['count'] for e in edu_levels if e['highest_qualification']]
+        edu_labels = [e['education_level'] for e in edu_levels if e['education_level']]
+        edu_data = [e['count'] for e in edu_levels if e['education_level']]
 
         data = {
             "growth_chart": {
