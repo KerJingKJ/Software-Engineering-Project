@@ -127,6 +127,7 @@ class Application(models.Model):
     date_of_birth = models.DateField()
     intake = models.DateField()
     programme = models.CharField(max_length=200)
+    student_identification_number = models.CharField(max_length=20)
     NATIONALITY_CHOICES = [('International Student', 'International Student'),
         ('Local', 'Local')]
     nationality = models.CharField(max_length=100, choices=NATIONALITY_CHOICES)

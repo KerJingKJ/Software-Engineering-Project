@@ -39,7 +39,7 @@ def application_form(request):
             try:
                 application.student = request.user.student
             except Student.DoesNotExist:
-                form.add_error(None, "Student profile not found.")
+                form.add_error(None, "Not a student.")
                 return render(
                     request,
                     "student/applicationForm.html",

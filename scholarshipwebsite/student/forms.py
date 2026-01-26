@@ -77,7 +77,7 @@ class ApplicationForm(forms.ModelForm):
         model = Application
         fields = [
             'scholarship', 'name', 'home_address', 'correspondence_address',
-            'ic_no', 'age', 'date_of_birth', 'intake', 'programme',
+            'ic_no', 'age', 'date_of_birth', 'intake', 'programme', #'student_identification_number',
             'nationality', 'race', 'gender', 'contact_number', 'email_address','monthly_income',
             'education_level', 'passport_photo', 'academic_result', 
             'personal_achievement', 'supporting_document',
@@ -124,6 +124,11 @@ class ApplicationForm(forms.ModelForm):
             'programme': forms.TextInput(attrs={
                 'class': 'form-input',
                 'placeholder': 'Enter your programme',
+                
+            }),
+            'student_identification_number': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Example: 243UC247BR',
                 
             }),
             'nationality': forms.Select(attrs={
@@ -181,10 +186,7 @@ class ApplicationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
             
-        # Add HTML5 required attribute to required fields
-        for field_name, field in self.fields.items():
-            if field.required:
-                field.widget.attrs['required'] = 'required'
+
         
         # Make status hidden for new applications (students shouldn't set this)
         if not self.instance.pk:
@@ -195,6 +197,11 @@ class ApplicationForm(forms.ModelForm):
         # Disable scholarship field if already selected
         if self.instance.pk and self.instance.scholarship:
             self.fields['scholarship'].disabled = True
+
+        # Add HTML5 required attribute to required fields
+        for field_name, field in self.fields.items():
+            if field.required:
+                field.widget.attrs['required'] = 'required'
     
     def clean_date_of_birth(self):
         dob = self.cleaned_data.get('date_of_birth')
