@@ -76,3 +76,10 @@ class EligibilityCheck(models.Model):
 
     def __str__(self):
         return f"Eligibility Check for {self.application.name}"
+
+# class placement
+class Score(models.Model):
+    None
+# class placement
+class ReviewerAssignment(models.Model):
+    None
