@@ -260,7 +260,7 @@ class Application(models.Model):
         return f"{self.name} - {self.scholarship.name}"
 
 class Guardian(models.Model):
-    application = models.ForeignKey(ScholarshipApplication, on_delete=models.CASCADE, related_name='guardians')
+    application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='guardians')
     relationship = models.CharField(max_length=100)
     name = models.CharField(max_length=200)
     ic_no = models.CharField(max_length=20)
@@ -286,10 +286,11 @@ class Guardian(models.Model):
         return f"{self.name} ({self.relationship}) - {self.application.name}"
 
 class Interview(models.Model):
-    application = models.ForeignKey(ScholarshipApplication, on_delete=models.CASCADE, related_name='interviews')
+    application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='interviews')
     date = models.DateField()
     interview_time = models.CharField(max_length=20, default='12:00 PM')  # e.g., "9:00 AM", "10:00 AM"
     timezone = models.CharField(max_length=50)
+    # from what i understand, committee would be the ones conducting the interview
     reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
@@ -319,3 +320,25 @@ class Bookmark(models.Model):
 
     def __str__(self):
         return f"Bookmark {self.id} - {self.date_added}"
+    
+
+class EligibilityCheck(models.Model):
+    application = models.OneToOneField(Application, on_delete=models.CASCADE, related_name='eligibility_check')
+    citizenship_check = models.BooleanField(default=False)
+    programme_level_check = models.BooleanField(default=False)
+    
+    # Qualifying Exam
+    exam_foundation_spm = models.BooleanField(default=False)
+    exam_degree_stpm_uec = models.BooleanField(default=False)
+    exam_degree_matriculation = models.BooleanField(default=False)
+    
+    # Minimum Grades
+    grade_spm = models.BooleanField(default=False)
+    grade_stpm = models.BooleanField(default=False)
+    grade_uec = models.BooleanField(default=False)
+    grade_foundation = models.BooleanField(default=False)
+    
+    documents_verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Eligibility Check for {self.application.name}"

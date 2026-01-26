@@ -177,6 +177,12 @@ class ApplicationForm(forms.ModelForm):
                 'rows': 10,
             }),
         }
+    # class Meta:
+    #     model = Application
+    #     fields = ['scholarship', 'submitted_date', 'status', 'interview_status']
+    #     widgets = {
+    #         'submitted_date': forms.DateInput(attrs={'type': 'date'}),
+    #     }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -214,11 +220,21 @@ class ApplicationForm(forms.ModelForm):
         if age and (age < 0 or age > 150):
             raise forms.ValidationError("Please enter a valid age.")
         return age
+
     def clean_submitted_date(self):
         submitted_date = self.cleaned_data.get('submitted_date')
         if submitted_date and submitted_date > date.today():
             raise forms.ValidationError("Submitted date cannot be in the future.")
         return submitted_date
+
+    # def clean_submitted_date(self):
+    #     submitted_date = self.cleaned_data.get('submitted_date')
+    #     if submitted_date and submitted_date > date.today():
+    #         raise forms.ValidationError(
+    #             "The submitted date cannot be in the future."
+    #         )
+    #     return submitted_date
+
     
     def clean(self):
         cleaned_data = super().clean()
@@ -235,23 +251,50 @@ class ApplicationForm(forms.ModelForm):
         return cleaned_data
         if interview_status == 'Completed' and status != 'Approved':
             raise forms.ValidationError("Interview must be completed for approved applications.")
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     status = cleaned_data.get('status')
+    #     interview_status = cleaned_data.get('interview_status')
         
-        return cleaned_data
+#comment it for a while to resolve conflict
+   #     if interview_status == 'Completed' and status != 'Approved':
+      #      raise forms.ValidationError("Interview must be completed for approved applications.")
+# note
+
+    #     # Validate status and interview_status relationship
+    #     if interview_status == 'Completed' and status != 'Approved':
+    #         raise forms.ValidationError(
+    #             "Interview cannot be marked as completed unless the application is approved."
+    #         )
+
+        
+    #     return cleaned_data
     
-    def save(self, commit=True):
-        instance = super().save(commit=False)
+    # def save(self, commit=True):
+    #     instance = super().save(commit=False)
+        
+
+      #  comment it for a while to resolve conflict
+       # if not instance.submitted_date:
+       #     instance.submitted_date = date.today()
         
         
-        if not instance.submitted_date:
-            instance.submitted_date = date.today()
+      #  if not instance.pk: 
+      #      instance.status = 'Pending'
+#
+
+    #     # Auto-set submitted_date if not provided
+    #     if not instance.submitted_date:
+    #         instance.submitted_date = date.today()
         
+    #     # Auto-set status to 'Pending' for new applications
+    #     if not instance.pk: 
+    #         instance.status = 'Pending'
+
         
-        if not instance.pk: 
-            instance.status = 'Pending'
-        
-        if commit:
-            instance.save()
-        return instance
+    #     if commit:
+    #         instance.save()
+    #     return instance
     
 
     
@@ -265,3 +308,10 @@ class ApplicationForm(forms.ModelForm):
     
     
     
+
+    # education_level = forms.ChoiceField(choices=[
+    #     ('Foundation', 'Foundation'),
+    #     ('Undergraduate', 'Undergraduate'),
+    #     ('Diploma', 'Diploma'),
+    #     ('Postgraduate', 'Postgraduate')
+    # ], label="Education Level")
