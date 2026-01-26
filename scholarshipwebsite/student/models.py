@@ -66,48 +66,32 @@ class Student(models.Model):
         return f"Student {self.user.username}"
 
 
-# class Application(models.Model):
-#     scholarship = models.ForeignKey(
-#         Scholarship,
-#         on_delete=models.CASCADE,
-#         related_name="applications"
-#     )
+# by hui yee from committe models
+class Guardian(models.Model):
+    # application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='guardians')
+    relationship = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
+    ic_no = models.CharField(max_length=20)
+    date_of_birth = models.DateField()
+    age = models.IntegerField()
+    nationality = models.CharField(max_length=100)
+    
+    GENDER_CHOICES = [
+        ('Female', 'Female'),
+        ('Male', 'Male'),
+    ]
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    
+    address = models.TextField()
+    contact_number = models.CharField(max_length=20)
+    email_address = models.EmailField()
 
-    
-#     student = models.ForeignKey(
-#         Student,
-#         on_delete=models.CASCADE,
-#         related_name="applications"
-#     )
-    
-#     submitted_date = models.DateField(
-#         default=timezone.now,  # Auto-set to current date
-#         help_text="Date when the application was submitted" 
-#     )
-    
-#     status = models.CharField(
-#         max_length=50,
-#         default='Pending', 
-#         help_text="Current status of the application"
-#     )
-    
-#     interview_status = models.CharField(
-#         max_length=50,
-#         default='Not Scheduled', 
-#         help_text="Status of the interview related to application"
-#     )
+    class Meta:
+        db_table = 'student_guardian'
 
-#     class Meta:
-#         unique_together = ('student', 'scholarship')
-    
-#     def __str__(self):
-#         return f"Application {self.id} - {self.status}"
+    def __str__(self):
+        return f"{self.name} ({self.relationship}) - {self.application.name}"
 
-
-    # student_ID = models.CharField(
-    #     max_length=50,
-    #     help_text="Name of the enrolled course"
-    # )
 
 # by hui yee from committe models
 class Application(models.Model):
@@ -132,6 +116,7 @@ class Application(models.Model):
     date_of_birth = models.DateField()
     intake = models.DateField()
     programme = models.CharField(max_length=200)
+    student_identification_number = models.CharField(max_length=20)
     NATIONALITY_CHOICES = [('International Student', 'International Student'),
         ('Local', 'Local')]
     nationality = models.CharField(max_length=100, choices=NATIONALITY_CHOICES)
@@ -165,9 +150,11 @@ class Application(models.Model):
     passport_photo = models.ImageField(upload_to='passport_photos/', null=True, blank=True)
     academic_result = models.FileField(upload_to='academic_results/', null=True, blank=True)
     supporting_document = models.FileField(upload_to='supporting_docs/', null=True, blank=True)
-    
+
     personal_achievement = models.TextField(null=True, blank=True)
     reason_deserve = models.TextField(null=True, blank=True)
+    guardian1 = models.ForeignKey(Guardian, on_delete=models.CASCADE,null=True, blank=True, related_name='guardian1')
+    guardian2 = models.ForeignKey(Guardian, on_delete=models.CASCADE,null=True, blank=True, related_name='guardian2')
     ea_form = models.FileField(upload_to='ea_forms/',null=True, blank=True)
     payslip = models.FileField(upload_to='payslips/',null=True, blank=True)
 
@@ -178,31 +165,16 @@ class Application(models.Model):
         return f"{self.name} - {self.scholarship.name}"
 
 # by hui yee from committe models
-class Guardian(models.Model):
-    application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='guardians')
-    relationship = models.CharField(max_length=100)
-    name = models.CharField(max_length=200)
-    ic_no = models.CharField(max_length=20)
-    date_of_birth = models.DateField()
-    age = models.IntegerField()
-    nationality = models.CharField(max_length=100)
-    
-    GENDER_CHOICES = [
-        ('Female', 'Female'),
-        ('Male', 'Male'),
-    ]
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    
-    address = models.TextField()
-    contact_number = models.CharField(max_length=20)
-    email_address = models.EmailField()
+# class Interview(models.Model):
+#     application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='interviews')
+#     date = models.DateField()
+#     interview_time = models.CharField(max_length=20, default='12:00 PM')  # e.g., "9:00 AM", "10:00 AM"
+#     timezone = models.CharField(max_length=50)
+#     # from what i understand, committee would be the ones conducting the interview
+#     reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
-    class Meta:
-        db_table = 'student_guardian'
-
-    def __str__(self):
-        return f"{self.name} ({self.relationship}) - {self.application.name}"
-
+#     def __str__(self):
+#         return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"
 
 # by hui yee from committe models
 class Bookmark(models.Model):

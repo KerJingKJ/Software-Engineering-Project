@@ -15,10 +15,16 @@
     </div>
 
     <div class="tabs-wrapper">
-      <div class="tab active">Part 1: Personal Information</div>
-      <div class="tab">Part 2</div>
-      <div class="tab">Part 3</div>
-      <div class="tab">Part 4</div>
+      <a href="#" class="tab active">Part 1: Personal Information</a>
+      {% if  form.instance.pk %}
+      <a href="{% url 'edit_application_form' form.instance.pk 2 %}" class="tab">Part 2</a>
+      <a href="{% url 'edit_application_form' form.instance.pk 3 %}" class="tab">Part 3</a>
+      <a href="{% url 'edit_application_form' form.instance.pk 4 %}" class="tab">Part 4</a>
+      {% else %}
+      <a href="#" class="tab">Part 2</a>
+      <a href="#" class="tab">Part 3</a>
+      <a href="#" class="tab">Part 4</a>
+      {% endif %}
     </div>
 
     <div class="form-content">
@@ -60,6 +66,11 @@
       <div class="form-row">
         <label>Programme:</label>
         {{ form.programme }}
+      </div>
+
+      <div class="form-row">
+        <label>Student ID:</label>
+        {{ form.student_identification_number }}
       </div>
 
       <div class="form-row">
