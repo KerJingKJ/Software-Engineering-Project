@@ -1,0 +1,39 @@
+.application-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 15px; 
+    margin-bottom: 15px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden; 
+}
+
+.number-badge {
+    background-color: #0056b3;
+    color: white;
+    padding: 20px 25px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: center;
+}
+
+
+.col {
+    padding: 10px 20px;
+    flex: 1;
+}
+
+.badge {
+    padding: 8px 15px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.badge-pending { background-color: #b0b0b0; } 
+.badge-rejected { background-color: #ff0000; } 
+.badge-approved { background-color: #28a745; } 
+.badge-to-be-interviewed { background-color: #004085; } 
