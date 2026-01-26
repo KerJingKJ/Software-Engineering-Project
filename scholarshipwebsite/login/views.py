@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, SecurityQuestionForm, LoginForm, ForgotPasswordForm, SecurityQuestionVerifyForm, ResetPasswordForm
 from .models import UserSecurityQuestion, UserProfile
 from .models import SECURITY_QUESTION_CHOICES
+from student.models import Student
 from django.contrib.auth import logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -67,6 +68,11 @@ def signup(request):
             # Create the user using create_user helper to handle hashing
             user = User.objects.create_user(username=username, email=email, password=password)
             
+            # create student automatically
+            email_domain = email.split('@')[-1]
+            if email_domain == 'student.mmu.edu.my':
+                Student.objects.create(user=user)
+
             # Log the user in directly
             from django.contrib.auth import login
             login(request, user)
