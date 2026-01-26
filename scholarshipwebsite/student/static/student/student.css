@@ -595,90 +595,100 @@ html{
 }
 
 
+.checker-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+}
+
 .checker-form {
-    margin-bottom: 50px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
 }
 
 .form-group {
-    margin-bottom: 25px; 
+    flex: 1;
+    display: flex;
+    vertical-align: middle;
+    flex-direction: column;
 }
 
 .form-group label {
-    font-size: 1.2rem;
+    margin-bottom: 8px;
     font-weight: 600;
-    margin-right: 15px;
-    display: inline-block;
-    min-width: 250px; 
+    color: #555;
 }
 
-.form-select {
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 250px; 
-    background-color: white;
+.form-group input, .form-group select {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
 }
-
 
 .btn-check {
-    margin-top: 10px;
-    background-color: #004b93;
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 12px 25px;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 600;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    font-weight: bold;
+    transition: background 0.3s;
 }
 
 .btn-check:hover {
-    background-color: #00366b;
+    background-color: #0056b3;
 }
 
-
-.results-label {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 20px;
+/* Scholarship Result Grid */
+.scholarship-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
 }
 
-.cards-grid {
-    display: flex;
-    gap: 30px; 
-    flex-wrap: wrap; 
-    justify-content: flex-start;
-}
-
-
-.result-card {
-    border: 2px solid #0056b3; 
-    border-radius: 12px;
-    width: 250px;
-    background-color: white;
+.scholarship-card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.result-header {
-    background-color: white; 
-    padding: 15px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    text-align: center;
-    border-bottom: 2px solid #0056b3; 
-}
-
-.result-body {
-    height: 150px; 
-    padding: 15px;
-    text-align: center;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #555;
+    flex-direction: column;
+    transition: transform 0.2s;
+}
+
+.scholarship-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+.card-body {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.card-tags span {
+    background: #e9ecef;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-right: 5px;
+}
+
+.card-footer {
+    padding: 15px;
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.btn-view {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
 }
 
 

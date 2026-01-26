@@ -1,3 +1,4 @@
+from django.utils import timezone 
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
@@ -32,36 +33,37 @@ def eligibility_check(request):
     except Student.DoesNotExist:
         return redirect('home')
 
-    # Start with all active scholarships
-    # Adjust 'status' field if your model uses a different name
-    eligible_scholarships = Scholarship.objects.filter(status='Active')
+    # 1. Start with active scholarships
+    scholarships = Scholarship.objects.filter(deadline__gte=timezone.now().date())
 
-    # --- FILTER LOGIC ---
-    # 1. Filter by Education Level (e.g., Undergraduate, Foundation)
-    if student.education_level:
-        eligible_scholarships = eligible_scholarships.filter(
-            education_level__icontains=student.education_level
-        )
+    # --- GET INPUTS (Use Form Data if available, otherwise use Student Profile) ---
+    search_level = request.GET.get('study_level') or student.education_level
+    search_gpa = request.GET.get('gpa')
+    
+    # Use profile GPA if form GPA is empty
+    if not search_gpa and student.current_gpa:
+        search_gpa = student.current_gpa
 
-    # 2. Filter by GPA (Scholarship min_gpa <= Student current_gpa)
-    # Check if your Scholarship model has a 'min_gpa' or 'minimum_gpa' field
-    if student.current_gpa:
-        eligible_scholarships = eligible_scholarships.filter(
-            min_gpa__lte=student.current_gpa
-        )
+    # 2. Filter by Level
+    if search_level:
+        scholarships = scholarships.filter(education_level=search_level)
 
-    # 3. Filter by Student Type (Local/International)
+    # 3. Filter by GPA
+    if search_gpa:
+        scholarships = scholarships.filter(min_gpa__lte=search_gpa)
+
+    # 4. Filter by Student Type (Always stick to student's actual type for safety)
     if student.student_type:
-        eligible_scholarships = eligible_scholarships.filter(
-            student_type__iexact=student.student_type
-        )
+        scholarships = scholarships.filter(student_type=student.student_type)
 
-    context = {
+    return render(request, 'student/eligibility.html', {
         'student': student,
-        'eligible_scholarships': eligible_scholarships,
-    }
-    return render(request, 'student/eligibility.html', context)
-
+        'eligible_scholarships': scholarships, 
+        # Pass these back so the form stays filled after searching
+        'search_level': search_level,
+        'search_gpa': search_gpa
+    })
+    
 @login_required
 def toggle_bookmark(request, scholarship_id):
     """

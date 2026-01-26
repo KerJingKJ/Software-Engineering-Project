@@ -6,44 +6,49 @@
     
     <h1 class="page-title">Eligibility Checker</h1>
 
-    <div class="student-summary" style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
-        <h3>Checking Eligibility For:</h3>
-        <p><strong>Name:</strong> {{ request.user.get_full_name }}</p>
-        <p><strong>Current GPA:</strong> {{ student.current_gpa }}</p>
-        <p><strong>Education Level:</strong> {{ student.education_level }}</p>
-        <p><strong>Type:</strong> {{ student.student_type }}</p>
+    <div class="checker-card">
+        <form method="GET" action="{% url 'eligibility_check' %}" class="checker-form">
+            <div class="form-group">
+                <label for="study_level">Study Level</label>
+                <select name="study_level" id="study_level">
+                    <option value="">Select Level</option>
+                    <option value="Foundation">Foundation</option>
+                    <option value="Undergraduate">Undergraduate</option>
+                    <option value="Postgraduate">Postgraduate</option>
+                    <option value="Diploma">Diploma</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="gpa">Current CGPA / Result</label>
+                <input type="number" step="0.01" name="gpa" id="gpa" placeholder="e.g. 3.75">
+            </div>
+
+            <button type="submit" class="btn-check">Check Eligibility</button>
+        </form>
     </div>
 
     <div class="results-section">
-        <h2>Scholarships You Are Eligible For</h2>
-        
-        {% if eligible_scholarships %}
-            <table class="scholarship-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <thead>
-                    <tr style="background-color: #003366; color: white; text-align: left;">
-                        <th style="padding: 12px;">Scholarship Name</th>
-                        <th style="padding: 12px;">Amount/Coverage</th>
-                        <th style="padding: 12px;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for scholarship in eligible_scholarships %}
-                    <tr style="border-bottom: 1px solid #ddd;">
-                        <td style="padding: 12px;">{{ scholarship.scholarship_name }}</td>
-                        <td style="padding: 12px;">{{ scholarship.description|truncatewords:10 }}</td>
-                        <td style="padding: 12px;">
-                            <a href="{% url 'scholarship_details' scholarship.id %}" class="btn-view" style="color: #003366; font-weight: bold;">View Details</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class="no-results" style="text-align: center; padding: 40px; color: #666;">
-                <p>Based on your current profile, we couldn't find any matching scholarships.</p>
-                <p>Try updating your profile if your GPA or details have changed.</p>
+        <h3>Matching Scholarships</h3>
+        <div class="scholarship-grid">
+            {% for scholarship in eligible_scholarships %}
+            <div class="scholarship-card">
+                <div class="card-body">
+                    <h4>{{ scholarship.name }}</h4>
+                    <p class="provider">{{ scholarship.provider }}</p>
+                    <div class="card-tags">
+                        <span>{{ scholarship.education_level }}</span>
+                        <span>Min GPA: {{ scholarship.min_gpa }}</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'scholarship_details' scholarship.id %}" class="btn-view">View Details</a>
+                </div>
             </div>
-        {% endif %}
+            {% empty %}
+            <p class="no-results">No scholarships found matching your criteria.</p>
+            {% endfor %}
+        </div>
     </div>
 
     <div class="action-buttons">

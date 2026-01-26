@@ -3,33 +3,33 @@ from .models import Scholarship
 from datetime import date
 
 class ScholarshipForm(forms.ModelForm):
-    student_type = forms.ChoiceField(choices=[
-        ('International Student', 'International Student'),
-        ('Local', 'Local')
-    ], label="Student Type")
+    # student_type = forms.ChoiceField(choices=[
+    #     ('International Student', 'International Student'),
+    #     ('Local', 'Local')
+    # ], label="Student Type")
     
-    education_level = forms.ChoiceField(choices=[
-        ('Foundation', 'Foundation'),
-        ('Undergraduate', 'Undergraduate'),
-        ('Diploma', 'Diploma'),
-        ('Postgraduate', 'Postgraduate')
-    ], label="Education Level")
+    # education_level = forms.ChoiceField(choices=[
+    #     ('Foundation', 'Foundation'),
+    #     ('Undergraduate', 'Undergraduate'),
+    #     ('Diploma', 'Diploma'),
+    #     ('Postgraduate', 'Postgraduate')
+    # ], label="Education Level")
 
     class Meta:
         model = Scholarship
-        fields = ['name', 'description', 'criteria', 'deadline'] 
+        fields = ['name', 'description', 'education_level', 'student_type', 'min_gpa', 'criteria', 'deadline']
         widgets = {
             'deadline': forms.DateInput(attrs={'type': 'date'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(ScholarshipForm, self).__init__(*args, **kwargs)
-        if self.instance.pk and self.instance.open_for:
+    # def __init__(self, *args, **kwargs):
+    #     super(ScholarshipForm, self).__init__(*args, **kwargs)
+    #     if self.instance.pk and self.instance.open_for:
             
-            parts = self.instance.open_for.split(', ')
-            if len(parts) >= 2:
-                self.fields['student_type'].initial = parts[0]
-                self.fields['education_level'].initial = parts[1]
+    #         parts = self.instance.open_for.split(', ')
+    #         if len(parts) >= 2:
+    #             self.fields['student_type'].initial = parts[0]
+    #             self.fields['education_level'].initial = parts[1]
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
@@ -54,10 +54,10 @@ class ScholarshipForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super(ScholarshipForm, self).save(commit=False)
-        student_type = self.cleaned_data.get('student_type')
-        education_level = self.cleaned_data.get('education_level')
+        # student_type = self.cleaned_data.get('student_type')
+        # education_level = self.cleaned_data.get('education_level')
         
-        instance.open_for = f"{student_type}, {education_level}"
+        instance.open_for = f"{instance.student_type}, {instance.education_level}"
         
         if commit:
             instance.save()
