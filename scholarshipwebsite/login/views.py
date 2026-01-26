@@ -40,6 +40,7 @@ def index(request):
                     email_domain = user.email.split('@')[-1]
                     
                     if 'student.mmu.edu.my' in email_domain:
+                        Student.objects.get_or_create(user=user)
                         return redirect('student')
                     elif 'admin.mmu.edu.my' in email_domain:
                         return redirect('/admin/')

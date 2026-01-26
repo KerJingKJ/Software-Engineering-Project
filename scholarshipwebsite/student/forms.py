@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from .models import Application
+from .models import Application, Guardian
 from datetime import date
 
 # class ApplicationForm(forms.ModelForm):
@@ -81,7 +81,7 @@ class ApplicationForm(forms.ModelForm):
             'nationality', 'race', 'gender', 'contact_number', 'email_address','monthly_income',
             'education_level', 'passport_photo', 'academic_result', 
             'personal_achievement', 'supporting_document',
-            'reason_deserve'
+            'reason_deserve', 'ea_form', 'payslip'
         ]
         widgets = {
             'scholarship': forms.Select(attrs={
@@ -181,6 +181,14 @@ class ApplicationForm(forms.ModelForm):
                 'class': 'form-input large-textarea',
                 'rows': 10,
             }),
+            'ea_form': forms.FileInput(attrs={
+                'class': 'file-input',
+                'style': 'width: 300px',
+            }),
+           'payslip': forms.FileInput(attrs={
+                'class': 'file-input',
+                'style': 'width: 300px',
+            }),
         }
     
     def __init__(self, *args, **kwargs):
@@ -214,6 +222,87 @@ class ApplicationForm(forms.ModelForm):
         if intake and intake > date.today():
             raise forms.ValidationError("Intake date cannot be in the future.")
         return intake
+    
+    def clean_age(self):
+        age = self.cleaned_data.get('age')
+        if age and (age < 0 or age > 150):
+            raise forms.ValidationError("Please enter a valid age.")
+        return age
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        dob = cleaned_data.get('date_of_birth')
+        age = cleaned_data.get('age')
+        
+        # Verify age matches date of birth
+        if dob and age:
+            today = date.today()
+            calculated_age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+            if abs(calculated_age - age) > 1:
+                raise forms.ValidationError("Age doesn't match the date of birth provided.")
+        
+        return cleaned_data
+
+class GuardianForm(forms.ModelForm):
+    class Meta:
+        model = Guardian
+        fields = [
+            'relationship', 'name', 'ic_no', 'date_of_birth', 'age',
+            'nationality', 'gender', 'address', 'contact_number', 'email_address'
+        ]
+        widgets = {
+            'relationship': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'e.g., Father, Mother, Guardian',
+            }),
+            'name': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Enter guardian name',
+            }),
+            'ic_no': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Example: 001122143344',
+            }),
+            'date_of_birth': forms.DateInput(attrs={
+                'class': 'form-input',
+                'type': 'date',
+            }),
+            'age': forms.NumberInput(attrs={
+                'class': 'form-input small-input',
+            }),
+            'nationality': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Enter nationality',
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'form-input small-select',
+            }),
+            'address': forms.Textarea(attrs={
+                'class': 'form-input',
+                'rows': 3,
+            }),
+            'contact_number': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Example: 60123456789',
+            }),
+            'email_address': forms.EmailInput(attrs={
+                'class': 'form-input',
+            }),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Add HTML5 required attribute to required fields
+        for field_name, field in self.fields.items():
+            if field.required:
+                field.widget.attrs['required'] = 'required'
+    
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data.get('date_of_birth')
+        if dob and dob >= date.today():
+            raise forms.ValidationError("Date of birth must be in the past.")
+        return dob
     
     def clean_age(self):
         age = self.cleaned_data.get('age')

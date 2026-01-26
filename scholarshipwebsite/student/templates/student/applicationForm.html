@@ -15,10 +15,10 @@
     </div>
 
     <div class="tabs-wrapper">
-      <div class="tab active">Part 1: Personal Information</div>
-      <div class="tab">Part 2</div>
-      <div class="tab">Part 3</div>
-      <div class="tab">Part 4</div>
+      <a href="#" class="tab active">Part 1: Personal Information</a>
+      <a href="{% url 'edit_application_form' form.instance.pk 2 %}" class="tab">Part 2</a>
+      <a href="{% url 'edit_application_form' form.instance.pk 3 %}" class="tab">Part 3</a>
+      <a href="{% url 'edit_application_form' form.instance.pk 4 %}" class="tab">Part 4</a>
     </div>
 
     <div class="form-content">
