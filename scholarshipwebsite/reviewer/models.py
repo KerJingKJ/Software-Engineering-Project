@@ -1,8 +1,5 @@
 from django.db import models
 
-# Create your models here.
-# from committee.models import ScholarshipApplication
-from student.models import Application
 
 from student.models import ScholarshipApplication
 # Create your models here.
