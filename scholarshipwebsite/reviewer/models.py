@@ -1,10 +1,11 @@
 from django.db import models
 
 # Create your models here.
-from committee.models import ScholarshipApplication
+# from committee.models import ScholarshipApplication
+from student.models import Application
 
 class EligibilityCheck(models.Model):
-    application = models.OneToOneField(ScholarshipApplication, on_delete=models.CASCADE, related_name='eligibility_check')
+    application = models.OneToOneField(Application, on_delete=models.CASCADE, related_name='eligibility_check')
     citizenship_check = models.BooleanField(default=False)
     programme_level_check = models.BooleanField(default=False)
     
@@ -23,3 +24,10 @@ class EligibilityCheck(models.Model):
 
     def __str__(self):
         return f"Eligibility Check for {self.application.name}"
+
+# class placement
+class Score(models.Model):
+    None
+# class placement
+class ReviewerAssignment(models.Model):
+    None

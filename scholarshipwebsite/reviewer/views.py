@@ -9,14 +9,15 @@ from django.db.models import Count
 from committee.models import Scholarship
 from student.models import Student, Application
 
-from committee.models import ScholarshipApplication
+# from committee.models import ScholarshipApplication
+from student.models import Application
 from .models import EligibilityCheck
 
 def review(response, app_id=None):
     if app_id:
-        app = ScholarshipApplication.objects.filter(id=app_id).first()
+        app = Application.objects.filter(id=app_id).first()
     else:
-        app = ScholarshipApplication.objects.first()
+        app = Application.objects.first()
     
     eligibility = None
     if app:

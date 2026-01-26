@@ -1,37 +1,67 @@
-{% extends 'student/base.html' %}
-{% load static %}
-
-{% block content %}
+{% extends 'student/base.html' %} {% load static %} {% block content %}
 <div class="form-container">
+  <h1 class="page-title" style="margin-left: 10px">
+    Scholarship Application Form
+  </h1>
 
-    <h1 class="page-title" style="margin-left: 10px;">Scholarship Application Form</h1>
+  <div class="tabs-wrapper">
+    <a href="{% url 'edit_application_form' form.instance.pk 1 %}" class="tab">Part 1</a>
+    <a href="{% url 'edit_application_form' form.instance.pk 2 %}" class="tab">Part 2</a>
+    <a href="{% url 'edit_application_form' form.instance.pk 3   %}" class="tab">Part 3</a>
+    <a href="#" class="tab active">Part 4: Your opinion</a>
+  </div>
 
-    <div class="tabs-wrapper">
-        <a href="{% url 'applicationForm' %}" class="tab">Part 1</a>
-        <a href="{% url 'applicationForm_p2' %}" class="tab">Part 2</a>
-        <a href="{% url 'applicationForm_p3' %}" class="tab">Part 3</a>
-        <a href="#" class="tab active">Part 4: Your opinion</a>
-    </div>
+  <div class="form-content">
+    <form
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+        <div style="display:none;">
+          {{ form.scholarship }}
+          {{ form.name }}
+          {{ form.home_address }}
+          {{ form.correspondence_address }}
+          {{ form.ic_no }}
+          {{ form.age }}
+          {{ form.date_of_birth }}
+          {{ form.intake }}
+          {{ form.programme }}
+          {{ form.nationality }}
+          {{ form.race }}
+          {{ form.gender }}
+          {{ form.contact_number }}
+          {{ form.monthly_income }}
+          {{ form.email_address }}
+          {{ form.passport_photo }}
+          {{ form.education_level }}
+          {{ form.academic_result }}
 
-    <div class="form-content">
-        <form action="{% url 'applicationForm_status' %}" method="POST"> {% csrf_token %}
-            
-            <div class="form-vertical-row">
-                <label class="top-label">Tell us why you deserve the scholarship:</label>
-                <textarea class="form-input large-textarea" rows="10"></textarea>
-            </div>
+          {{ form.personal_achievement }}
+          {{ form.supporting_document }}
+        </div>
 
-            <div class="checkbox-container">
-                <input type="checkbox" id="terms" required>
-                <label for="terms">I agree to the [Terms & Conditions], [Privacy Policy], and [Accuracy Statement].</label>
-            </div>
+      <div class="form-vertical-row">
+        <label class="top-label"
+          >Tell us why you deserve the scholarship:</label
+        >
+        {{ form.reason_deserve }}
+        {% comment %} <textarea class="form-input large-textarea" rows="10"></textarea> {% endcomment %}
+      </div>
 
-            <div class="button-group-center">
-                <a href="{% url 'applicationForm_p3' %}" class="btn-back">Back</a>
-                <button type="submit" class="btn-next">Submit</button>
-            </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="terms" required />
+        <label for="terms"
+          >I agree to the [Terms & Conditions], [Privacy Policy], and [Accuracy
+          Statement].</label
+        >
+      </div>
 
-        </form>
-    </div>
+      <div class="button-group-center">
+        <a href="{% url 'edit_application_form' form.instance.pk 3 %}" class="btn-back">Back</a>
+        <button type="submit" class="btn-next">Submit</button>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}
