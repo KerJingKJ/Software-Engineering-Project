@@ -7,10 +7,10 @@
     <h1 class="page-title" style="margin-left: 10px;">Scholarship Application Form</h1>
     
     <div class="tabs-wrapper">
-        <a href="{% url 'applicationForm' %}" class="tab">Part 1</a>
-        <a href="{% url 'applicationForm_p2' %}" class="tab">Part 2</a>
+        <a href="{% url 'edit_application_form' form.instance.pk 1 %}" class="tab">Part 1</a>
+        <a href="{% url 'edit_application_form' form.instance.pk 2 %}" class="tab">Part 2</a>
         <a href="#" class="tab active">Part 3: Family Background</a>
-        <a href="{% url 'applicationForm_p4' %}" class="tab">Part 4</a>
+        <a href="{% url 'edit_application_form' form.instance.pk 4 %}" class="tab">Part 4</a>
     </div>
 
     <div class="form-content">
@@ -150,8 +150,8 @@
             </div>
 
             <div class="button-group-center">
-                <a href="{% url 'applicationForm_p2' %}" style="text-decoration: none;" class="btn-back">Back</a>
-                <a href="{% url 'applicationForm_p4' %}" style="text-decoration: none;" class="btn-next">Next</a>
+                <a href="{% url 'edit_application_form' form.instance.pk 2 %}" style="text-decoration: none;" class="btn-back">Back</a>
+                <a href="{% url 'edit_application_form' form.instance.pk 4 %}" style="text-decoration: none;" class="btn-next">Next</a>
             </div>
 
         </form>
