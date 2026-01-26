@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import ScholarshipForm
+from .models import Scholarship, Interview, ApprovedApplication
+from student.models import ScholarshipApplication, Guardian
 from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
 
 from django.views.decorators.csrf import csrf_exempt
@@ -21,7 +23,7 @@ from django.db.models import Count
 
 from student.models import Student, Application, Guardian, Interview, ApprovedApplication
 
-# Create your views here.
+
 @csrf_exempt
 def create_scholarship(request):
     if request.method == "POST":
@@ -77,15 +79,8 @@ def reviewApprove(response):
     return render(response, "committee/reviewApprove.html", {"applications": applications})
 
 def view_application_details(request, id):
-  #  application = get_object_or_404(ScholarshipApplication, pk=id)
     application = get_object_or_404(Application, pk=id)
-
-    context = {
-        'app': application,
-    }
-
-    return render(request, "committee/application_details_review.html",context)
-
+    return render(request, "committee/application_details_review.html", {'application': application})
 
 def view_family_background(request, id):
     application = get_object_or_404(Application, pk=id)
@@ -100,7 +95,7 @@ def schedule_interview(request, id):
         interview_time = request.POST.get('interview_time')
         timezone = request.POST.get('timezone')
         
-        # Check if interview already exists, update it; otherwise create new
+        
         interview, created = Interview.objects.get_or_create(
             application=application,
             defaults={
@@ -110,11 +105,11 @@ def schedule_interview(request, id):
             }
         )
         if not created:
-            # Update existing interview
+            
             interview.date = date
             interview.interview_time = interview_time
             interview.timezone = timezone
-        # If user is logged in, assign as reviewer
+        
         if request.user.is_authenticated:
             interview.reviewer = request.user
         interview.save()
@@ -133,7 +128,7 @@ def decision_page(request, id):
             application.status = 'Approved'
             application.save()
             
-            # Copy data to ApprovedApplication table
+            
             if interview:
                 ApprovedApplication.objects.update_or_create(
                     original_application=application,
@@ -146,8 +141,8 @@ def decision_page(request, id):
                         'programme': application.programme,
                         'interview_date': interview.date,
                         'interview_time': interview.interview_time,
-                        'interview_timezone': interview.timezone,
-                        'approved_by': request.user if request.user.is_authenticated else None
+                        'timezone': interview.timezone,
+                        'approver': request.user if request.user.is_authenticated else None
                     }
                 )
             return redirect('decision_page', id=id)
@@ -155,10 +150,10 @@ def decision_page(request, id):
             application.status = 'Rejected'
             application.save()
             
-            # Remove from ApprovedApplication if exists (reversing approval)
+            
             ApprovedApplication.objects.filter(original_application=application).delete()
             
-            # Remove from Interview if exists
+            
             Interview.objects.filter(application=application).delete()
             
             return redirect('decision_page', id=id)
@@ -166,7 +161,7 @@ def decision_page(request, id):
     return render(request, "committee/decision.html", {'application': application, 'interview': interview})
 
  
-## using rest_framework classes
+
 class ChartData(APIView):
     authentication_classes = []
     permission_classes = []
@@ -181,8 +176,8 @@ class ChartData(APIView):
         chartdata = [s.app_count for s in scholarships]
         total_applications = Application.objects.count()
         data ={
-                     "labels":labels,
-                     "chartLabel":chartLabel,
-                     "chartdata":chartdata,
-             }
+            'labels': labels,
+            'chartLabel': chartLabel,
+            'chartdata': chartdata,
+        }
         return Response(data)

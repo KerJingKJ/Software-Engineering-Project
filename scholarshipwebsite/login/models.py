@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# List of 10 security questions choices
+
 SECURITY_QUESTION_CHOICES = [
     ('q1', 'What is the name of your first pet?'),
     ('q2', 'What is your mother\'s maiden name?'),

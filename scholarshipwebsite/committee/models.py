@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
-# Create your models here.
+from django.contrib.auth.models import User
+
+
 class Scholarship(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
@@ -21,8 +23,17 @@ class Scholarship(models.Model):
     def __str__(self):
         return self.name
 
-from django.contrib.auth.models import User
 
+
+from student.models import ScholarshipApplication, Guardian
+
+
+class Interview(models.Model):
+    application = models.ForeignKey(ScholarshipApplication, on_delete=models.CASCADE, related_name='interviews')
+    date = models.DateField()
+    interview_time = models.CharField(max_length=20, default='12:00 PM')
+    timezone = models.CharField(max_length=50)
+    reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 # class ScholarshipApplication(models.Model):
 #     STATUS_CHOICES = [
 #         ('Pending', 'Pending'),
@@ -120,6 +131,23 @@ from django.contrib.auth.models import User
 #     def __str__(self):
 #         return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"
 
+class ApprovedApplication(models.Model):
+    
+    original_application = models.ForeignKey(ScholarshipApplication, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    scholarship_name = models.CharField(max_length=200)
+    student_name = models.CharField(max_length=200)
+    ic_no = models.CharField(max_length=20)
+    email_address = models.EmailField()
+    contact_number = models.CharField(max_length=20)
+    programme = models.CharField(max_length=200)
+    
+    interview_date = models.DateField()
+    interview_time = models.CharField(max_length=20)
+    interview_timezone = models.CharField(max_length=50)
+    
+    approved_at = models.DateTimeField(auto_now_add=True)
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 # class ApprovedApplication(models.Model):
 #     """Stores approved student applications with interview details"""
 #     # Link to original application (optional, for reference)

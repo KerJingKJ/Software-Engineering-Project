@@ -20,32 +20,43 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student')
 
     current_gpa = models.FloatField(
-        help_text="Current Grade Point Average"
+        help_text="Current Grade Point Average",
+        null=True,
+        blank=True,
     )
 
     course = models.CharField(
         max_length=50,
+        null=True,
+        blank=True,
         help_text="Name of the enrolled course"
     )
 
     year_of_study = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
         help_text="Current year of study"
     )
 
     student_type = models.CharField(
         max_length=50,
         choices=STUDENT_TYPE_CHOICES,
+        null=True,
+        blank=True,
         help_text="Student types, either international student or local"
     )
 
     education_level = models.CharField(
         max_length=50,
         choices=EDUCATION_LEVEL_CHOICES,
+        null=True,
+        blank=True,
         help_text="Level of education: foundation, diploma, undergraduate or postgraduate"
     )
 
     extracurricular_activities = models.TextField(
         max_length=200,
+        null=True,
         blank=True,
         help_text="List of extracurricular activities"
     )
@@ -92,8 +103,14 @@ class Student(models.Model):
 #         return f"Application {self.id} - {self.status}"
 
 
+    # student_ID = models.CharField(
+    #     max_length=50,
+    #     help_text="Name of the enrolled course"
+    # )
+
 # by hui yee from committe models
 class Application(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
@@ -146,15 +163,6 @@ class Application(models.Model):
     
     personal_achievement = models.TextField(null=True, blank=True)
     reason_deserve = models.TextField(null=True, blank=True)
-    
-    # These were requested in the second page but seem to belong to the application generally or maybe specific to guardians?
-    # The prompt says "upload两个file一个是ea form和latest 3 months payslip" on the second page (family background).
-    # Since there are two guardians, but usually EA form/payslip is per household or per guardian? 
-    # The prompt says "upload two files... on the second page is family background". 
-    # Usually these documents are proof of income for the parents/guardians.
-    # I will put them on the Application model as requested by the structure "second page is family background... and need upload two files".
-    # If it was per guardian, it would be in Guardian model. But usually it's attached to the application overall as "documents".
-    # However, since they are financial docs, putting them on Application makes sense for "Family" proof.
     ea_form = models.FileField(upload_to='ea_forms/',null=True, blank=True)
     payslip = models.FileField(upload_to='payslips/',null=True, blank=True)
 
