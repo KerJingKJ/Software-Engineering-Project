@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import ScholarshipForm
 from .models import Scholarship, Interview, ApprovedApplication
-from student.models import ScholarshipApplication, Guardian
+from student.models import Application, Guardian
 from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
 
 from django.views.decorators.csrf import csrf_exempt
@@ -21,7 +21,7 @@ from rest_framework.response import Response
 
 from django.db.models import Count
 
-from student.models import Student, Application, Guardian, Interview, ApprovedApplication
+from student.models import Student, Application, Guardian
 
 
 @csrf_exempt
