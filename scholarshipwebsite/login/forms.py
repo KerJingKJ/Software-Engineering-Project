@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-import re
+
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label="Email Address")
