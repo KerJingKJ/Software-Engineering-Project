@@ -2,66 +2,46 @@
 {% load static %}
 
 {% block content %}
-<div class="list-container">
-    
+<div class="bookmark-container">
     <div class="page-header">
-        <h1 class="page-title">My Bookmarks</h1>
-        <p class="page-subtitle">Manage your saved scholarships here.</p>
+        <h1>My Bookmarked Scholarships</h1>
+        <p>Manage your saved opportunities</p>
     </div>
-
     <div class="table-wrapper">
         <table class="scholarship-table">
             <thead>
                 <tr>
-                    <th style="width: 30%;">Name</th>
+                    <th>Name</th>
                     <th>Description</th>
                     <th>Level</th>
+                    <th>Local/International</th>
                     <th>Status</th>
-                    <th style="text-align: center;">Action</th> </tr>
+                    <th>Action</th>
+                </tr>
             </thead>
             <tbody>
+                {% for item in bookmarks %}
                 <tr>
-                    <td><a href="{% url 'scholarship_details' %}?id=chancellor">MMU Chancellor’s Scholarship</a></td>
-                    <td>100% discount of tuition fees & monthly allowance</td>
-                    <td>Foundation & Undergraduate</td>
-                    <td><span class="status-open">Open</span></td>
-                    <td style="text-align: center;">
-                        <button class="btn-remove" onclick="removeRow(this)">Remove</button>
+                    <td>
+                        <a href="{% url 'scholarship_details' item.scholarship.id %}">
+                            {{ item.scholarship.name }}
+                        </a>
+                    </td>
+                    <td>{{ item.scholarship.description|truncatewords:10 }}</td>
+                    <td>{{ item.scholarship.education_level }}</td>
+                    <td>{{ item.scholarship.student_type }}</td>
+                    <td>{{ item.scholarship.status }}</td>
+                    <td>
+                        <a href="{% url 'toggle_bookmark' item.scholarship.id %}" class="btn-remove" style="color: #cc0000; font-weight: bold;">Remove</a>
                     </td>
                 </tr>
-
+                {% empty %}
                 <tr>
-                    <td><a href="{% url 'scholarship_details' %}?id=merit">MMU Merit Scholarship</a></td>
-                    <td>Discount of tuition fees: 50% / 30% / 25%</td>
-                    <td>Undergraduate</td>
-                    <td><span class="status-open">Open</span></td>
-                    <td style="text-align: center;">
-                        <button class="btn-remove" onclick="removeRow(this)">Remove</button>
-                    </td>
+                    <td colspan="5">No bookmarked scholarships found.</td>
                 </tr>
-            </tbody>
+                {% endfor %}
+                </tbody>
+    
         </table>
-    </div>
-
-    <div id="empty-state" style="display: none; text-align: center; margin-top: 50px;">
-        <h3 style="color: #666;">No bookmarks yet!</h3>
-        <a href="{% url 'scholarship_list' %}" class="btn-nav">Explore Scholarships</a>
-    </div>
-
 </div>
-
-<script>
-    function removeRow(btn) {
-        // Deletes the row containing the clicked button
-        var row = btn.parentNode.parentNode;
-        row.parentNode.removeChild(row);
-        
-        // Check if table is empty (optional logic)
-        var tableBody = document.querySelector(".scholarship-table tbody");
-        if (tableBody.children.length === 0) {
-            document.querySelector(".table-wrapper").style.display = "none";
-            document.getElementById("empty-state").style.display = "block";
-        }
-    }
-</script>
 {% endblock %}

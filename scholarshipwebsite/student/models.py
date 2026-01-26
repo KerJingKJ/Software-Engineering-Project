@@ -1,6 +1,7 @@
 # models.py
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 from committee.models import Scholarship
 from django.contrib.auth.models import User
 
@@ -23,23 +24,16 @@ class Student(models.Model):
         help_text="Current Grade Point Average",
         null=True,
         blank=True,
-        help_text="Current Grade Point Average",
-        null=True,
-        blank=True,
     )
 
     course = models.CharField(
         max_length=50,
         null=True,
         blank=True,
-        null=True,
-        blank=True,
         help_text="Name of the enrolled course"
     )
 
     year_of_study = models.PositiveSmallIntegerField(
-        null=True,
-        blank=True,
         null=True,
         blank=True,
         help_text="Current year of study"
@@ -50,8 +44,6 @@ class Student(models.Model):
         choices=STUDENT_TYPE_CHOICES,
         null=True,
         blank=True,
-        null=True,
-        blank=True,
         help_text="Student types, either international student or local"
     )
 
@@ -60,14 +52,11 @@ class Student(models.Model):
         choices=EDUCATION_LEVEL_CHOICES,
         null=True,
         blank=True,
-        null=True,
-        blank=True,
         help_text="Level of education: foundation, diploma, undergraduate or postgraduate"
     )
 
     extracurricular_activities = models.TextField(
         max_length=200,
-        null=True,
         null=True,
         blank=True,
         help_text="List of extracurricular activities"
@@ -106,7 +95,6 @@ class Guardian(models.Model):
 
 # by hui yee from committe models
 class Application(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -177,16 +165,16 @@ class Application(models.Model):
         return f"{self.name} - {self.scholarship.name}"
 
 # by hui yee from committe models
-class Interview(models.Model):
-    application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='interviews')
-    date = models.DateField()
-    interview_time = models.CharField(max_length=20, default='12:00 PM')  # e.g., "9:00 AM", "10:00 AM"
-    timezone = models.CharField(max_length=50)
-    # from what i understand, committee would be the ones conducting the interview
-    reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+# class Interview(models.Model):
+#     application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='interviews')
+#     date = models.DateField()
+#     interview_time = models.CharField(max_length=20, default='12:00 PM')  # e.g., "9:00 AM", "10:00 AM"
+#     timezone = models.CharField(max_length=50)
+#     # from what i understand, committee would be the ones conducting the interview
+#     reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def __str__(self):
-        return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"
+#     def __str__(self):
+#         return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"
 
 # by hui yee from committe models
 class Bookmark(models.Model):

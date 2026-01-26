@@ -69,16 +69,7 @@ def signup(request):
             
             user = User.objects.create_user(username=username, email=email, password=password)
             
-<<<<<<< HEAD
-            # create student automatically
-            email_domain = email.split('@')[-1]
-            if email_domain == 'student.mmu.edu.my':
-                Student.objects.create(user=user)
-
-            # Log the user in directly
-=======
             
->>>>>>> main
             from django.contrib.auth import login
             login(request, user)
             
