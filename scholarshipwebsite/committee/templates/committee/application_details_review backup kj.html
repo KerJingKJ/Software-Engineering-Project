@@ -1,0 +1,43 @@
+{% extends 'committee/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="detail-container">
+    
+    
+    <h1>Application Details #{{ app.id }}</h1>
+
+    <div class="detail-grid">
+        <section class="info-card">
+            <h3>Applicant Profile</h3>
+            <p><strong> Scholarship Applied:</strong>  {{ app.scholarship.name }} </p>
+            <p><strong>Name:</strong> {{ app.student.user.get_full_name }}</p>
+            <p><strong>Student ID:</strong> {{ app.student.user.username }}</p>
+            <p><strong>Student Type:</strong> {{ app.student.student_type }}</p>
+        </section>
+
+        <section class="info-card">
+            <h3>Academic Background</h3>
+            <p><strong>Course:</strong> {{ app.student.course }}</p>
+            <p><strong>Education Level:</strong> {{ app.student.education_level }}</p>
+            <p><strong>Current GPA:</strong> {{ app.student.current_gpa }}</p>
+            <p><strong>Year of Study:</strong> Year {{ app.student.year_of_study }}</p>
+        </section>
+
+        <section class="info-card">
+            <h3>Scholarship Information</h3>
+            <p><strong>Scholarship:</strong> {{ app.scholarship.name }}</p>
+            <p><strong>Date Applied:</strong> {{ app.submitted_date }}</p>
+            <p><strong>Current Status:</strong> 
+                <span class="status-label">{{ app.status }}</span>
+            </p>
+            <p><strong>Interview:</strong> {{ app.interview_status }}</p>
+        </section>
+
+        <section class="info-card full-width">
+            <h3>Extracurricular Activities</h3>
+            <p>{{ app.student.extracurricular_activities|linebreaks }}</p>
+        </section>
+    </div>
+</div>
+{% endblock %}

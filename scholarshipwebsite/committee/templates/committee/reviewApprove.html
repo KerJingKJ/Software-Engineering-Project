@@ -2,14 +2,48 @@
 {% block content %}
 {% load static %}
 
-<body>
-    
+
+<link href="{% static 'committee/css/reviewApprove.css' %}" type="text/css" rel="stylesheet" />
 
     <section id="ReviewApprove">
     <h1>Review/Approve Scholarship</h1>    
-       
-    </section> 
 
-</body>
+
+<div class="header-row">
+        <span>Scholarship Applied</span>
+        <span>Apply Date</span>
+        <span>Status</span>
+    </div>
+
+    {% for app in applications %}
+    <div class="application-card">
+        <div class="number-badge">{{ forloop.counter }}</div>
+
+        <div class="col applicant-info">
+            <strong>{{ app.student.user.get_full_name }}</strong>
+            <p> {{ app.student.user.username }}</p>
+        </div>
+
+        <div class="col scholarship-name">
+            {{ app.scholarship.name }}
+        </div>
+
+        <div class="col apply-date">
+            {{ app.submitted_date|date:"d-m-Y" }}
+        </div>
+
+        <div class="col status-box">
+            <span class="badge badge-{{ app.status|slugify }}">
+                {{ app.status }}
+            </span>
+        </div>
+
+        <div class="col action">
+            <a href="{% url 'view_application_details' app.id %}" class="btn">
+            View Details
+        </a>
+        </div>
+    </div>
+    {% endfor %}
 
 {% endblock %}

@@ -17,6 +17,16 @@ class SignUpForm(forms.Form):
         if User.objects.filter(username=name).exists():
             raise forms.ValidationError("Username is already taken.")
         return name
+    
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        # Check that the email ends with the allowed domain
+        if not email.endswith("@student.mmu.edu.my"):
+            raise forms.ValidationError("You must use your student MMU email address (@student.mmu.edu.my).")
+        # Optional: check if email already exists
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email is already registered.")
+        return email
 
     def clean(self):
         cleaned_data = super().clean()
@@ -24,25 +34,17 @@ class SignUpForm(forms.Form):
         confirm_password = cleaned_data.get("confirm_password")
 
         if password and confirm_password:
-            # Check if passwords match
             if password != confirm_password:
                 self.add_error('confirm_password', "Passwords do not match.")
 
-            # Check password complexity
-            # 1. At least 8 characters
             if len(password) < 8:
                 self.add_error('password', "Password must be at least 8 characters long.")
             
-            # 2. At least one uppercase letter
             if not any(char.isupper() for char in password):
                 self.add_error('password', "Password must contain at least one uppercase letter.")
 
-            # 3. At least one punctuation/special character
-            # Using checks for non-alphanumeric characters excluding standard spaces if desired, 
-            # or specifically verifying against a set of punctuation.
-            # Here we check for any character that is not a letter or number.
             if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-                 self.add_error('password', "Password must contain at least one special character/punctuation.")
+                self.add_error('password', "Password must contain at least one special character/punctuation.")
 
 
         return cleaned_data

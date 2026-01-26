@@ -1,39 +1,75 @@
-{% extends 'student/base.html' %}
-{% load static %}
-
-{% block content %}
+{% extends 'student/base.html' %} {% load static %} {% block content %}
 <div class="form-container">
-    
-    <h1 class="page-title" style="margin-left: 10px;">Scholarship Application Form</h1>
-    
-    <div class="tabs-wrapper">
-        <a href="{% url 'applicationForm' %}" class="tab">Part 1</a>
-        <a href="#" class="tab active">Part 2: Personal Achievement</a>
-        <a href="#" class="tab">Part 3</a>
-        <a href="#" class="tab">Part 4</a>
-    </div>
+  <h1 class="page-title" style="margin-left: 10px">
+    Scholarship Application Form
+  </h1>
 
-    <div class="form-content">
-        <form action="" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            
-            <div class="form-vertical-row">
-                <label class="top-label">Briefly explain your personal achievement:</label>
-                <textarea class="form-input large-textarea" rows="8"></textarea>
-            </div>
+  <div class="tabs-wrapper">
+    <a href="{% url 'edit_application_form' form.instance.pk 1 %}" class="tab"
+      >Part 1</a
+    >
+    <a href="#" class="tab active">Part 2: Personal Achievement</a>
+    <a href="#" class="tab">Part 3</a>
+    <a href="#" class="tab">Part 4</a>
+  </div>
 
-            <div class="form-vertical-row">
-                <label class="top-label">Upload supporting document(s):</label>
-                <input type="file" class="file-input" style="width: 300px;">
-            </div>
+  <div class="form-content">
+    {% comment %} <form action="" method="POST" enctype="multipart/form-data">
+      {% csrf_token %} {% endcomment %}
+  <form
+    method="POST"
+    enctype="multipart/form-data"
+  >
+        {% csrf_token %}
+        {% comment %} LOL. wacky workaround {% endcomment %}
+        <div style="display:none;">
+          {{ form.scholarship }}
+          {{ form.name }}
+          {{ form.home_address }}
+          {{ form.correspondence_address }}
+          {{ form.ic_no }}
+          {{ form.age }}
+          {{ form.date_of_birth }}
+          {{ form.intake }}
+          {{ form.programme }}
+          {{ form.nationality }}
+          {{ form.race }}
+          {{ form.gender }}
+          {{ form.contact_number }}
+          {{ form.monthly_income }}
+          {{ form.email_address }}
+          {{ form.passport_photo }}
+          {{ form.education_level }}
+          {{ form.academic_result }}
 
-            <div class="button-group-center">
-                <a href="{% url 'applicationForm' %}" class="btn-back">Back</a>
-                
-                <a href="{% url 'applicationForm_p3' %}" style="text-decoration: none;" class="btn-next">Next</a>
-            </div>
+          {{ form.reason_deserve }}
+        </div>
+      <div class="form-vertical-row">
+        <label class="top-label"
+          >Briefly explain your personal achievement:</label
+        >
+        {{ form.personal_achievement }}
+        {% comment %} <textarea class="form-input large-textarea" rows="8"></textarea> {% endcomment %}
+      </div>
 
-        </form>
-    </div>
+      <div class="form-vertical-row">
+        <label class="top-label">Upload supporting document(s):</label>
+        {{ form.supporting_document }}
+        {% comment %} <input type="file" class="file-input" style="width: 300px" /> {% endcomment %}
+      </div>
+
+      <div class="button-group-center">
+        <a href="{% url 'edit_application_form' form.instance.pk 1 %}" class="btn-back">Back</a>
+
+        {% comment %} <a
+          href="{% url 'edit_application_form' form.instance.pk 3 %}"
+          style="text-decoration: none"
+          class="btn-next"
+          >Next</a
+        > {% endcomment %}
+        <button type="submit" class="btn-next">Next</button>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

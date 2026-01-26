@@ -9,18 +9,18 @@ urlpatterns = [
     path("edit/<int:id>/", views.edit_scholarship, name="edit_scholarship"),
     path("delete/<int:id>/", views.delete_scholarship, name="delete_scholarship"),
     
-    # Application Review URLs
+    
     path("application/<int:id>/details/", views.view_application_details, name="view_application_details"),
     path("application/<int:id>/family/", views.view_family_background, name="view_family_background"),
     path("application/<int:id>/interview/", views.schedule_interview, name="schedule_interview"),
     path("application/<int:id>/decision/", views.decision_page, name="decision_page"),
 
 
-    #Manage Account URL
+    
     path('changepassword/', login_views.change_password, name='committee_change_password'),
     path('changesecurityquestion/', login_views.update_security_questions, name='committee_update_security_questions'),
 
-    #Dashboard
+    
     path('api/', views.ChartData.as_view(), name='api_data'),
     
 ]

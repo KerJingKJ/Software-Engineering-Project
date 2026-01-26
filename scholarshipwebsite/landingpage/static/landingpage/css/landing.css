@@ -10,9 +10,9 @@ html{
 
 .nav-list {
   list-style: none;
-  display: flex;           /* Horizontal layout */
-  align-items: center;     /* Vertically center items */
-  gap: 10px;               /* Space between items */
+  display: flex;           
+  align-items: center;     
+  gap: 10px;               
   margin: 0;
   padding: 0;
   flex-wrap: wrap; 
@@ -83,25 +83,25 @@ html{
 }
 
 #container-floatabovepic {
-    position: absolute;  /* Floats over the image */
-    top: 50%;            /* Vertical center */
-    left: 50%;           /* Horizontal center */
-    transform: translate(-50%, -50%); /* Perfect centering adjustment */
-    text-align: center;  /* Centers text and button relative to each other */
-    width: 80%;          /* Prevents text from hitting the edges */
+    position: absolute;  
+    top: 50%;            
+    left: 50%;           
+    transform: translate(-50%, -50%); 
+    text-align: center;  
+    width: 80%;          
 }
 
 #grad-pic {
-    width: 100%;       /* Makes image stretch across the screen */
+    width: 100%;       
     height: fit-content;
-    display: block;    /* Removes tiny gap at bottom of image */
+    display: block;    
 }
 
 #landing h2{
-    position: absolute; /* Takes text out of flow to float it */
+    position: absolute; 
     top: 50%;           
     left: 50%;          
-    transform: translate(-50%, -50%); /* Center the text */
+    transform: translate(-50%, -50%); 
     color: black;      
     font-size: 3rem;    
     text-align: center;
@@ -109,11 +109,11 @@ html{
 }
 
 .button-2{
-    position: absolute; /* Takes text out of flow to float it */
+    position: absolute; 
     top: 70%;           
     left: 41%;          
     width: 10%;
-    left: 50%;  /* center horizontally on all screens */
+    left: 50%;  
     transform: translateX(-50%);  
     width: auto;       
 }

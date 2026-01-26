@@ -1,4 +1,4 @@
-/* Google Fonts */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 body {
@@ -31,7 +31,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* Django Form Styling */
+
 label {
     display: block;
     margin-bottom: 8px;
@@ -49,7 +49,7 @@ select {
     border-radius: 8px;
     font-size: 16px;
     transition: border-color 0.2s, box-shadow 0.2s;
-    box-sizing: border-box; /* Important for padding */
+    box-sizing: border-box; 
 }
 
 input[type="text"]:focus,
