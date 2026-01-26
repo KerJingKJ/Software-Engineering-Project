@@ -72,11 +72,19 @@ def edit(response):
     return render(response, "committee/editScholarship.html", {})
 
 def reviewApprove(response):
-    return render(response, "committee/reviewApprove.html", {})
+    applications = Application.objects.all()
+    
+    return render(response, "committee/reviewApprove.html", {"applications": applications})
 
 def view_application_details(request, id):
-    application = get_object_or_404(ScholarshipApplication, pk=id)
-    return render(request, "committee/application_details_review.html", {'application': application})
+  #  application = get_object_or_404(ScholarshipApplication, pk=id)
+    application = get_object_or_404(Application, pk=id)
+
+    context = {
+        'app': application,
+    }
+
+    return render(request, "committee/application_details_review.html",context)
 
 def view_family_background(request, id):
     application = get_object_or_404(ScholarshipApplication, pk=id)
