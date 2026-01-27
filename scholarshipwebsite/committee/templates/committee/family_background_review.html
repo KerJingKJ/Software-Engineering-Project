@@ -13,8 +13,11 @@
     .tab-nav {
         display: flex;
         margin-bottom: 25px;
+        margin-left: -20px;
+        margin-right: -20px;
+        margin-top: -20px;
         border: 1px solid #ddd;
-        border-radius: 5px;
+        border-top: none;
         overflow: hidden;
     }
 
@@ -173,6 +176,7 @@
         <a href="{% url 'view_family_background' application.id %}" class="tab-item active">Part 2</a>
         <a href="{% url 'decision_page' application.id %}" class="tab-item">Part 3: Decision</a>
     </div>
+
     {% for guardian in guardians %}
     <div class="guardian-card">
         <div class="guardian-header">Guardian {{ forloop.counter }}:</div>
