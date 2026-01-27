@@ -14,123 +14,178 @@
     </div>
 
     <div class="form-content">
-        <form action="" method="POST" enctype="multipart/form-data">
+  <form
+    method="POST"
+    enctype="multipart/form-data"
+  >
             {% csrf_token %}
+                    {% comment %} LOL. wacky workaround {% endcomment %}
+        <div style="display:none;">
+          {{ form.scholarship }}
+          {{ form.name }}
+          {{ form.home_address }}
+          {{ form.correspondence_address }}
+          {{ form.ic_no }}
+          {{ form.age }}
+          {{ form.date_of_birth }}
+          {{ form.intake }}
+          {{ form.programme }}
+          {{ form.student_identification_number }}
+          {{ form.nationality }}
+          {{ form.race }}
+          {{ form.gender }}
+          {{ form.contact_number }}
+          {{ form.monthly_income }}
+          {{ form.email_address }}
+          {{ form.passport_photo }}
+          {{ form.education_level }}
+          {{ form.academic_result }}
+
+          {{ form.reason_deserve }}
+        </div>
 
             <div class="guardian-card">
                 <h3 class="card-title"><u>Guardian 1:</u></h3>
                 
                 <div class="form-row">
                     <label>Relationship:</label>
-                    <select class="form-input small-select">
+                    {{ form1.relationship }}
+                    {% comment %} <select class="form-input small-select">
                         <option></option>
                         <option>Father</option>
                         <option>Mother</option>
                         <option>Guardian</option>
-                    </select>
+                    </select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Name:</label>
-                    <input type="text" class="form-input" placeholder="Enter your name">
+                    {{ form1.name }}
+                    {% comment %} <input type="text" class="form-input" placeholder="Enter your name"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Identification Card Number:</label>
-                    <input type="text" class="form-input" placeholder="Example: 001122143344">
+                    {{ form1.ic_no }}
+                    {% comment %} <input type="text" class="form-input" placeholder="Example: 001122143344"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Date of Birth:</label>
-                    <div class="date-inputs">
+                    {{ form1.date_of_birth }}
+                    {% comment %} <div class="date-inputs">
                         <input type="text" placeholder="DD">
                         <input type="text" placeholder="MM">
                         <input type="text" placeholder="YYYY">
-                    </div>
+                    </div> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Age:</label>
-                    <input type="number" class="form-input small-input">
+                    {{ form1.age }}
+                    {% comment %} <input type="number" class="form-input small-input"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Nationality:</label>
-                    <select class="form-input small-select"><option></option><option>Malaysian</option></select>
+                    {{ form1.nationality }}
+                    {% comment %} <select class="form-input small-select"><option></option><option>Malaysian</option></select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Gender:</label>
-                    <select class="form-input small-select"><option></option><option>Male</option><option>Female</option></select>
+                    {{ form1.gender }}
+                    {% comment %} <select class="form-input small-select"><option></option><option>Male</option><option>Female</option></select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Address:</label>
-                    <textarea class="form-input" rows="2"></textarea>
+                    {{ form1.address }}
+                    {% comment %} <textarea class="form-input" rows="2"></textarea> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Contact number:</label>
-                    <input type="text" class="form-input" placeholder="Example: 60123456789">
+                    {{ form1.contact_number }}
+                    {% comment %} <input type="text" class="form-input" placeholder="Example: 60123456789"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Email Address:</label>
-                    <input type="email" class="form-input">
+                    {{ form1.email_address }}
+                    {% comment %} <input type="email" class="form-input"> {% endcomment %}
                 </div>
             </div>
 
             <div class="guardian-card">
                 <h3 class="card-title"><u>Guardian 2:</u></h3>
-                <div class="form-row">
+                              <div class="form-row">
                     <label>Relationship:</label>
-                    <select class="form-input small-select"><option></option><option>Mother</option></select>
+                    {{ form2.relationship }}
+                    {% comment %} <select class="form-input small-select">
+                        <option></option>
+                        <option>Father</option>
+                        <option>Mother</option>
+                        <option>Guardian</option>
+                    </select> {% endcomment %}
                 </div>
+
                 <div class="form-row">
                     <label>Name:</label>
-                    <input type="text" class="form-input" placeholder="Enter your name">
+                    {{ form2.name }}
+                    {% comment %} <input type="text" class="form-input" placeholder="Enter your name"> {% endcomment %}
                 </div>
+
                 <div class="form-row">
                     <label>Identification Card Number:</label>
-                    <input type="text" class="form-input" placeholder="Example: 001122143344">
+                    {{ form2.ic_no }}
+                    {% comment %} <input type="text" class="form-input" placeholder="Example: 001122143344"> {% endcomment %}
                 </div>
+
                 <div class="form-row">
                     <label>Date of Birth:</label>
-                    <div class="date-inputs">
+                    {{ form2.date_of_birth }}
+                    {% comment %} <div class="date-inputs">
                         <input type="text" placeholder="DD">
                         <input type="text" placeholder="MM">
                         <input type="text" placeholder="YYYY">
-                    </div>
+                    </div> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Age:</label>
-                    <input type="number" class="form-input small-input">
+                    {{ form2.age }}
+                    {% comment %} <input type="number" class="form-input small-input"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Nationality:</label>
-                    <select class="form-input small-select"><option></option><option>Malaysian</option></select>
+                    {{ form2.nationality }}
+                    {% comment %} <select class="form-input small-select"><option></option><option>Malaysian</option></select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Gender:</label>
-                    <select class="form-input small-select"><option></option><option>Male</option><option>Female</option></select>
+                    {{ form2.gender }}
+                    {% comment %} <select class="form-input small-select"><option></option><option>Male</option><option>Female</option></select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Address:</label>
-                    <textarea class="form-input" rows="2"></textarea>
+                    {{ form2.address }}
+                    {% comment %} <textarea class="form-input" rows="2"></textarea> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Contact number:</label>
-                    <input type="text" class="form-input" placeholder="Example: 60123456789">
+                    {{ form2.contact_number }}
+                    {% comment %} <input type="text" class="form-input" placeholder="Example: 60123456789"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Email Address:</label>
-                    <input type="email" class="form-input">
+                    {{ form2.email_address }}
+                    {% comment %} <input type="email" class="form-input"> {% endcomment %}
                 </div>
             </div>
 
@@ -140,18 +195,20 @@
                 
                 <div class="form-row">
                     <label>EA Form:</label>
-                    <input type="file" class="file-input">
+                    {{ form.ea_form }}
                 </div>
                 
                 <div class="form-row">
                     <label>Latest 3 months payslip:</label>
-                    <input type="file" class="file-input">
+                    {{ form.payslip }}
+                    {% comment %} <input type="file" class="file-input"> {% endcomment %}
                 </div>
             </div>
 
             <div class="button-group-center">
                 <a href="{% url 'edit_application_form' form.instance.pk 2 %}" style="text-decoration: none;" class="btn-back">Back</a>
-                <a href="{% url 'edit_application_form' form.instance.pk 4 %}" style="text-decoration: none;" class="btn-next">Next</a>
+                {% comment %} <a href="{% url 'edit_application_form' form.instance.pk 4 %}" style="text-decoration: none;" class="btn-next">Next</a> {% endcomment %}
+                <button type="submit" class="btn-next">Next</button>
             </div>
 
         </form>

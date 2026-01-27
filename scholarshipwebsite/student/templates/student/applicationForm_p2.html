@@ -9,8 +9,8 @@
       >Part 1</a
     >
     <a href="#" class="tab active">Part 2: Personal Achievement</a>
-    <a href="#" class="tab">Part 3</a>
-    <a href="#" class="tab">Part 4</a>
+    <a href="{% url 'edit_application_form' form.instance.pk 3 %}" class="tab">Part 3</a>
+    <a href="{% url 'edit_application_form' form.instance.pk 4 %}" class="tab">Part 4</a>
   </div>
 
   <div class="form-content">
@@ -32,6 +32,7 @@
           {{ form.date_of_birth }}
           {{ form.intake }}
           {{ form.programme }}
+          {{ form.student_identification_number }}
           {{ form.nationality }}
           {{ form.race }}
           {{ form.gender }}

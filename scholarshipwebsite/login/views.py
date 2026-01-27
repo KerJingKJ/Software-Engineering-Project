@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, SecurityQuestionForm, LoginForm, ForgotPasswordForm, SecurityQuestionVerifyForm, ResetPasswordForm
 from .models import UserSecurityQuestion, UserProfile
 from .models import SECURITY_QUESTION_CHOICES
+from student.models import Student
 from django.contrib.auth import logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -39,6 +40,7 @@ def index(request):
                     email_domain = user.email.split('@')[-1]
                     
                     if 'student.mmu.edu.my' in email_domain:
+                        Student.objects.get_or_create(user=user)
                         return redirect('student')
                     elif 'admin.mmu.edu.my' in email_domain:
                         return redirect('/admin/')

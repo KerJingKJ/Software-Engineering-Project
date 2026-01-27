@@ -7,13 +7,16 @@
     <h1 class="main-title">Scholarships Offer</h1>
 
     <div id="content-chancellor" class="scholarship-content" style="display: none;">
-        <div class="scholarship-header">
-            <h2 class="scholarship-name">MMU Chancellor’s Scholarship</h2>
+        <div class="header-container" style="display: flex; align-items: center; gap: 15px;">
+            <h1 class="scholarship-title">{{ scholarship.name }}</h1>
 
-            <img src="{% static 'student/img/bookmarkicon.png' %}" 
-                alt="Bookmark" 
-                class="bookmark-icon" 
-                onclick="toggleBookmark(this)">
+            <a href="{% url 'toggle_bookmark' scholarship.id %}" class="bookmark-btn" style="text-decoration: none;">
+                {% if is_bookmarked %}
+                    <img src="{% static 'student/img/bookmark-filled.png' %}" alt="Saved" width="30" height="30">
+                {% else %}
+                    <img src="{% static 'student/img/bookmarkicon.png' %}" alt="Save" width="30" height="30">
+                {% endif %}
+            </a>
         </div>
         <p class="description">Awarded to high-flying students...</p>
 
