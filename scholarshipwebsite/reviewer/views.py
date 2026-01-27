@@ -103,11 +103,30 @@ def review_step2(request, app_id):
     # (Same implementation as before, abbreviated here to focus on dashboard)
     # Ideally should read from previous content, but since file was deleted I will do minimal restoration for compilation
     app = Application.objects.get(id=app_id)
-    return render(request, "reviewer/review_step2.html", {'app': app})
+    if request.method == 'POST':
+        
+        if 'next' in request.POST:
+            return redirect('review_step3', app_id=app.id)
+        if 'previous' in request.POST:
+            return redirect('reviewer_with_id', app_id=app.id) 
+
+    guardians = []
+    if app.guardian1:
+        guardians.append(app.guardian1)
+    if app.guardian2:
+        guardians.append(app.guardian2)
+
+    return render(request, "reviewer/review_step2.html", {'app': app, 'guardians': guardians })
 
 def review_step3(request, app_id):
-    # (Same implementation as before)
     app = Application.objects.get(id=app_id)
+
+    if request.method == 'POST':
+        if 'save' in request.POST:
+            return redirect('reviewer')
+        if 'previous' in request.POST:
+            return redirect('review_step2', app_id=app.id)
+
     if 'approve' in request.POST:
          Application.objects.filter(id=app.id).update(status='Approved')
          return redirect('reviewer')
