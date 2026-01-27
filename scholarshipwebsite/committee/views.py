@@ -85,7 +85,22 @@ def edit(response):
     return render(response, "committee/editScholarship.html", {})
 
 def reviewApprove(response):
-    applications = Application.objects.all()
+    applications = Application.objects.all().order_by('submitted_date')
+
+    for app in applications:
+        # Determine display status based on session or DB
+        app.interview_scheduled = Interview.objects.filter(application=app).exists()
+
+        if app.status == 'Approved':
+            app.dashboard_status = 'Approved'
+            app.dashboard_class = 'approved'
+        elif app.status == 'Rejected':
+            app.dashboard_status = 'Rejected'
+            app.dashboard_class = 'rejected'
+        
+        else:
+            app.dashboard_status = 'Pending Review'
+            app.dashboard_class = 'pending-review'
     
     return render(response, "committee/reviewApprove.html", {"applications": applications})
 
@@ -95,11 +110,17 @@ def view_application_details(request, id):
 
 def view_family_background(request, id):
     application = get_object_or_404(Application, pk=id)
-    guardians = application.guardians.all()
+    guardians = []
+    if application.guardian1:
+        guardians.append(application.guardian1)
+    if application.guardian2:
+        guardians.append(application.guardian2)
+
     return render(request, "committee/family_background_review.html", {'application': application, 'guardians': guardians})
 
 def schedule_interview(request, id):
     application = get_object_or_404(Application, pk=id)
+    existing_interview = Interview.objects.filter(application=application).first()
     
     if request.method == "POST":
         date = request.POST.get('date')
@@ -127,7 +148,11 @@ def schedule_interview(request, id):
         
         return redirect('decision_page', id=id)
 
-    return render(request, "committee/schedule_interview.html", {'application': application})
+    return render(request, "committee/schedule_interview.html", {
+        'application': application,
+        'existing_interview': existing_interview,
+        'is_scheduled': existing_interview is not None
+        })
 
 def decision_page(request, id):
     application = get_object_or_404(Application, pk=id)
@@ -138,7 +163,6 @@ def decision_page(request, id):
         if decision == 'Approved':
             application.status = 'Approved'
             application.save()
-            
             
             if interview:
                 ApprovedApplication.objects.update_or_create(
@@ -152,19 +176,17 @@ def decision_page(request, id):
                         'programme': application.programme,
                         'interview_date': interview.date,
                         'interview_time': interview.interview_time,
-                        'timezone': interview.timezone,
-                        'approver': request.user if request.user.is_authenticated else None
+                        # 'timezone': interview.timezone,
+                        # 'approver': request.user if request.user.is_authenticated else None
                     }
                 )
             return redirect('decision_page', id=id)
         elif decision == 'Rejected':
             application.status = 'Rejected'
             application.save()
-            
-            
+
             ApprovedApplication.objects.filter(original_application=application).delete()
-            
-            
+
             Interview.objects.filter(application=application).delete()
             
             return redirect('decision_page', id=id)

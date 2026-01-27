@@ -10,8 +10,9 @@
 
 <div class="container-fluid" style="padding: 20px 40px;">
     <div
-        style="display: flex; justify-content: space-between; padding: 0 20px; font-weight: bold; margin-bottom: 10px;">
-        <div style="width: 50%; padding-left: 60px;"></div>
+        style="display: flex; justify-content: space-between; padding: 0 60px; font-weight: bold; margin-bottom: 10px;">
+        <div style="width: 50%"></div>
+        <div style="width: 200px; text-align: center;">Scholarship Applied</div>
         <div style="width: 200px; text-align: center;">Apply Date</div>
         <div style="width: 150px; text-align: center;">Status</div>
         <div style="width: 150px;"></div>
@@ -31,30 +32,42 @@
             <div style="color: #555;">{{ app.ic_no }}</div>
         </div>
 
+         <div style="width: 200px; text-align: center; font-weight: 500;">
+            {{ app.scholarship }}
+        </div>
+
         <div style="width: 200px; text-align: center; font-weight: 500;">
             {{ app.submitted_date|date:"d-m-Y" }}
         </div>
 
         <div style="width: 150px; text-align: center;">
+            
             {% if app.dashboard_class == 'approved' %}
             <span
-                style="background-color: #28a745; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold;">Approved</span>
+                style="background-color: #2DA103; color: white; padding: 5px 15px; border-radius: 4px; 
+                font-weight: bold;">Approved</span>
+
             {% elif app.dashboard_class == 'rejected' %}
             <span
-                style="background-color: #6c757d; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold;">Rejected</span>
-            {% elif app.dashboard_class == 'in-progress' %}
+                style="background-color: #FF0707; color: white; padding: 5px 15px; border-radius: 4px; 
+                font-weight: bold;">Rejected</span>
+            
+            {% elif app.interview_scheduled %}
             <span
-                style="background-color: #ffc107; color: black; padding: 5px 15px; border-radius: 4px; font-weight: bold;">In
-                Progress</span>
+                style="background-color: #034EA1; color: white; display: inline-block; 
+                white-space: nowrap; padding: 5px 15px; border-radius: 4px; 
+                font-weight: bold;">To be interviewed</span>
+
             {% else %}
             <span
-                style="background-color: #2b5797; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold;">To
+                style="background-color: #B9B9B9; color: white; padding: 5px 15px; border-radius: 4px; 
+                font-weight: bold;">Pending
                 Review</span>
             {% endif %}
         </div>
 
         <div style="width: 150px; text-align: center;">
-            <a href="{% url 'reviewer_with_id' app.id %}"
+            <a href="{% url 'view_application_details' app.id %}"
                 style="text-decoration: none; color: black; font-weight: 500;">View Details</a>
         </div>
 
