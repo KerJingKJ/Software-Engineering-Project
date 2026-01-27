@@ -58,7 +58,18 @@ def delete_scholarship(request, id):
     return redirect("manage")
 
 def index(response):
-    return render(response, "committee/committee.html", {})
+    total_apps = Application.objects.count()
+    approved = Application.objects.filter(status='Approved').count()
+    rejected = Application.objects.filter(status='Rejected').count()
+    pending = Application.objects.exclude(status__in=['Approved', 'Rejected']).count()
+    
+    context = {
+        'total_apps': total_apps,
+        'approved': approved,
+        'rejected': rejected,
+        'pending': pending
+    }
+    return render(response, "committee/committee.html", context)
 
 def manage(response):
     scholarships = Scholarship.objects.all()

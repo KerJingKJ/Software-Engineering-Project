@@ -1,35 +1,36 @@
-{% extends 'committee/base.html'%}
+{% extends "admin/base_site.html" %}
+
 {% block content %}
 {% load static %}
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>  
 <div class="dashboard-container">
   <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 3rem;">
     <h1 class="h3 text-dark">Dashboard</h1>
   </div>
 
-  <div class="row" style="margin-bottom: 3rem;">
+  <div class="row" style="margin-bottom: 3rem; display =flex">
     <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
       <div class="metric-card border-primary">
-        <div class="metric-title text-primary-custom">Total Applications</div>
-        <div class="metric-value">{{ total_apps }}</div>
+        <span class="metric-title">Total Applications: </span>
+        <span class="metric-value">{{ total_apps }}</span>
       </div>
     </div>
     <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
       <div class="metric-card border-success">
-        <div class="metric-title text-success-custom">Approved</div>
-        <div class="metric-value">{{ approved }}</div>
+        <span class="metric-title text-success-custom">Approved: </span>
+        <span class="metric-value">{{ approved }}</span>
       </div>
     </div>
     <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
       <div class="metric-card border-danger">
-        <div class="metric-title text-danger-custom">Rejected</div>
-        <div class="metric-value">{{ rejected }}</div>
+        <span class="metric-title text-danger-custom">Rejected: </span>
+        <span class="metric-value">{{ rejected }}</span>
       </div>
     </div>
     <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
       <div class="metric-card border-warning">
-        <div class="metric-title text-warning-custom">Pending</div>
-        <div class="metric-value">{{ pending }}</div>
+        <span class="metric-title text-warning-custom">Pending: </span>
+        <span class="metric-value">{{ pending }}</span>
       </div>
     </div>
   </div>
@@ -242,4 +243,7 @@
     }
   </script>
 </div>
+
+<!-- Keep the normal admin homepage content -->
+{{ block.super }}
 {% endblock %}
