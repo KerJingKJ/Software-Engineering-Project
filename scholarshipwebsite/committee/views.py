@@ -160,6 +160,14 @@ def decision_page(request, id):
     
     if request.method == "POST":
         decision = request.POST.get('decision')
+        location = request.POST.get('location')
+        remarks = request.POST.get('remarks')
+        
+        if interview:
+            interview.location = location
+            interview.remarks = remarks
+            interview.save()
+
         if decision == 'Approved':
             application.status = 'Approved'
             application.save()
@@ -187,7 +195,7 @@ def decision_page(request, id):
 
             ApprovedApplication.objects.filter(original_application=application).delete()
 
-            Interview.objects.filter(application=application).delete()
+            # Interview.objects.filter(application=application).delete() # Keep interview record but set status
             
             return redirect('decision_page', id=id)
             

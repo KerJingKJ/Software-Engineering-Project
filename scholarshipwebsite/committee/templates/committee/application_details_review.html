@@ -150,9 +150,9 @@
 <div class="details-container">
     <!-- Tab Navigation -->
     <div class="tab-nav">
-        <a href="{% url 'view_application_details' application.id %}" class="tab-item active">Part 1: Applicant Details</a>
+        <a href="{% url 'view_application_details' application.id %}" class="tab-item active">Part 1</a>
         <a href="{% url 'view_family_background' application.id %}" class="tab-item">Part 2</a>
-        <a href="{% url 'schedule_interview' application.id %}" class="tab-item">Part 3</a>
+        <a href="{% url 'decision_page' application.id %}" class="tab-item">Part 3: Decision</a>
     </div>
 
     <!-- Scholarship Applied -->
