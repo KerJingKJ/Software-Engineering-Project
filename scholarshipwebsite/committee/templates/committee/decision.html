@@ -4,43 +4,41 @@
 <style>
     .decision-container {
         max-width: 800px;
-        margin: 80px auto 30px auto;
-        padding: 20px;
+        margin: 30px auto 50px auto;
+        padding: 0 20px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
     /* Tab Navigation */
     .tab-nav {
         display: flex;
-        margin-bottom: 25px;
-        margin-left: -20px;
-        margin-right: -20px;
-        margin-top: -20px;
-        border: 1px solid #ddd;
-        border-top: none;
-        overflow: hidden;
+        width: 100%;
+        margin-top: 85px;
+        /* Adjust for fixed navbar */
+        background: #fff;
     }
 
     .tab-item {
         flex: 1;
         text-align: center;
-        padding: 12px 10px;
+        padding: 15px 0;
         text-decoration: none;
         color: #666;
-        font-weight: 500;
-        background: #f8f8f8;
-        border-right: 1px solid #ddd;
-        font-size: 14px;
-        white-space: nowrap;
-    }
-
-    .tab-item:last-child {
-        border-right: none;
+        font-size: 1rem;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        transition: all 0.2s;
     }
 
     .tab-item.active {
         background: #1D53AF;
         color: white;
+        border-color: #1D53AF;
+    }
+
+    .tab-item:hover:not(.active) {
+        background: #e8f0fe;
+        color: #1D53AF;
     }
 
     /* Content Layout */
@@ -146,17 +144,18 @@
     }
 </style>
 
+<!-- Tab Navigation -->
+<div class="tab-nav">
+    <a href="{% url 'view_application_details' application.id %}" class="tab-item">Part 1</a>
+    <a href="{% url 'view_family_background' application.id %}" class="tab-item">Part 2</a>
+    <a href="{% url 'decision_page' application.id %}" class="tab-item active">Part 3: Decision</a>
+</div>
+
 <div class="decision-container">
-    <!-- Tab Navigation -->
-    <div class="tab-nav">
-        <a href="{% url 'view_application_details' application.id %}" class="tab-item">Part 1</a>
-        <a href="{% url 'view_family_background' application.id %}" class="tab-item">Part 2</a>
-        <a href="{% url 'decision_page' application.id %}" class="tab-item active">Part 3: Decision</a>
-    </div>
 
     <form method="post" class="form-section">
         {% csrf_token %}
-        
+
         <!-- Interview Session -->
         <div class="form-row">
             <div class="form-label">Interview Session</div>
@@ -165,7 +164,7 @@
                 <a href="{% url 'schedule_interview' application.id %}" class="btn-schedule">
                     {% if interview %}Edit{% else %}Schedule/Edit{% endif %} Interview Session
                 </a>
-                
+
                 {% if interview %}
                 <div class="interview-box">
                     <div style="margin-bottom: 8px;">
@@ -186,7 +185,8 @@
         <div class="form-row">
             <div class="form-label">Location:</div>
             <div class="form-content">
-                <input type="text" name="location" class="form-input" value="{{ interview.location|default:'' }}" placeholder="MMU FCI CQAR1003">
+                <input type="text" name="location" class="form-input" value="{{ interview.location|default:'' }}"
+                    placeholder="MMU FCI CQAR1003">
             </div>
         </div>
 
@@ -194,14 +194,17 @@
         <div class="form-row">
             <div class="form-label">Remarks:</div>
             <div class="form-content">
-                <input type="text" name="remarks" class="form-input" value="{{ interview.remarks|default:'' }}" placeholder="Please bring your student ID">
+                <input type="text" name="remarks" class="form-input" value="{{ interview.remarks|default:'' }}"
+                    placeholder="Please bring your student ID">
             </div>
         </div>
 
         <!-- Decision Buttons -->
         <div class="button-group">
-            <button type="submit" name="decision" value="Approved" class="btn-decision btn-approve">Approve Application</button>
-            <button type="submit" name="decision" value="Rejected" class="btn-decision btn-reject">Reject Application</button>
+            <button type="submit" name="decision" value="Approved" class="btn-decision btn-approve">Approve
+                Application</button>
+            <button type="submit" name="decision" value="Rejected" class="btn-decision btn-reject">Reject
+                Application</button>
         </div>
     </form>
 </div>
