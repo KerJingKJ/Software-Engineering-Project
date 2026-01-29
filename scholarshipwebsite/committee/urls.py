@@ -14,6 +14,7 @@ urlpatterns = [
     path("application/<int:id>/family/", views.view_family_background, name="view_family_background"),
     path("application/<int:id>/interview/", views.schedule_interview, name="schedule_interview"),
     path("application/<int:id>/decision/", views.decision_page, name="decision_page"),
+    path("application/<int:id>/mark/", views.view_reviewer_mark, name="view_reviewer_mark"),
 
 
     

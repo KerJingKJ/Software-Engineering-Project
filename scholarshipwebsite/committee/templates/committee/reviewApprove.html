@@ -5,77 +5,75 @@
 
 <link href="{% static 'committee/css/reviewApprove.css' %}" type="text/css" rel="stylesheet" />
 
-    <section id="ReviewApprove">
-    <h1>Review/Approve Scholarship</h1>    
+<section id="ReviewApprove">
+    <h1>Review/Approve Scholarship</h1>
 
-<div class="container-fluid" style="padding: 20px 40px;">
-    <div
-        style="display: flex; justify-content: space-between; padding: 0 60px; font-weight: bold; margin-bottom: 10px;">
-        <div style="width: 50%"></div>
-        <div style="width: 200px; text-align: center;">Scholarship Applied</div>
-        <div style="width: 200px; text-align: center;">Apply Date</div>
-        <div style="width: 150px; text-align: center;">Status</div>
-        <div style="width: 150px;"></div>
-    </div>
+    <div class="container-fluid" style="padding: 20px 40px;">
+        <div style="display: flex; align-items: center; font-weight: bold; margin-bottom: 10px;">
+            <div style="width: 60px;"></div> <!-- Matches Index column -->
+            <div style="flex: 1;"></div> <!-- Matches Name column -->
+            <div style="width: 200px; text-align: center;">Scholarship Applied</div>
+            <div style="width: 200px; text-align: center;">Apply Date</div>
+            <div style="width: 150px; text-align: center;">Status</div>
+            <div style="width: 350px;"></div> <!-- Matches Actions column -->
+        </div>
 
-    {% for app in applications %}
-    <div
-        style="display: flex; align-items: center; background-color: white; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; padding: 0; min-height: 80px; border: 1px solid #ccc;">
-
+        {% for app in applications %}
         <div
-            style="background-color: #2b5797; color: white; width: 60px; font-size: 1.5rem; font-weight: bold; display: flex; align-items: center; justify-content: center; border-top-left-radius: 15px; border-bottom-left-radius: 15px; align-self: stretch;">
-            {{ forloop.counter }}
-        </div>
+            style="display: flex; align-items: center; background-color: white; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; padding: 0; min-height: 80px; border: 1px solid #ccc;">
 
-        <div style="flex: 1; padding: 10px 20px;">
-            <div style="font-size: 1.1rem; font-weight: bold;">{{ app.name }}</div>
-            <div style="color: #555;">{{ app.ic_no }}</div>
-        </div>
+            <div
+                style="background-color: #2b5797; color: white; width: 60px; font-size: 1.5rem; font-weight: bold; display: flex; align-items: center; justify-content: center; border-top-left-radius: 15px; border-bottom-left-radius: 15px; align-self: stretch;">
+                {{ forloop.counter }}
+            </div>
 
-         <div style="width: 200px; text-align: center; font-weight: 500;">
-            {{ app.scholarship }}
-        </div>
+            <div style="flex: 1; padding: 10px 20px;">
+                <div style="font-size: 1.1rem; font-weight: bold;">{{ app.name }}</div>
+                <div style="color: #555;">{{ app.ic_no }}</div>
+            </div>
 
-        <div style="width: 200px; text-align: center; font-weight: 500;">
-            {{ app.submitted_date|date:"d-m-Y" }}
-        </div>
+            <div style="width: 200px; text-align: center; font-weight: 500;">
+                {{ app.scholarship }}
+            </div>
 
-        <div style="width: 150px; text-align: center;">
-            
-            {% if app.dashboard_class == 'approved' %}
-            <span
-                style="background-color: #2DA103; color: white; padding: 5px 15px; border-radius: 4px; 
+            <div style="width: 200px; text-align: center; font-weight: 500;">
+                {{ app.submitted_date|date:"d-m-Y" }}
+            </div>
+
+            <div style="width: 150px; text-align: center;">
+
+                {% if app.dashboard_class == 'approved' %}
+                <span style="background-color: #2DA103; color: white; padding: 5px 15px; border-radius: 4px; 
                 font-weight: bold;">Approved</span>
 
-            {% elif app.dashboard_class == 'rejected' %}
-            <span
-                style="background-color: #FF0707; color: white; padding: 5px 15px; border-radius: 4px; 
+                {% elif app.dashboard_class == 'rejected' %}
+                <span style="background-color: #FF0707; color: white; padding: 5px 15px; border-radius: 4px; 
                 font-weight: bold;">Rejected</span>
-            
-            {% elif app.interview_scheduled %}
-            <span
-                style="background-color: #034EA1; color: white; display: inline-block; 
+
+                {% elif app.interview_scheduled %}
+                <span style="background-color: #034EA1; color: white; display: inline-block; 
                 white-space: nowrap; padding: 5px 15px; border-radius: 4px; 
                 font-weight: bold;">To be interviewed</span>
 
-            {% else %}
-            <span
-                style="background-color: #B9B9B9; color: white; padding: 5px 15px; border-radius: 4px; 
+                {% else %}
+                <span style="background-color: #B9B9B9; color: white; padding: 5px 15px; border-radius: 4px; 
                 font-weight: bold;">Pending
-                Review</span>
-            {% endif %}
-        </div>
+                    Review</span>
+                {% endif %}
+            </div>
 
-        <div style="width: 150px; text-align: center;">
-            <a href="{% url 'view_application_details' app.id %}"
-                style="text-decoration: none; color: black; font-weight: 500;">View Details</a>
+            <div style="width: 350px; text-align: center;">
+                <a href="{% url 'view_application_details' app.id %}"
+                    style="text-decoration: none; color: black; font-weight: 500; margin-right: 15px;">View Details</a>
+                <a href="{% url 'view_reviewer_mark' app.id %}"
+                    style="text-decoration: none; color: #1D53AF; font-weight: 500;">View Reviewer Mark</a>
+            </div>
+
         </div>
+        {% empty %}
+        <p>No applications found.</p>
+        {% endfor %}
 
     </div>
-    {% empty %}
-    <p>No applications found.</p>
-    {% endfor %}
 
-</div>
-
-{% endblock %}
+    {% endblock %}

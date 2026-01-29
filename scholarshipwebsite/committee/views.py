@@ -201,6 +201,17 @@ def decision_page(request, id):
             
     return render(request, "committee/decision.html", {'application': application, 'interview': interview})
 
+from reviewer.models import EligibilityCheck
+
+def view_reviewer_mark(request, id):
+    application = get_object_or_404(Application, pk=id)
+    eligibility = EligibilityCheck.objects.filter(application=application).first()
+    
+    return render(request, "committee/view_reviewer_mark.html", {
+        'application': application,
+        'eligibility': eligibility
+    })
+
  
 
 class ChartData(APIView):
