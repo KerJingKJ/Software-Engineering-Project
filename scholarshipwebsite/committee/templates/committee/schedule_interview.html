@@ -1,62 +1,383 @@
 {% extends 'committee/base.html' %}
 
 {% block content %}
-<div class="container">
-    <h2>Schedule Interview</h2>
-    <h3>Applicant: {{ application.name }}</h3>
+<style>
+    .schedule-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px;
+    }
+
+    .schedule-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: #1a1a1a;
+    }
+
+    .schedule-layout {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+    }
+
+    .calendar-section {
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .time-section {
+        flex: 0 0 200px;
+    }
+
+    /* Calendar Styles */
+    .calendar-wrapper {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        background: #fff;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .calendar-nav {
+        background: none;
+        border: 1px solid #2b5797;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        color: #2b5797;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .calendar-nav:hover {
+        background: #2b5797;
+        color: white;
+    }
+
+    .calendar-month {
+        font-size: 1.1rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        text-align: center;
+    }
+
+    .calendar-day-header {
+        font-size: 0.8rem;
+        color: #666;
+        padding: 10px 0;
+        font-weight: 500;
+    }
+
+    .calendar-day {
+        padding: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    .calendar-day:hover {
+        background: #e8f0fe;
+    }
+
+    .calendar-day.selected {
+        background: #e53935;
+        color: white;
+    }
+
+    .calendar-day.disabled {
+        color: #ccc;
+        cursor: default;
+    }
+
+    .calendar-day.disabled:hover {
+        background: none;
+    }
+
+    /* Timezone */
+    .timezone-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .timezone-icon {
+        color: #666;
+    }
+
+    .timezone-select {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        background: #fff;
+    }
+
+    /* Time Slots */
+    .time-slots {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .time-btn {
+        padding: 12px 20px;
+        border: 1px solid #2b5797;
+        border-radius: 25px;
+        background: #fff;
+        color: #333;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+    }
+
+    .time-btn:hover {
+        background: #e8f0fe;
+    }
+
+    .time-btn.selected {
+        background: #2b5797;
+        color: white;
+        border-color: #2b5797;
+    }
+
+    /* Confirm Button */
+    .confirm-btn {
+        display: block;
+        width: 100%;
+        max-width: 350px;
+        margin: 40px auto 0;
+        padding: 15px 30px;
+        background: #2b5797;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .confirm-btn:hover {
+        background: #1e3d6f;
+    }
+
+    /* Hidden input */
+    .hidden-input {
+        display: none;
+    }
+</style>
+
+<div class="schedule-container">
+    <h1 class="schedule-title">Schedule Interview</h1>
 
     <form method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="date">Select Date:</label>
-            <input type="date" id="date" name="date" required>
-        </div>
+        
+        <div class="schedule-layout">
+            <!-- Calendar Section -->
+            <div class="calendar-section">
+                <div class="calendar-wrapper">
+                    <div class="calendar-header">
+                        <button type="button" class="calendar-nav" id="prevMonth">&lt;</button>
+                        <span class="calendar-month" id="monthYear">June 2025 ▼</span>
+                        <button type="button" class="calendar-nav" id="nextMonth">&gt;</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <div class="calendar-day-header">SUN</div>
+                        <div class="calendar-day-header">MON</div>
+                        <div class="calendar-day-header">TUE</div>
+                        <div class="calendar-day-header">WED</div>
+                        <div class="calendar-day-header">THU</div>
+                        <div class="calendar-day-header">FRI</div>
+                        <div class="calendar-day-header">SAT</div>
+                    </div>
+                    <input type="hidden" id="date" name="date" required>
+                </div>
 
-        <div class="form-group">
-            <label>Select Interview Time:</label>
-            <div class="time-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                <button type="button" class="time-btn" onclick="selectTime('9:00 AM')">9:00 AM</button>
-                <button type="button" class="time-btn" onclick="selectTime('10:00 AM')">10:00 AM</button>
-                <button type="button" class="time-btn" onclick="selectTime('11:00 AM')">11:00 AM</button>
-                <button type="button" class="time-btn" onclick="selectTime('12:00 PM')">12:00 PM</button>
-                <button type="button" class="time-btn" onclick="selectTime('2:00 PM')">2:00 PM</button>
-                <button type="button" class="time-btn" onclick="selectTime('3:00 PM')">3:00 PM</button>
-                <button type="button" class="time-btn" onclick="selectTime('4:00 PM')">4:00 PM</button>
-                <button type="button" class="time-btn" onclick="selectTime('5:00 PM')">5:00 PM</button>
+                <div class="timezone-wrapper">
+                    <span class="timezone-icon">🌐</span>
+                    <span>Time Zone:</span>
+                    <select name="timezone" class="timezone-select">
+                        <option value="SST" selected>Singapore Standard Time (SST)</option>
+                        <option value="GMT+8">GMT+8 (Malaysia)</option>
+                        <option value="UTC">UTC</option>
+                    </select>
+                </div>
             </div>
-            <input type="hidden" id="interview_time" name="interview_time" required>
-            <p id="selected-time" style="margin-top: 10px; font-weight: bold;"></p>
+
+            <!-- Time Slots Section -->
+            <div class="time-section">
+                <div class="time-slots">
+                    <button type="button" class="time-btn" data-time="9:00 AM">9:00 AM</button>
+                    <button type="button" class="time-btn" data-time="9:30 AM">9:30 AM</button>
+                    <button type="button" class="time-btn" data-time="10:00 AM">10:00 AM</button>
+                    <button type="button" class="time-btn" data-time="10:30 AM">10:30 AM</button>
+                    <button type="button" class="time-btn" data-time="11:00 AM">11:00 AM</button>
+                    <button type="button" class="time-btn" data-time="11:30 AM">11:30 AM</button>
+                    <button type="button" class="time-btn" data-time="12:00 AM">12:00 AM</button>
+                    <button type="button" class="time-btn" data-time="12:30 PM">12:30 PM</button>
+                    <button type="button" class="time-btn" data-time="1:00 PM">1:00 PM</button>
+                    <button type="button" class="time-btn" data-time="1:30 PM">1:30 PM</button>
+                    <button type="button" class="time-btn" data-time="2:00 PM">2:00 PM</button>
+                </div>
+                <input type="hidden" id="interview_time" name="interview_time" required>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="timezone">Time Zone:</label>
-            <select name="timezone" id="timezone">
-                <option value="UTC">UTC</option>
-                <option value="GMT+8" selected>GMT+8 (Malaysia/Singapore)</option>
-            </select>
-        </div>
-
-        <button type="submit">Confirm Interview</button>
+        <button type="submit" class="confirm-btn">Confirm</button>
     </form>
-
-    <div style="margin-top: 20px;">
-        <a href="{% url 'decision_page' application.id %}">Back to Decision</a>
-    </div>
 </div>
 
 <script>
-    function selectTime(time) {
-        document.getElementById('interview_time').value = time;
-        document.getElementById('selected-time').textContent = 'Selected: ' + time;
+    // Calendar Logic
+    let currentDate = new Date();
+    let selectedDate = null;
 
-        // Highlight the selected button
-        var buttons = document.querySelectorAll('.time-btn');
-        buttons.forEach(function (btn) {
-            btn.style.backgroundColor = '';
-            btn.style.color = '';
-        });
-        event.target.style.backgroundColor = '#007bff';
-        event.target.style.color = 'white';
+    function renderCalendar() {
+        const grid = document.getElementById('calendarGrid');
+        const monthYear = document.getElementById('monthYear');
+        
+        // Clear existing days (keep headers)
+        const headers = grid.querySelectorAll('.calendar-day-header');
+        grid.innerHTML = '';
+        headers.forEach(h => grid.appendChild(h));
+
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        monthYear.textContent = monthNames[month] + ' ' + year + ' ▼';
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+
+        // Empty cells for days before first day
+        for (let i = 0; i < firstDay; i++) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'calendar-day disabled';
+            grid.appendChild(emptyDiv);
+        }
+
+        // Days of month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'calendar-day';
+            dayDiv.textContent = day;
+
+            const thisDate = new Date(year, month, day);
+            if (thisDate < today.setHours(0,0,0,0)) {
+                dayDiv.classList.add('disabled');
+            } else {
+                dayDiv.onclick = () => selectDate(year, month, day, dayDiv);
+            }
+
+            if (selectedDate && selectedDate.getFullYear() === year && 
+                selectedDate.getMonth() === month && selectedDate.getDate() === day) {
+                dayDiv.classList.add('selected');
+            }
+
+            grid.appendChild(dayDiv);
+        }
     }
+
+    function selectDate(year, month, day, element) {
+        selectedDate = new Date(year, month, day);
+        
+        // Format for input: YYYY-MM-DD
+        const formatted = year + '-' + 
+                         String(month + 1).padStart(2, '0') + '-' + 
+                         String(day).padStart(2, '0');
+        document.getElementById('date').value = formatted;
+
+        // Update UI
+        document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+        element.classList.add('selected');
+    }
+
+    document.getElementById('prevMonth').onclick = () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+    };
+
+    document.getElementById('nextMonth').onclick = () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    };
+
+    // Time selection
+    document.querySelectorAll('.time-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            document.getElementById('interview_time').value = btn.dataset.time;
+        };
+    });
+
+    // Initialize with existing data if available
+    {% if existing_interview %}
+    // Pre-select existing date
+    const existingDateStr = "{{ existing_interview.date|date:'Y-n-j' }}";
+    const dateParts = existingDateStr.split('-');
+    if (dateParts.length === 3) {
+        const year = parseInt(dateParts[0]);
+        const month = parseInt(dateParts[1]) - 1; // JS months are 0-indexed
+        const day = parseInt(dateParts[2]);
+        selectedDate = new Date(year, month, day);
+        currentDate = new Date(year, month, 1); // Navigate calendar to that month
+        
+        // Set hidden input value
+        document.getElementById('date').value = "{{ existing_interview.date|date:'Y-m-d' }}";
+    }
+    
+    // Pre-select existing time
+    const existingTime = "{{ existing_interview.interview_time }}";
+    document.querySelectorAll('.time-btn').forEach(btn => {
+        if (btn.dataset.time === existingTime) {
+            btn.classList.add('selected');
+            document.getElementById('interview_time').value = existingTime;
+        }
+    });
+    
+    // Pre-select existing timezone
+    const existingTimezone = "{{ existing_interview.timezone }}";
+    const tzSelect = document.querySelector('.timezone-select');
+    if (tzSelect) {
+        for (let i = 0; i < tzSelect.options.length; i++) {
+            if (tzSelect.options[i].value === existingTimezone) {
+                tzSelect.selectedIndex = i;
+                break;
+            }
+        }
+    }
+    {% endif %}
+
+    // Initialize calendar
+    renderCalendar();
 </script>
 {% endblock %}
