@@ -1,5 +1,27 @@
 {% extends 'student/base.html' %}
 
 {% block content %}
-
+{% for application in applications %}
+<a href="{% url 'applicationDetails' application.id %}">
+<div style="display:flex; gap: 5em;">
+  {% comment %} temp styling {% endcomment %}
+<div>
+  {{ application.scholarship.name }}
+</div>
+<div>
+  {{ application.submitted_date }}
+</div>
+<div>
+  {{ application.submitted_date }}
+</div>
+{% if application.committee_status != "Pending" %}
+  {{ application.committee_status }}
+{% elif application.reviewer_status != "Pending" %}
+  {{ application.reviewer_status }}
+{% else %}
+  {{ application.reviewer_status }}
+{% endif %}
+</div>
+</a>
+{% endfor %}
 {% endblock %}

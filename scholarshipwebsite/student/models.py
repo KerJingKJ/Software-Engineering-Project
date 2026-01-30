@@ -95,7 +95,7 @@ class Guardian(models.Model):
 
 # by hui yee from committe models
 class Application(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='applications')
     REVIEWER_STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Reviewed', 'Reviewed'),

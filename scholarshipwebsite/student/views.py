@@ -314,6 +314,8 @@ def guardian_form(request, id=-1, page=-1):
 
 
 def applicationList(request):
-    return render(request, "student/applicationList.html", {})
+    student = request.user.student
+    applications = student.applications.all()
+    return render(request, "student/applicationList.html", {"applications":applications})
 
 # Create your views here.
