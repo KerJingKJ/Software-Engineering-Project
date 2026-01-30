@@ -1,6 +1,7 @@
 # forms.py
 from django import forms
 from .models import Application, Guardian
+from committee.models import Scholarship
 from datetime import date
 
 # class ApplicationForm(forms.ModelForm):
@@ -78,10 +79,10 @@ class ApplicationForm(forms.ModelForm):
         fields = [
             'scholarship', 'name', 'home_address', 'correspondence_address',
             'ic_no', 'age', 'date_of_birth', 'intake', 'programme', 'student_identification_number',
-            'nationality', 'race', 'gender', 'contact_number', 'email_address','monthly_income',
-            'education_level', 'passport_photo', 'academic_result', 
+            'nationality', 'race', 'gender', 'contact_number', 'monthly_income', 'email_address',
+            'passport_photo', 'education_level', 'academic_result', 
             'personal_achievement', 'supporting_document',
-            'reason_deserve', 'ea_form', 'payslip'
+            'ea_form', 'payslip', 'reason_deserve', 
         ]
         widgets = {
             'scholarship': forms.Select(attrs={

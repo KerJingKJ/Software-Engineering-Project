@@ -505,9 +505,9 @@ html{
 
 /* Status Badge */
 .status-badge {
-    position: absolute;
+    /* position: absolute;
     top: 15px;
-    right: 15px;
+    right: 15px; */
     font-size: 0.75rem;
     padding: 4px 8px;
     border-radius: 12px;
