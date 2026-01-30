@@ -16,10 +16,10 @@
 
     <div class="progress-track">
         <ul class="progressbar">
-            <li class="active">Application Received</li>
+            <li class="{% if application.status == 'Pending'%}active{% endif %}">Application Received</li>
             <li>Under Review</li>
             <li>Interview</li>
-            <li>Outcome</li>
+            <li class="{% if application.status == 'Approved' or application.status == 'Rejected' %}active{% endif %}">Outcome</li>
         </ul>
     </div>
 
@@ -29,15 +29,15 @@
         <div class="summary-grid">
             <div class="summary-item">
                 <span class="label">Application ID:</span>
-                <span class="value">#APP-2026-8892</span>
+                <span class="value">#{{ application.id }}</span>
             </div>
             <div class="summary-item">
                 <span class="label">Date Applied:</span>
-                <span class="value">20th January 2026</span>
+                <span class="value">{{ application.submitted_date }}</span>
             </div>
             <div class="summary-item">
                 <span class="label">Current Status:</span>
-                <span class="status-badge pending">Pending Review</span>
+                <span class="status-badge pending">{{ application.status }}</span>
             </div>
         </div>
     </div>

@@ -22,8 +22,10 @@ def scholarship_list(request):
         'scholarships': scholarships
     })
 
-def application_form_status(request):
-    return render(request, "student/applicationForm_status.html", {})
+def applicationDetails(request, id):
+    application = get_object_or_404(Application, pk=id)
+
+    return render(request, "student/applicationDetails.html", {'application':application})
 
 @login_required
 def eligibility_check(request):
@@ -163,6 +165,7 @@ def edit_application_form(request, id=-1, page=-1):
     scholarship = application.scholarship
     if request.method == "POST":
         form = ApplicationForm(request.POST, request.FILES, instance=application)
+        # special handling of internal guardian forms 
         if page==3:
             form1 = GuardianForm(
                 request.POST, 
@@ -223,7 +226,7 @@ def edit_application_form(request, id=-1, page=-1):
     elif page == 4:
         return render(request, "student/applicationForm_p4.html", {"form": form, "application":application})
     elif page == 5:
-        return redirect("trackApplication")
+        return redirect("applicationDetails", id=id)
     else:
         print (f"u stupid {page}")
         return redirect("application_form")
@@ -296,7 +299,7 @@ def guardian_form(request, id=-1, page=-1):
 #     return render(request, "student/applicationForm_p4.html", {})
 
 
-def trackApplication(request):
-    return render(request, "student/trackApplication.html", {})
+def applicationList(request):
+    return render(request, "student/applicationList.html", {})
 
 # Create your views here.

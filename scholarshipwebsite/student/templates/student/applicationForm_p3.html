@@ -21,27 +21,30 @@
             {% csrf_token %}
                     {% comment %} LOL. wacky workaround {% endcomment %}
         <div style="display:none;">
-          {{ form.scholarship }}
-          {{ form.name }}
-          {{ form.home_address }}
-          {{ form.correspondence_address }}
-          {{ form.ic_no }}
-          {{ form.age }}
-          {{ form.date_of_birth }}
-          {{ form.intake }}
-          {{ form.programme }}
-          {{ form.student_identification_number }}
-          {{ form.nationality }}
-          {{ form.race }}
-          {{ form.gender }}
-          {{ form.contact_number }}
-          {{ form.monthly_income }}
-          {{ form.email_address }}
-          {{ form.passport_photo }}
-          {{ form.education_level }}
-          {{ form.academic_result }}
-
-          {{ form.reason_deserve }}
+            {{ form.scholarship }}
+            {{ form.name }}
+            {{ form.home_address }}
+            {{ form.correspondence_address }}
+            {{ form.ic_no }}
+            {{ form.age }}
+            {{ form.date_of_birth }}
+            {{ form.intake }}
+            {{ form.programme }}
+            {{ form.student_identification_number }}
+            {{ form.nationality }}
+            {{ form.race }}
+            {{ form.gender }}
+            {{ form.contact_number }}
+            {{ form.monthly_income }}
+            {{ form.email_address }}
+            {{ form.passport_photo }}
+            {{ form.education_level }}
+            {{ form.academic_result }}
+            {{ form.personal_achievement }}
+            {{ form.supporting_document }}
+            {% comment %} {{ form.ea_form }} {% endcomment %}
+            {% comment %} {{ form.payslip }} {% endcomment %}
+            {{ form.reason_deserve }}
         </div>
 
             <div class="guardian-card">

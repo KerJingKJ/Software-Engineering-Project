@@ -6,8 +6,10 @@ urlpatterns = [
     path("", views.index, name="student"),
     path("scholarshipList/", views.scholarship_list, name="scholarship_list"),
     path('bookmarkScholarship/', views.bookmark_list, name='bookmark_list'),
-    path("applicationForm_status/", views.application_form_status, name="applicationForm_status"),
-    path("trackApplication/", views.trackApplication, name="trackApplication"),
+
+    # view application's details
+    path("application/<int:id>/", views.applicationDetails, name="applicationDetails"), 
+    path("applications/", views.applicationList, name="applicationList"),# view all applications together
     # Page to view details
     path('scholarship/details/<int:scholarship_id>/', views.scholarship_details, name='scholarship_details'),
     
