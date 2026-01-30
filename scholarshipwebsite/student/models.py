@@ -90,13 +90,19 @@ class Guardian(models.Model):
         db_table = 'student_guardian'
 
     def __str__(self):
-        return f"{self.name} ({self.relationship}) - {self.application.name}"
+        return f"{self.name} ({self.relationship})"
 
 
 # by hui yee from committe models
 class Application(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    STATUS_CHOICES = [
+    REVIEWER_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Reviewed', 'Reviewed'),
+        ('Rejected', 'Rejected'),
+    ]
+
+    COMMITTEE_STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
         ('Rejected', 'Rejected'),
@@ -105,7 +111,8 @@ class Application(models.Model):
     submitted_date = models.DateField(         default=timezone.now,  # Auto-set to current date
         help_text="Date when the application was submitted" 
      )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    reviewer_status = models.CharField(max_length=20, choices=REVIEWER_STATUS_CHOICES, default='Pending')
+    committee_status = models.CharField(max_length=20, choices=COMMITTEE_STATUS_CHOICES, default='Pending')
     
     scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
@@ -157,6 +164,21 @@ class Application(models.Model):
     guardian2 = models.ForeignKey(Guardian, on_delete=models.CASCADE,null=True, blank=True, related_name='guardian2')
     ea_form = models.FileField(upload_to='ea_forms/',null=True, blank=True)
     payslip = models.FileField(upload_to='payslips/',null=True, blank=True)
+
+    assigned_reviewer = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='assigned_reviews'
+    )
+    assigned_committee_member = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='assigned_committee_tasks'
+    )
 
     class Meta:
         db_table = 'student_application'
@@ -222,7 +244,3 @@ class Bookmark(models.Model):
 
 #     def __str__(self):
 #         return f"Eligibility Check for {self.application.name}"
-
-
-# by hui yee from committe models
-# Not sure why we need this? Shouldnt these details be stored in interview?
