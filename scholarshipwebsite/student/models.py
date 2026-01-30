@@ -95,7 +95,7 @@ class Guardian(models.Model):
 
 # by hui yee from committe models
 class Application(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='applications')
     REVIEWER_STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Reviewed', 'Reviewed'),
@@ -113,7 +113,7 @@ class Application(models.Model):
      )
     reviewer_status = models.CharField(max_length=20, choices=REVIEWER_STATUS_CHOICES, default='Pending')
     committee_status = models.CharField(max_length=20, choices=COMMITTEE_STATUS_CHOICES, default='Pending')
-    
+    iscomplete = models.BooleanField(default=False)
     scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     home_address = models.TextField()
@@ -185,6 +185,24 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.scholarship.name}"
+
+    def save(self, *args, **kwargs):
+        # Get all nullable fields
+        nullable_fields = [
+            field.name for field in self._meta.get_fields()
+            if hasattr(field, 'null') and field.null and hasattr(field, 'blank') and field.blank
+        ]
+        
+        # Check if all nullable fields have values
+        all_fields_filled = all(
+            getattr(self, field) for field in nullable_fields
+        )
+        
+        # Update iscomplete based on completeness
+        self.iscomplete = all_fields_filled
+        
+        # Call the parent save method
+        super().save(*args, **kwargs)
 
 # by hui yee from committe models
 # class Interview(models.Model):

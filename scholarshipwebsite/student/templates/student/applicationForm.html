@@ -8,7 +8,33 @@
     method="POST"
     enctype="multipart/form-data"
   >
-        {% csrf_token %}
+    {% csrf_token %}
+    <div style="display:none;">
+      {% comment %} {{ form.scholarship }} {% endcomment %}
+      {% comment %} {{ form.name }} {% endcomment %}
+      {% comment %} {{ form.home_address }} {% endcomment %}
+      {% comment %} {{ form.correspondence_address }} {% endcomment %}
+      {% comment %} {{ form.ic_no }} {% endcomment %}
+      {% comment %} {{ form.age }} {% endcomment %}
+      {% comment %} {{ form.date_of_birth }} {% endcomment %}
+      {% comment %} {{ form.intake }} {% endcomment %}
+      {% comment %} {{ form.programme }} {% endcomment %}
+      {% comment %} {{ form.student_identification_number }} {% endcomment %}
+      {% comment %} {{ form.nationality }} {% endcomment %}
+      {% comment %} {{ form.race }} {% endcomment %}
+      {% comment %} {{ form.gender }} {% endcomment %}
+      {% comment %} {{ form.contact_number }} {% endcomment %}
+      {% comment %} {{ form.monthly_income }} {% endcomment %}
+      {% comment %} {{ form.email_address }} {% endcomment %}
+      {% comment %} {{ form.passport_photo }} {% endcomment %}
+      {% comment %} {{ form.education_level }} {% endcomment %}
+      {% comment %} {{ form.academic_result }} {% endcomment %}
+      {{ form.personal_achievement }}
+      {{ form.supporting_document }}
+      {{ form.ea_form }}
+      {{ form.payslip }}
+      {{ form.reason_deserve }}
+    </div>
     <div class="form-row" style="margin-bottom: 30px">
       <label class="form-label">Scholarship Type:</label>
           {{ form.scholarship }}
