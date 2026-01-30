@@ -205,18 +205,6 @@ class Application(models.Model):
         super().save(*args, **kwargs)
 
 # by hui yee from committe models
-# class Interview(models.Model):
-#     application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name='interviews')
-#     date = models.DateField()
-#     interview_time = models.CharField(max_length=20, default='12:00 PM')  # e.g., "9:00 AM", "10:00 AM"
-#     timezone = models.CharField(max_length=50)
-#     # from what i understand, committee would be the ones conducting the interview
-#     reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-
-#     def __str__(self):
-#         return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"
-
-# by hui yee from committe models
 class Bookmark(models.Model):
     scholarship = models.ForeignKey(
         Scholarship,
@@ -241,37 +229,6 @@ class Bookmark(models.Model):
     def __str__(self):
         return f"Bookmark {self.id} - {self.date_added}"
 
-class Notification(models.Model):
-    student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='notifications')
-    message = models.TextField()
-    is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['-created_at'] # Newest first
-
-    def __str__(self):
-        return f"Notification for {self.student.user.username}"
-# class EligibilityCheck(models.Model):
-#     application = models.OneToOneField(Application, on_delete=models.CASCADE, related_name='eligibility_check')
-#     citizenship_check = models.BooleanField(default=False)
-#     programme_level_check = models.BooleanField(default=False)
-    
-#     # Qualifying Exam
-#     exam_foundation_spm = models.BooleanField(default=False)
-#     exam_degree_stpm_uec = models.BooleanField(default=False)
-#     exam_degree_matriculation = models.BooleanField(default=False)
-    
-#     # Minimum Grades
-#     grade_spm = models.BooleanField(default=False)
-#     grade_stpm = models.BooleanField(default=False)
-#     grade_uec = models.BooleanField(default=False)
-#     grade_foundation = models.BooleanField(default=False)
-    
-#     documents_verified = models.BooleanField(default=False)
-
-#     def __str__(self):
-#         return f"Eligibility Check for {self.application.name}"
 
 class Notification(models.Model):
     student = models.ForeignKey(
