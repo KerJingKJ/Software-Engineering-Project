@@ -14,6 +14,33 @@ from .forms import ApplicationForm
 def index(request):
     return render(request, "student/student.html", {})
 
+@login_required
+def mark_all_read(request):
+    try:
+        student = request.user.student
+        student.notifications.filter(is_read=False).update(is_read=True)
+    except Student.DoesNotExist:
+        pass
+    return redirect(request.META.get('HTTP_REFERER', 'student'))
+
+@login_required
+def notification_list(request):
+    try:
+        student = request.user.student
+        # Get all notifications, newest first
+        notifications = student.notifications.all().order_by('-created_at')
+        
+        # Optional: Auto-mark as read when they visit this page? 
+        # If yes, uncomment the line below:
+        # notifications.filter(is_read=False).update(is_read=True)
+
+    except Student.DoesNotExist:
+        notifications = []
+
+    return render(request, 'student/notifications.html', {
+        'notifications': notifications
+    })
+    
 def scholarship_list(request):
     # Fetch all scholarships from the database
     scholarships = Scholarship.objects.all()
@@ -197,7 +224,20 @@ def edit_application_form(request, id=-1, page=-1):
 #     return render(request, "student/applicationForm_p4.html", {})
 
 
+@login_required
 def trackApplication(request):
-    return render(request, "student/trackApplication.html", {})
+    try:
+        # Get the student profile of the logged-in user
+        student = request.user.student
+        
+        # Fetch applications for this student, ordered by newest date
+        applications = Application.objects.filter(student=student).order_by('-submitted_date')
+    except (Student.DoesNotExist, AttributeError):
+        # Handle cases where the user is logged in but has no student profile
+        applications = []
+
+    return render(request, "student/trackApplication.html", {
+        'applications': applications
+    })
 
 # Create your views here.
