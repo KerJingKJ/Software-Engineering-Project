@@ -132,15 +132,40 @@
     }
 
     .btn-approve {
-        background: #1D53AF;
+        background: #2DA103;
+    }
+
+    .btn-approve:hover{
+        background: #217602;
+
     }
 
     .btn-reject {
-        background: #1D53AF;
+        background: #FF0707;
+    }
+
+    .btn-reject:hover {
+        background: #930606;
     }
 
     .btn-decision:hover {
         opacity: 0.9;
+    }
+
+    .button-goback{
+        text-decoration: none;
+        background: #034EA1;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .button-goback:hover{
+        background: #002f64;
     }
 </style>
 
@@ -171,6 +196,7 @@
                         📅 {{ interview.date|date:"l, F j, Y" }}
                     </div>
                     <div style="margin-bottom: 8px; font-weight: 700;">
+                        
                         {{ interview.interview_time }}
                     </div>
                     <div>
@@ -207,7 +233,9 @@
             <button type="submit" name="decision" value="Rejected" class="btn-decision btn-reject"
             onclick="return confirm('Are you sure you want to reject this application?');">Reject
                 Application</button>
+            <a href="{% url 'reviewApprove' %}" class="button-goback">Go back to list</a>
         </div>
+        
     </form>
 </div>
 {% endblock %}

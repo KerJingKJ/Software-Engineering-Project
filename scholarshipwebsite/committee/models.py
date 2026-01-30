@@ -212,7 +212,7 @@ class Interview(models.Model):
     # from what i understand, committee would be the ones conducting the interview
     location = models.CharField(max_length=255, null=True, blank=True)
     remarks = models.TextField(null=True, blank=True)
-    reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    committee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"

@@ -143,7 +143,7 @@ def schedule_interview(request, id):
             interview.timezone = timezone
         
         if request.user.is_authenticated:
-            interview.reviewer = request.user
+            interview.committee = request.user
         interview.save()
         
         return redirect('decision_page', id=id)

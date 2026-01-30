@@ -90,7 +90,7 @@ class Guardian(models.Model):
         db_table = 'student_guardian'
 
     def __str__(self):
-        return f"{self.name} ({self.relationship}) - {self.application.name}"
+        return f"{self.name} ({self.relationship})"
 
 
 # by hui yee from committe models
