@@ -1,37 +1,243 @@
 {% extends 'committee/base.html' %}
 
 {% block content %}
-<div class="container">
-    <h2>Family Background Review</h2>
+<style>
+    .family-container {
+        max-width: 800px;
+        margin: 30px auto 50px auto;
+        padding: 0 20px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
 
-    <h3>Applicant: {{ application.name }}</h3>
+    /* Tab Navigation */
+    .tab-nav {
+        display: flex;
+        width: 100%;
+        margin-top: 85px;
+        /* Adjust for fixed navbar */
+        background: #fff;
+    }
+
+    .tab-item {
+        flex: 1;
+        text-align: center;
+        padding: 15px 0;
+        text-decoration: none;
+        color: #666;
+        font-size: 1rem;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        transition: all 0.2s;
+    }
+
+    .tab-item.active {
+        background: #1D53AF;
+        color: white;
+        border-color: #1D53AF;
+    }
+
+    .tab-item:hover:not(.active) {
+        background: #e8f0fe;
+        color: #1D53AF;
+    }
+
+    /* Guardian Card */
+    .guardian-card {
+        background: #7CA6D9;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        padding: 20px;
+        color: #000;
+    }
+
+    .guardian-header {
+        font-weight: 800;
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #000;
+        display: block;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .form-label {
+        width: 180px;
+        font-weight: 700;
+        font-size: 14px;
+        color: #000;
+    }
+
+    .form-input {
+        background: #FFFFFF;
+        border: none;
+        border-radius: 10px;
+        padding: 5px 15px;
+        font-size: 14px;
+        color: #333;
+        min-height: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-input.long {
+        width: 100%;
+        max-width: 540px;
+    }
+
+    .form-input.address {
+        width: 100%;
+        max-width: 550px;
+        min-height: 50px;
+        align-items: flex-start;
+        padding-top: 10px;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+
+    /* Date fields */
+    .date-inputs {
+        display: flex;
+        gap: 8px;
+    }
+
+    .date-box {
+        background: #FFFFFF;
+        border-radius: 10px;
+        padding: 5px 15px;
+        font-size: 14px;
+        text-align: center;
+        min-width: 30px;
+    }
+
+    /* Supporting Documents */
+    .docs-section {
+        background: #FFFFFF;
+        border: 2px solid #034EA1;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 30px;
+        color: #000;
+    }
+
+    .docs-title {
+        font-weight: 700;
+        font-size: 16px;
+        text-decoration: underline;
+        margin-bottom: 10px;
+    }
+
+    .docs-upload {
+        font-weight: 700;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .docs-item {
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    .docs-item a {
+        color: #4472C4;
+        text-decoration: underline;
+    }
+
+    /* Next Button */
+    .btn-next {
+        display: block;
+        width: 50px;
+        margin: 40px auto;
+        padding: 8px 10px;
+        background: #1D53AF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 13px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+    }
+</style>
+
+<!-- Tab Navigation -->
+<div class="tab-nav">
+    <a href="{% url 'view_application_details' application.id %}" class="tab-item">Part 1</a>
+    <a href="{% url 'view_family_background' application.id %}" class="tab-item active">Part 2</a>
+    <a href="{% url 'decision_page' application.id %}" class="tab-item">Part 3: Decision</a>
+</div>
+
+<div class="family-container">
 
     {% for guardian in guardians %}
-    <div class="guardian-info" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-        <h4>Guardian {{ forloop.counter }}: {{ guardian.name }}</h4>
-        <p><strong>Relationship:</strong> {{ guardian.relationship }}</p>
-        <p><strong>IC No:</strong> {{ guardian.ic_no }}</p>
-        <p><strong>Date of Birth:</strong> {{ guardian.date_of_birth }} (Age: {{ guardian.age }})</p>
-        <p><strong>Gender:</strong> {{ guardian.gender }}</p>
-        <p><strong>Nationality:</strong> {{ guardian.nationality }}</p>
-        <p><strong>Address:</strong> {{ guardian.address }}</p>
-        <p><strong>Contact:</strong> {{ guardian.contact_number }} / {{ guardian.email_address }}</p>
-        <p><strong>Monthly Income:</strong> {{ guardian.monthly_income }}</p>
+    <div class="guardian-card">
+        <div class="guardian-header">Guardian {{ forloop.counter }}:</div>
+        <div class="guardian-body">
+            <div class="form-row">
+                <div class="form-label">Relationship:</div>
+                <div class="form-input">{{ guardian.relationship }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">Name:</div>
+                <div class="form-input long">{{ guardian.name }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">Identification Card Number:</div>
+                <div class="form-input">{{ guardian.ic_no }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">Date of Birth:</div>
+                <div class="date-inputs">
+                    <div class="date-box">{{ guardian.date_of_birth|date:"d" }}</div>
+                    <div class="date-box">{{ guardian.date_of_birth|date:"m" }}</div>
+                    <div class="date-box year">{{ guardian.date_of_birth|date:"Y" }}</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">Age:</div>
+                <div class="form-input">{{ guardian.age }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">Nationality:</div>
+                <div class="form-input">{{ guardian.nationality }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">Gender:</div>
+                <div class="form-input">{{ guardian.gender }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">Address:</div>
+                <div class="form-input address">{{ guardian.address }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">Contact number:</div>
+                <div class="form-input">{{ guardian.contact_number }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">Email Address:</div>
+                <div class="form-input">{{ guardian.email_address }}</div>
+            </div>
+        </div>
     </div>
     {% empty %}
     <p>No guardian information found.</p>
     {% endfor %}
 
-    <h4>Family Financial Documents</h4>
-    <ul>
-        <li>EA Form: {% if application.ea_form %} <a href="{{ application.ea_form.url }}" target="_blank">View</a> {%
-            else %} None {% endif %}</li>
-        <li>Payslip: {% if application.payslip %} <a href="{{ application.payslip.url }}" target="_blank">View</a> {%
-            else %} None {% endif %}</li>
-    </ul>
-
-    <div style="margin-top: 20px;">
-        <a href="{% url 'decision_page' application.id %}"><button>Next: Decision</button></a>
+    <!-- Supporting Documents -->
+    <div class="docs-section">
+        <div class="docs-title">Supporting Documents:</div>
+        <div class="docs-upload">Upload</div>
+        <div class="docs-item">EA Form: {% if application.ea_form %}<a href="{{ application.ea_form.url }}"
+                target="_blank">ea.pdf</a>{% else %}Not Uploaded{% endif %}</div>
+        <div class="docs-item">Latest 3 months payslip: {% if application.payslip %}<a
+                href="{{ application.payslip.url }}" target="_blank">payslip.pdf</a>{% else %}Not Uploaded{% endif %}
+        </div>
     </div>
+
+    <!-- Next Button -->
+    <a href="{% url 'decision_page' application.id %}" class="btn-next">Next</a>
 </div>
 {% endblock %}
