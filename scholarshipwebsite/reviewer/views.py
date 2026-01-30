@@ -15,9 +15,9 @@ def index(request):
     """
     # Calculate summary stats for cards
     total_apps = Application.objects.count()
-    approved = Application.objects.filter(status='Approved').count()
-    rejected = Application.objects.filter(status='Rejected').count()
-    pending = Application.objects.exclude(status__in=['Approved', 'Rejected']).count()
+    approved = Application.objects.filter(committee_status='Approved').count()
+    rejected = Application.objects.filter(committee_status='Rejected').count()
+    pending = Application.objects.exclude(committee_status__in=['Approved', 'Rejected']).count()
     
     context = {
         'total_apps': total_apps,
@@ -32,16 +32,16 @@ def review_list(request):
     
     for app in applications:
         # Determine display status based on session or DB
-        if app.status == 'Approved':
-            app.dashboard_status = 'Approved'
-            app.dashboard_class = 'approved'
-        elif app.status == 'Rejected':
+        if app.reviewer_status == 'Reviewed': #reviewed
+            app.dashboard_status = 'Reviewed'
+            app.dashboard_class = 'reviewed'
+        elif app.reviewer_status == 'Rejected': #rejected
             app.dashboard_status = 'Rejected'
             app.dashboard_class = 'rejected'
         elif f'review_{app.id}' in request.session:
             app.dashboard_status = 'In Progress'
             app.dashboard_class = 'in-progress'
-        else:
+        else: #pending
             app.dashboard_status = 'To Review'
             app.dashboard_class = 'to-review'
             
@@ -179,24 +179,6 @@ def review_step2(request, app_id):
         guardians.append(app.guardian1)
     if app.guardian2:
         guardians.append(app.guardian2)
-<<<<<<< HEAD
-
-    return render(request, "reviewer/review_step2.html", {'app': app, 'guardians': guardians })
-
-def review_step3(request, app_id):
-    app = Application.objects.get(id=app_id)
-
-    if request.method == 'POST':
-        if 'save' in request.POST:
-            return redirect('reviewer')
-        if 'previous' in request.POST:
-            return redirect('review_step2', app_id=app.id)
-
-    if 'approve' in request.POST:
-         Application.objects.filter(id=app.id).update(status='Approved')
-         return redirect('reviewer')
-    return render(request, "reviewer/review_step3.html", {'app': app})
-=======
     
     # Calculate PCI (Per Capita Income)
     total_income = float(app.monthly_income) if app.monthly_income else 0
@@ -334,21 +316,16 @@ def review_step3(request, app_id):
         
         # Handle Save button
         if 'save' in request.POST:
+            Application.objects.filter(id=app.id).update(reviewer_status='Reviewed')
+            request.session.pop(f'review_{app.id}', None)
+
             from django.contrib import messages
             messages.success(request, 'Review saved successfully!')
-            return redirect('review_step3', app_id=app.id)
-        
-        # Handle Approve button
-        if 'approve' in request.POST:
-            Application.objects.filter(id=app.id).update(status='Approved')
-            # Clear session data
-            if f'review_{app.id}' in request.session:
-                del request.session[f'review_{app.id}']
             return redirect('review')
         
         # Handle Reject button
         if 'reject' in request.POST:
-            Application.objects.filter(id=app.id).update(status='Rejected')
+            Application.objects.filter(id=app.id).update(reviewer_status='Rejected')
             # Clear session data
             if f'review_{app.id}' in request.session:
                 del request.session[f'review_{app.id}']
@@ -360,12 +337,11 @@ def review_step3(request, app_id):
         'eligibility': eligibility,
     }
     return render(request, "reviewer/review_step3.html", context)
->>>>>>> main
     
 def details(request):
     return render(request, "reviewer/reviewScholarship.html", {})
 
-# --- API ---
+
 
 class ChartData(APIView):
     authentication_classes = []
@@ -387,9 +363,9 @@ class ChartData(APIView):
                 line_data.append(cumulative_count)
 
         # 2. Status Chart: Approved vs Rejected vs Pending
-        approved = Application.objects.filter(status='Approved').count()
-        rejected = Application.objects.filter(status='Rejected').count()
-        pending = Application.objects.exclude(status__in=['Approved', 'Rejected']).count()
+        approved = Application.objects.filter(committee_status='Approved').count()
+        rejected = Application.objects.filter(committee_status='Rejected').count()
+        pending = Application.objects.exclude(committee_status__in=['Approved', 'Rejected']).count()
         
         # 3. Popularity Chart: Apps per Scholarship
         scholarships = Scholarship.objects.annotate(count=Count('application'))

@@ -201,9 +201,11 @@
 
         <!-- Decision Buttons -->
         <div class="button-group">
-            <button type="submit" name="decision" value="Approved" class="btn-decision btn-approve">Approve
+            <button type="submit" name="decision" value="Approved" class="btn-decision btn-approve" 
+            onclick="return confirm('Are you sure you want to approve this application?');">Approve
                 Application</button>
-            <button type="submit" name="decision" value="Rejected" class="btn-decision btn-reject">Reject
+            <button type="submit" name="decision" value="Rejected" class="btn-decision btn-reject"
+            onclick="return confirm('Are you sure you want to reject this application?');">Reject
                 Application</button>
         </div>
     </form>

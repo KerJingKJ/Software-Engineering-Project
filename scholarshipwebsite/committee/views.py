@@ -59,9 +59,9 @@ def delete_scholarship(request, id):
 
 def index(response):
     total_apps = Application.objects.count()
-    approved = Application.objects.filter(status='Approved').count()
-    rejected = Application.objects.filter(status='Rejected').count()
-    pending = Application.objects.exclude(status__in=['Approved', 'Rejected']).count()
+    approved = Application.objects.filter(committee_status='Approved').count()
+    rejected = Application.objects.filter(committee_status='Rejected').count()
+    pending = Application.objects.exclude(committee_status__in=['Approved', 'Rejected']).count()
     
     context = {
         'total_apps': total_apps,
@@ -85,16 +85,16 @@ def edit(response):
     return render(response, "committee/editScholarship.html", {})
 
 def reviewApprove(response):
-    applications = Application.objects.all().order_by('submitted_date')
+    applications = Application.objects.filter(reviewer_status = 'Reviewed').order_by('submitted_date')
 
     for app in applications:
         # Determine display status based on session or DB
         app.interview_scheduled = Interview.objects.filter(application=app).exists()
 
-        if app.status == 'Approved':
+        if app.committee_status == 'Approved':
             app.dashboard_status = 'Approved'
             app.dashboard_class = 'approved'
-        elif app.status == 'Rejected':
+        elif app.committee_status == 'Rejected':
             app.dashboard_status = 'Rejected'
             app.dashboard_class = 'rejected'
         
@@ -169,7 +169,7 @@ def decision_page(request, id):
             interview.save()
 
         if decision == 'Approved':
-            application.status = 'Approved'
+            application.committee_status = 'Approved'
             application.save()
             
             if interview:
@@ -188,16 +188,16 @@ def decision_page(request, id):
                         # 'approver': request.user if request.user.is_authenticated else None
                     }
                 )
-            return redirect('decision_page', id=id)
+            return redirect('reviewApprove')
         elif decision == 'Rejected':
-            application.status = 'Rejected'
+            application.committee_status = 'Rejected'
             application.save()
 
             ApprovedApplication.objects.filter(original_application=application).delete()
 
             # Interview.objects.filter(application=application).delete() # Keep interview record but set status
             
-            return redirect('decision_page', id=id)
+            return redirect('reviewApprove')
             
     return render(request, "committee/decision.html", {'application': application, 'interview': interview})
 
@@ -211,7 +211,7 @@ def view_reviewer_mark(request, id):
     if request.method == "POST":
         action = request.POST.get('action')
         if action == 'approve':
-            application.status = 'Approved'
+            application.committee_status = 'Approved'
             application.save()
             
             # Create or update ApprovedApplication
@@ -235,7 +235,7 @@ def view_reviewer_mark(request, id):
             return redirect('reviewApprove')
             
         elif action == 'reject':
-            application.status = 'Rejected'
+            application.committee_status = 'Rejected'
             application.save()
             # Clean up approved record if it exists
             ApprovedApplication.objects.filter(original_application=application).delete()
