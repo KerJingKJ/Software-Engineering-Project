@@ -11,7 +11,7 @@ urlpatterns = [
     path('eligibility/', views.eligibility_check, name='eligibility_check'),
     
     path("scholarships/", views.scholarship_list, name="scholarship_list"),
-    path("scholarships/apply", views.application_form, name="applicationForm"), # initial create path for applications
+    path("scholarships/apply", views.application_form, name="application_form"), # initial create path for applications
     path('scholarship/<int:id>/', views.scholarship_details, name='scholarship_details'),
 
     # Action to toggle the bookmark

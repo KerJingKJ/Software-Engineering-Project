@@ -225,6 +225,7 @@ class Bookmark(models.Model):
 
     class Meta:
         unique_together = ('student', 'scholarship')
+        ordering = ['-date_added']
 
     def __str__(self):
         return f"Bookmark {self.id} - {self.date_added}"

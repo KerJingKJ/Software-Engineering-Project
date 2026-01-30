@@ -120,9 +120,6 @@ def eligibility_check(request):
     
 @login_required
 def toggle_bookmark(request, scholarship_id):
-    """
-    Adds or removes a scholarship from the student's bookmarks.
-    """
     # Get the logged-in student (handle case where admin/user has no student profile)
     if not hasattr(request.user, 'student'):
         messages.error(request, "Only students can bookmark scholarships.")
@@ -146,9 +143,6 @@ def toggle_bookmark(request, scholarship_id):
 
 @login_required
 def scholarship_details(request, id):
-    """
-    Displays details and checks if the scholarship is bookmarked.
-    """
     scholarship = get_object_or_404(Scholarship, id=id)
     is_bookmarked = False
 
@@ -167,9 +161,6 @@ def scholarship_details(request, id):
 
 @login_required
 def bookmark_list(request):
-    """
-    Displays the list of bookmarked scholarships.
-    """
     try:
         student = request.user.student
         # Get the list of bookmark objects
