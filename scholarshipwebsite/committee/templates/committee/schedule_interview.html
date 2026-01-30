@@ -194,9 +194,20 @@
 <div class="schedule-container">
     <h1 class="schedule-title">Schedule Interview</h1>
 
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}"
+            style="color: red; margin-bottom: 20px; font-weight: bold;">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <form method="post">
         {% csrf_token %}
-        
+
         <div class="schedule-layout">
             <!-- Calendar Section -->
             <div class="calendar-section">
@@ -260,7 +271,7 @@
     function renderCalendar() {
         const grid = document.getElementById('calendarGrid');
         const monthYear = document.getElementById('monthYear');
-        
+
         // Clear existing days (keep headers)
         const headers = grid.querySelectorAll('.calendar-day-header');
         grid.innerHTML = '';
@@ -268,9 +279,9 @@
 
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
-        
+
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                           'July', 'August', 'September', 'October', 'November', 'December'];
+            'July', 'August', 'September', 'October', 'November', 'December'];
         monthYear.textContent = monthNames[month] + ' ' + year + ' ▼';
 
         const firstDay = new Date(year, month, 1).getDay();
@@ -291,13 +302,13 @@
             dayDiv.textContent = day;
 
             const thisDate = new Date(year, month, day);
-            if (thisDate < today.setHours(0,0,0,0)) {
+            if (thisDate < today.setHours(0, 0, 0, 0)) {
                 dayDiv.classList.add('disabled');
             } else {
                 dayDiv.onclick = () => selectDate(year, month, day, dayDiv);
             }
 
-            if (selectedDate && selectedDate.getFullYear() === year && 
+            if (selectedDate && selectedDate.getFullYear() === year &&
                 selectedDate.getMonth() === month && selectedDate.getDate() === day) {
                 dayDiv.classList.add('selected');
             }
@@ -308,11 +319,11 @@
 
     function selectDate(year, month, day, element) {
         selectedDate = new Date(year, month, day);
-        
+
         // Format for input: YYYY-MM-DD
-        const formatted = year + '-' + 
-                         String(month + 1).padStart(2, '0') + '-' + 
-                         String(day).padStart(2, '0');
+        const formatted = year + '-' +
+            String(month + 1).padStart(2, '0') + '-' +
+            String(day).padStart(2, '0');
         document.getElementById('date').value = formatted;
 
         // Update UI
@@ -350,11 +361,11 @@
         const day = parseInt(dateParts[2]);
         selectedDate = new Date(year, month, day);
         currentDate = new Date(year, month, 1); // Navigate calendar to that month
-        
+
         // Set hidden input value
         document.getElementById('date').value = "{{ existing_interview.date|date:'Y-m-d' }}";
     }
-    
+
     // Pre-select existing time
     const existingTime = "{{ existing_interview.interview_time }}";
     document.querySelectorAll('.time-btn').forEach(btn => {
@@ -363,7 +374,7 @@
             document.getElementById('interview_time').value = existingTime;
         }
     });
-    
+
     // Pre-select existing timezone
     const existingTimezone = "{{ existing_interview.timezone }}";
     const tzSelect = document.querySelector('.timezone-select');
