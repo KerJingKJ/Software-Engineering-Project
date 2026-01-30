@@ -167,8 +167,6 @@ html {
   display: block;
 }
 
-
-
 .dropdown:hover button {
   background-color: rgb(186, 184, 184);
 
@@ -215,7 +213,6 @@ html {
   gap: 20px;
   justify-content: center;
 }
-
 
 .col-md-6 {
   position: relative;
