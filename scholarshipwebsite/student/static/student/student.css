@@ -1423,48 +1423,73 @@ html{
     font-weight: normal;
 }
 
-/* Table Structure */
+/* --- Table Layout Fix --- */
 .application-table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 10px; /* Spacing between rows */
+    border-spacing: 0 10px; /* Space between rows */
+    table-layout: fixed; /* <--- CRITICAL: Keeps columns stable */
 }
 
-.application-table thead th {
-    text-align: left;
+/* --- Shared Cell Styles --- */
+.application-table th, 
+.application-table td {
+    padding: 15px 20px;
+    vertical-align: middle;
+    text-align: left; /* Default alignment */
+}
+
+/* --- Header Specifics --- */
+.application-table th {
     color: #888;
     font-size: 0.9rem;
     font-weight: 600;
-    padding: 10px 20px;
     border-bottom: 2px solid #eee;
 }
 
-.application-table tbody tr {
-    background-color: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    border-radius: 8px;
-    transition: transform 0.2s;
-}
-
-.application-table tbody tr:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
+/* --- Body Specifics --- */
 .application-table td {
-    padding: 20px;
-    vertical-align: middle;
+    background-color: white;
+    /* Keeps text on one line so rows stay aligned */
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Rounded corners for the row */
-.application-table td:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
+/* --- COLUMN WIDTHS (Total = 100%) --- */
+
+/* 1. Number Column */
+.application-table th:nth-child(1),
+.application-table td:nth-child(1) {
+    width: 8%; 
+    text-align: center; /* Center the numbers */
+    border-radius: 8px 0 0 8px; /* Rounded left corners */
 }
 
-.application-table td:last-child {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+/* 2. Scholarship Name (Give this the most space) */
+.application-table th:nth-child(2),
+.application-table td:nth-child(2) {
+    width: 40%;
+}
+
+/* 3. Date Applied */
+.application-table th:nth-child(3),
+.application-table td:nth-child(3) {
+    width: 17%;
+}
+
+/* 4. Status */
+.application-table th:nth-child(4),
+.application-table td:nth-child(4) {
+    width: 15%;
+}
+
+/* 5. Action Button */
+.application-table th:nth-child(5),
+.application-table td:nth-child(5) {
+    width: 20%;
+    text-align: right; /* Align button to the right */
+    border-radius: 0 8px 8px 0; /* Rounded right corners */
 }
 
 /* Content Styles */
@@ -1506,18 +1531,27 @@ html{
 }
 
 .status-badge-table.pending {
-    background-color: #fff3cd;
-    color: #856404;
+    background-color: #B9B9B9;
+    color: #ffffff;
+    padding: 5px 15px; 
+    border-radius: 4px;
+    font-weight: bold;
 }
 
 .status-badge-table.approved {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: #34A853;
+    color: #ffffff;
+    padding: 5px 15px; 
+    border-radius: 4px;
+    font-weight: bold;
 }
 
 .status-badge-table.rejected {
-    background-color: #f8d7da;
-    color: #721c24;
+    background-color: #ff0707;
+    color: #ffffff;
+    padding: 5px 15px; 
+    border-radius: 4px;
+    font-weight: bold;
 }
 
 /* Empty State */

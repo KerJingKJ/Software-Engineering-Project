@@ -16,8 +16,7 @@
     </ul> 
     <ul class="nav-right">
         <li class="notif-container">
-            <a href="javascript:void(0)" class="notif-bell" onclick="toggleNotif()">
-                🔔
+            <img src="{% static 'student/img/notifications.png' %}" href="javascript:void(0)" class="notif-bell" onclick="toggleNotif()" width="30" height="30" style="margin-right:-13px;"/>
                 {% if unread_count > 0 %}
                 <span class="notif-badge">{{ unread_count }}</span>
                 {% endif %}

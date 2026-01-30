@@ -16,20 +16,24 @@
         <div id="login-form">
         <form method="post">
             {% csrf_token %}
-
             <p> Email address </p>
             {{ form.email }}
-
             <p> Password </p>
             {{ form.password }}
-
             <br>
-
             <button type="submit" class="button">Login</button>
         </form>
         </div>
         <p> <a href="{% url 'forgot_password' %}">Forgot Password?</a></p>
         <p> First time using? <a href="{% url 'signup' %}">Sign up</a></p>
+
+        {% if messages %}
+        <ul class="errorform">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
     </div>
 </body>
 

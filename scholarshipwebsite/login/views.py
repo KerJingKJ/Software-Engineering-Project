@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, SecurityQuestionForm, LoginForm, ForgotPasswordForm, SecurityQuestionVerifyForm, ResetPasswordForm
 from .models import UserSecurityQuestion, UserProfile
 from .models import SECURITY_QUESTION_CHOICES
+from student.models import Student
 from django.contrib.auth import logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -33,12 +34,11 @@ def index(request):
 
                     if not user.is_staff and not UserSecurityQuestion.objects.filter(user=user).exists():
                         return redirect('securityquestion')
-
-                    
                     
                     email_domain = user.email.split('@')[-1]
                     
                     if 'student.mmu.edu.my' in email_domain:
+                        Student.objects.get_or_create(user=user)
                         return redirect('student')
                     elif 'admin.mmu.edu.my' in email_domain:
                         return redirect('/admin/')
@@ -47,7 +47,7 @@ def index(request):
                     elif 'committee.mmu.edu.my' in email_domain:
                         return redirect('committee')
                     else:
-                        return redirect('committee') 
+                        return redirect('student') 
                 else:
                     messages.error(request, "Wrong password! Try again")
     else:

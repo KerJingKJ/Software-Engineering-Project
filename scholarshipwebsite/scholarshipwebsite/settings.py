@@ -21,6 +21,7 @@ ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
+    'committee', #put it here so the dashboard for admin shows
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,7 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'landingpage',
     'login',
-    'committee',
+    
     'reviewer',
     'student',
     'rest_framework',
@@ -119,3 +120,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'committee'

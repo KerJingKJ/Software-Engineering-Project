@@ -2,12 +2,12 @@ from django.utils import timezone
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
+from .models import Application, Student, Guardian, Bookmark
+from committee.models import Scholarship
+from .forms import ApplicationForm, GuardianForm
+from datetime import date
 # Create your views here.
 from django.contrib.auth.decorators import login_required
-from .models import Student, Bookmark
-from committee.models import Scholarship
-from .models import Application, Student
-from .forms import ApplicationForm
 # Create your views here.
 # views.py
 
@@ -23,19 +23,28 @@ def mark_all_read(request):
         pass
     return redirect(request.META.get('HTTP_REFERER', 'student'))
 
+from django.utils import timezone
+
 @login_required
 def notification_list(request):
-    try:
-        student = request.user.student
-        # Get all notifications, newest first
-        notifications = student.notifications.all().order_by('-created_at')
-        
-        # Optional: Auto-mark as read when they visit this page? 
-        # If yes, uncomment the line below:
-        # notifications.filter(is_read=False).update(is_read=True)
-
-    except Student.DoesNotExist:
-        notifications = []
+    # --- MOCK DATA (Frontend Only) ---
+    notifications = [
+        {
+            'message': 'Congratulations! Your application for Merit Scholarship 2026 has been APPROVED.',
+            'created_at': timezone.now(),
+            'is_read': False
+        },
+        {
+            'message': 'Update: Your application for Future Leaders Award was REJECTED.',
+            'created_at': timezone.now(),
+            'is_read': True
+        },
+        {
+            'message': 'Welcome to the Scholarship Portal! Please complete your profile.',
+            'created_at': timezone.now(),
+            'is_read': True
+        }
+    ]
 
     return render(request, 'student/notifications.html', {
         'notifications': notifications
@@ -159,16 +168,19 @@ def application_form(request):
     # redirecting would implying there's a whole separate form for these. 
     scholarships = Scholarship.objects.all()
     # application = Application.objects.filter(scholarship_id=id).first()
-
+    
     if request.method == "POST":
         form = ApplicationForm(request.POST, request.FILES)
 
+
         if form.is_valid():
+
             application = form.save(commit=False)
             try:
                 application.student = request.user.student
             except Student.DoesNotExist:
-                form.add_error(None, "Student profile not found.")
+                form.add_error(None, "Not a student.")
+                print(form.errors)
                 return render(
                     request,
                     "student/applicationForm.html",
@@ -186,9 +198,33 @@ def edit_application_form(request, id=-1, page=-1):
     application = get_object_or_404(Application, pk=id)
     scholarships = Scholarship.objects.all()
     scholarship = application.scholarship
-
     if request.method == "POST":
         form = ApplicationForm(request.POST, request.FILES, instance=application)
+        if page==3:
+            form1 = GuardianForm(
+                request.POST, 
+                request.FILES, 
+                prefix='guardian1',
+                instance=application.guardian1  # None or existing Guardian
+            )
+            form2 = GuardianForm(
+                request.POST, 
+                request.FILES, 
+                prefix='guardian2',
+                instance=application.guardian2  # None or existing Guardian
+            )
+            
+            # Validate both forms
+            if form1.is_valid():
+                # Save first guardian
+                guardian1 = form1.save()
+                application.guardian1 = guardian1
+
+            if form2.is_valid():
+                # Save second guardian
+                guardian2 = form2.save()
+                application.guardian2 = guardian2
+            application.save()
         if form.is_valid():
             form.save()
             return redirect("edit_application_form", id=id, page=(page+1))
@@ -202,7 +238,25 @@ def edit_application_form(request, id=-1, page=-1):
     elif page == 2:
         return render(request, "student/applicationForm_p2.html", {"form": form, "application":application})
     elif page == 3:
-        return render(request, "student/applicationForm_p3.html", {"form": form, "application":application})
+# GET request - initialize forms with existing guardians
+        form1 = GuardianForm(
+            prefix='guardian1', 
+            instance=application.guardian1
+        )
+        form2 = GuardianForm(
+            prefix='guardian2', 
+            instance=application.guardian2
+        )
+        return render(request, "student/applicationForm_p3.html", {
+            "form": form,
+            "application": application,
+            "page": page,
+            "form1": form1, 
+            "form2": form2, 
+            "application": application,
+
+        })
+        # return render(request, "student/applicationForm_p3.html", {"form": form, "application":application})
     elif page == 4:
         return render(request, "student/applicationForm_p4.html", {"form": form, "application":application})
     elif page == 5:
@@ -211,7 +265,62 @@ def edit_application_form(request, id=-1, page=-1):
         print (f"u stupid {page}")
         return redirect("application_form")
 
-# Create your views here.
+def guardian_form(request, id=-1, page=-1):
+    if page != 3:
+        return redirect("edit_application_form")
+    
+    application = get_object_or_404(Application, pk=id)
+
+    if request.method == "POST":
+        form1 = GuardianForm(
+            request.POST, 
+            request.FILES, 
+            prefix='guardian1',
+            instance=application.guardian1  # None or existing Guardian
+        )
+        form2 = GuardianForm(
+            request.POST, 
+            request.FILES, 
+            prefix='guardian2',
+            instance=application.guardian2  # None or existing Guardian
+        )
+        
+        # Validate both forms
+        if form1.is_valid() and form2.is_valid():
+            # Save first guardian
+            guardian1 = form1.save()
+            
+            # Save second guardian
+            guardian2 = form2.save()
+            
+            # Link guardians to application
+            application.guardian1 = guardian1
+            application.guardian2 = guardian2
+            application.save()
+            
+            return redirect('edit_application_form', id=application.id, page=page+1)
+
+        else:
+            # Display errors
+            print("Form 1 Errors:", form1.errors)
+            print("Form 2 Errors:", form2.errors)
+    else:
+        # GET request - initialize forms with existing guardians
+        form1 = GuardianForm(
+            prefix='guardian1', 
+            instance=application.guardian1
+        )
+        form2 = GuardianForm(
+            prefix='guardian2', 
+            instance=application.guardian2
+        )
+    
+    return render(request, "student/applicationForm_p2.html", {
+        "form1": form1, 
+        "form2": form2, 
+        "application": application,
+        "page": page
+    })
 
 # def edit_application_form_p2(request, id, page):
 #     # application = Application.objects.filter(scholarship_id=id).first()
@@ -226,18 +335,77 @@ def edit_application_form(request, id=-1, page=-1):
 
 @login_required
 def trackApplication(request):
-    try:
-        # Get the student profile of the logged-in user
-        student = request.user.student
-        
-        # Fetch applications for this student, ordered by newest date
-        applications = Application.objects.filter(student=student).order_by('-submitted_date')
-    except (Student.DoesNotExist, AttributeError):
-        # Handle cases where the user is logged in but has no student profile
-        applications = []
+    # --- MOCK DATA (Frontend Only) ---
+    # We create a fake list of applications to test the UI.
+    applications = [
+        {
+            'id': 1,
+            'scholarship': {'name': 'Merit Scholarship 2026'}, # Nested dict to mimic app.scholarship.name
+            'submitted_date': date(2026, 1, 15),
+            'status': 'Pending',
+            'committee_status': 'Pending',
+        },
+        {
+            'id': 2,
+            'scholarship': {'name': 'Future Leaders Award'},
+            'submitted_date': date(2025, 12, 10),
+            'status': 'Rejected',
+            'committee_status': 'Rejected',
+        },
+        {
+            'id': 3,
+            'scholarship': {'name': 'MMU Foundation Aid'},
+            'submitted_date': date(2025, 11, 5),
+            'status': 'Approved',
+            'committee_status': 'Approved',
+        }
+    ]
 
     return render(request, "student/trackApplication.html", {
         'applications': applications
     })
 
+@login_required
+def application_detail(request, application_id):
+    # --- MOCK DATA FOR A SINGLE APPLICATION ---
+    # This simulates what a real application object would look like
+    application = {
+        'id': application_id,
+        'scholarship': {'name': 'Merit Scholarship 2026'},
+        'submitted_date': date(2026, 1, 15),
+        'status': 'Pending',
+        'committee_status': 'Pending',
+        'name': 'Ali Bin Abu',
+        'ic_no': '010101-10-1234',
+        'email_address': 'ali@student.mmu.edu.my',
+        'contact_number': '012-3456789',
+        'date_of_birth': date(2003, 5, 20),
+        'age': 23,
+        'gender': 'Male',
+        'nationality': 'Malaysian',
+        'race': 'Malay',
+        'home_address': '123 Jalan Multimedia, Cyberjaya',
+        'correspondence_address': '123 Jalan Multimedia, Cyberjaya',
+        'programme': 'Bachelor of Computer Science',
+        'intake': date(2023, 3, 1),
+        'education_level': 'Undergraduate',
+        'monthly_income': '3500.00',
+        'reason_deserve': 'I have maintained a 4.0 GPA while volunteering...',
+        'personal_achievement': 'Dean List 2024, Hackathon Winner',
+    }
+
+    # Mock Guardians
+    guardians = [
+        {
+            'name': 'Abu Bakar',
+            'relationship': 'Father',
+            'contact_number': '019-8765432',
+            'email_address': 'abu@email.com'
+        }
+    ]
+
+    return render(request, 'student/application_detail.html', {
+        'application': application,
+        'guardians': guardians
+    })
 # Create your views here.

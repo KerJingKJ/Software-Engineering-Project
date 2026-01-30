@@ -10,11 +10,10 @@
     <table class="application-table">
         <thead>
             <tr>
-                <th style="width: 50px;">No.</th> <th>Scholarship Applied</th>
+                <th style="text-align: center;">No.</th> <th>Scholarship Applied</th>
                 <th>Date Applied</th>
                 <th>Status</th>
-                <th>Action</th>
-            </tr>
+                <th style="text-align: right;">Action</th> </tr>
         </thead>
         <tbody>
             {% for app in applications %}
@@ -23,18 +22,20 @@
                     <div class="row-number">{{ forloop.counter }}</div>
                 </td>
                 <td>
-                    <div class="scholarship-name">{{ app.scholarship.name }}</div>
+                    <div class="scholarship-name" title="{{ app.scholarship.name }}">
+                        {{ app.scholarship.name }}
+                    </div>
                 </td>
                 <td>
                     <div class="date-applied">{{ app.submitted_date|date:"d-m-Y" }}</div>
                 </td>
                 <td>
-                    <span class="status-badge-table {{ app.status|lower }}">
-                        {{ app.status }}
+                    <span class="status-badge-table {{ app.committee_status|lower }}">
+                        {{ app.committee_status }}
                     </span>
                 </td>
                 <td>
-                    <a href="#" class="view-details-link">View Details</a>
+                    <a href="{% url 'application_detail' app.id %}" class="view-details-link">View Details</a>
                 </td>
             </tr>
             {% endfor %}

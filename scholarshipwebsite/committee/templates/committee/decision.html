@@ -1,34 +1,241 @@
 {% extends 'committee/base.html' %}
 
 {% block content %}
-<div class="container">
-    <h2>Decision Page</h2>
-    <h3>Applicant: {{ application.name }}</h3>
+<style>
+    .decision-container {
+        max-width: 800px;
+        margin: 30px auto 50px auto;
+        padding: 0 20px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
 
-    <div class="interview-section">
-        <h4>Interview Application</h4>
-        {% if interview %}
-        <p><strong>Scheduled Date:</strong> {{ interview.date }}</p>
-        <p><strong>Time:</strong> {{ interview.interview_time }}</p>
-        <p><strong>Timezone:</strong> {{ interview.timezone }}</p>
-        <a href="{% url 'schedule_interview' application.id %}"><button>Edit Interview Session</button></a>
-        {% else %}
-        <p>No interview scheduled yet.</p>
-        <a href="{% url 'schedule_interview' application.id %}"><button>Schedule Interview Session</button></a>
-        {% endif %}
-    </div>
+    /* Tab Navigation */
+    .tab-nav {
+        display: flex;
+        width: 100%;
+        margin-top: 85px;
+        /* Adjust for fixed navbar */
+        background: #fff;
+    }
 
-    <div class="decision-section" style="margin-top: 30px;">
-        <h4>Outcome</h4>
-        <p>Current Status: <strong>{{ application.status }}</strong></p>
+    .tab-item {
+        flex: 1;
+        text-align: center;
+        padding: 15px 0;
+        text-decoration: none;
+        color: #666;
+        font-size: 1rem;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        transition: all 0.2s;
+    }
 
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" name="decision" value="Approved"
-                style="background-color: green; color: white;">Approve</button>
-            <button type="submit" name="decision" value="Rejected"
-                style="background-color: red; color: white;">Reject</button>
-        </form>
-    </div>
+    .tab-item.active {
+        background: #1D53AF;
+        color: white;
+        border-color: #1D53AF;
+    }
+
+    .tab-item:hover:not(.active) {
+        background: #e8f0fe;
+        color: #1D53AF;
+    }
+
+    /* Content Layout */
+    .form-section {
+        margin-top: 30px;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        width: 180px;
+        font-weight: 700;
+        font-size: 18px;
+        color: #000;
+        padding-top: 5px;
+    }
+
+    .separator {
+        width: 20px;
+        font-weight: 700;
+        font-size: 18px;
+        padding-top: 5px;
+    }
+
+    .form-content {
+        flex: 1;
+    }
+
+    /* Interview Button */
+    .btn-schedule {
+        display: block;
+        width: fit-content;
+        padding: 10px 25px;
+        background: #1D53AF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 12px;
+        text-decoration: none;
+        margin-bottom: 15px;
+    }
+
+    /* Interview Box */
+    .interview-box {
+        background: #EFEFFF;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        color: #1D53AF;
+        font-size: 13px;
+        max-width: 400px;
+    }
+
+    .interview-box i {
+        margin-right: 10px;
+    }
+
+    /* Inputs */
+    .form-input {
+        width: 100%;
+        max-width: 400px;
+        padding: 8px 12px;
+        border: 1px solid #E0E0E0;
+        border-radius: 5px;
+        font-size: 14px;
+        color: #999;
+        background: #fff;
+    }
+
+    /* Decision Buttons */
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 150px;
+        margin-top: 50px;
+    }
+
+    .btn-decision {
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        min-width: 160px;
+    }
+
+    .btn-approve {
+        background: #2DA103;
+    }
+
+    .btn-approve:hover{
+        background: #217602;
+
+    }
+
+    .btn-reject {
+        background: #FF0707;
+    }
+
+    .btn-reject:hover {
+        background: #930606;
+    }
+
+    .btn-decision:hover {
+        opacity: 0.9;
+    }
+
+    .button-goback{
+        text-decoration: none;
+        background: #034EA1;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .button-goback:hover{
+        background: #002f64;
+    }
+</style>
+
+<!-- Tab Navigation -->
+<div class="tab-nav">
+    <a href="{% url 'view_application_details' application.id %}" class="tab-item">Part 1</a>
+    <a href="{% url 'view_family_background' application.id %}" class="tab-item">Part 2</a>
+    <a href="{% url 'decision_page' application.id %}" class="tab-item active">Part 3: Decision</a>
+</div>
+
+<div class="decision-container">
+
+    <form method="post" class="form-section">
+        {% csrf_token %}
+
+        <!-- Interview Session -->
+        <div class="form-row">
+            <div class="form-label">Interview Session</div>
+            <div class="separator">:</div>
+            <div class="form-content">
+                <a href="{% url 'schedule_interview' application.id %}" class="btn-schedule">
+                    {% if interview %}Edit{% else %}Schedule/Edit{% endif %} Interview Session
+                </a>
+
+                {% if interview %}
+                <div class="interview-box">
+                    <div style="margin-bottom: 8px;">
+                        📅 {{ interview.date|date:"l, F j, Y" }}
+                    </div>
+                    <div style="margin-bottom: 8px; font-weight: 700;">
+                        
+                        {{ interview.interview_time }}
+                    </div>
+                    <div>
+                        🌎 Time Zone: {{ interview.timezone }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-row">
+            <div class="form-label">Location:</div>
+            <div class="form-content">
+                <input type="text" name="location" class="form-input" value="{{ interview.location|default:'' }}"
+                    placeholder="MMU FCI CQAR1003">
+            </div>
+        </div>
+
+        <!-- Remarks -->
+        <div class="form-row">
+            <div class="form-label">Remarks:</div>
+            <div class="form-content">
+                <input type="text" name="remarks" class="form-input" value="{{ interview.remarks|default:'' }}"
+                    placeholder="Please bring your student ID">
+            </div>
+        </div>
+
+        <!-- Decision Buttons -->
+        <div class="button-group">
+            <button type="submit" name="decision" value="Approved" class="btn-decision btn-approve" 
+            onclick="return confirm('Are you sure you want to approve this application?');">Approve
+                Application</button>
+            <button type="submit" name="decision" value="Rejected" class="btn-decision btn-reject"
+            onclick="return confirm('Are you sure you want to reject this application?');">Reject
+                Application</button>
+            <a href="{% url 'reviewApprove' %}" class="button-goback">Go back to list</a>
+        </div>
+        
+    </form>
 </div>
 {% endblock %}
