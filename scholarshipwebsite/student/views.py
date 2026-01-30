@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import Application, Student, Guardian, Bookmark
-from committee.models import Scholarship
+from committee.models import Scholarship, Interview
 from .forms import ApplicationForm, GuardianForm
 # Create your views here.
 from django.contrib.auth.decorators import login_required
@@ -25,7 +25,21 @@ def scholarship_list(request):
 def applicationDetails(request, id):
     application = get_object_or_404(Application, pk=id)
 
-    return render(request, "student/applicationDetails.html", {'application':application})
+    # progress_track = ""
+    # if application.iscomplete:
+    #     progress_track = "Pending"
+    if application.reviewer_status== "Rejected" or application.committee_status== "Rejected" or application.committee_status== "Approved":
+        progress_track = "Outcome"
+    elif application.reviewer_status == "Pending":
+        progress_track = "Under Review"
+    elif application.reviewer_status == "Reviewed" and application.committee_status == "Pending":
+        if application.interviews.exists():
+            progress_track = "Interview"
+        else:
+            progress_track = "Reviewed"
+    print(progress_track)
+
+    return render(request, "student/applicationDetails.html", {'application':application, 'progress_track':progress_track})
 
 @login_required
 def eligibility_check(request):

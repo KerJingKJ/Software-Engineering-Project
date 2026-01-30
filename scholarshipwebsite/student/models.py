@@ -113,8 +113,6 @@ class Application(models.Model):
      )
     reviewer_status = models.CharField(max_length=20, choices=REVIEWER_STATUS_CHOICES, default='Pending')
     committee_status = models.CharField(max_length=20, choices=COMMITTEE_STATUS_CHOICES, default='Pending')
-    
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     iscomplete = models.BooleanField(default=False)
     scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)

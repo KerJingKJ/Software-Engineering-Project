@@ -16,10 +16,11 @@
 
     <div class="progress-track">
         <ul class="progressbar">
-            <li class="{% if application.status == 'Pending'%}active{% endif %}">Application Received</li>
-            <li>Under Review</li>
-            <li>Interview</li>
-            <li class="{% if application.status == 'Approved' or application.status == 'Rejected' %}active{% endif %}">Outcome</li>
+            <li class="{% if progress_track == 'Pending'%}active{% endif %}">Application Received</li>
+            <li class="{% if progress_track == 'Under Review' %}active{% endif %}">Under Review</li>
+            <li class="{% if progress_track == 'Reviewed' %}active{% endif %}">Reviewed</li>
+            <li class="{% if progress_track == 'Interview' %}active{% endif %}">Interview</li>
+            <li class="{% if progress_track == 'Outcome' %}active{% endif %}">Outcome</li>
         </ul>
     </div>
 
@@ -37,7 +38,7 @@
             </div>
             <div class="summary-item">
                 <span class="label">Current Status:</span>
-                <span class="status-badge pending">{{ application.status }}</span>
+                <span class="status-badge pending">{{ progress_track }}</span>
             </div>
         </div>
     </div>
