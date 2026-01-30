@@ -27,14 +27,16 @@
         <div class="card">
             <a href="{% url 'eligibility_check' %}" style="text-decoration: none;"><h2 id="eligibility">Eligibility Checker</h2></a>
             <div class="card-body">
+                <form method="GET" action="{% url 'eligibility_check' %}">
                 <table>
                     <tr>
                         <td style="padding-right: 100px;font-size: 18px;">Currently studying:</td>
                         <td style="font-size: 18px;">CGPA</td>
                     </tr>
                     <tr>
+                        
                         <td style="padding-right: 100px;">  
-                            <select id="currentstudy" name="currentstudy">
+                            <select id="currentstudy" name="study_level">
                                 <option value="Foundation">Foundation</option>
                                 <option value="Diploma">Diploma</option>
                                 <option value="Degree">Degree</option>
@@ -42,7 +44,7 @@
                             </select>
                         </td>
                         <td> 
-                            <select id="cgpa" name="cgpa">
+                            <select id="cgpa" name="gpa">
                                 <option value="2.00">≤ 2.00</option>
                                 <option value="2.01">2.01 - 2.99</option>
                                 <option value="3.00">3.00 - 3.49</option>
@@ -56,7 +58,8 @@
                         </td>
                     </tr>
                 </table>
-                <a href="{% url 'eligibility_check' %}"><button class="btn-match">Match</button></a>
+                <a href="{% url 'eligibility_check' %}"><button class="btn-match" type="submit">Match</button></a>
+            </form>
             </div>
         </div>
 

@@ -1,6 +1,7 @@
 # forms.py
 from django import forms
 from .models import Application, Guardian
+from committee.models import Scholarship
 from datetime import date
 
 # class ApplicationForm(forms.ModelForm):
