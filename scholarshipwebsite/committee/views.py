@@ -86,7 +86,11 @@ def edit(response):
     return render(response, "committee/editScholarship.html", {})
 
 def reviewApprove(request):
-    applications = Application.objects.filter(reviewer_status = 'Reviewed', assigned_committee_member=request.user).order_by('submitted_date')
+    if request.user.is_authenticated:
+        applications = Application.objects.filter(reviewer_status = 'Reviewed', assigned_committee_member=request.user).order_by('submitted_date')
+    else:
+        # Fallback for anonymous access (local dev)
+        applications = Application.objects.filter(reviewer_status = 'Reviewed').order_by('submitted_date')
 
     for app in applications:
         # Determine display status based on session or DB
@@ -127,9 +131,19 @@ def schedule_interview(request, id):
         date = request.POST.get('date')
         interview_time = request.POST.get('interview_time')
         timezone = request.POST.get('timezone')
+
+        # Check if the time slot is already taken by another application
+        conflict = Interview.objects.filter(date=date, interview_time=interview_time).exclude(application=application).exists()
         
-        
-        interview, created = Interview.objects.get_or_create(
+        if conflict:
+            messages.error(request, f"The time slot {interview_time} on {date} is already taken. Please choose another time.")
+            return render(request, "committee/schedule_interview.html", {
+                'application': application,
+                'existing_interview': existing_interview,
+                'is_scheduled': existing_interview is not None
+            })
+
+        interview, created = Interview.objects.update_or_create(
             application=application,
             defaults={
                 'date': date,
@@ -137,11 +151,6 @@ def schedule_interview(request, id):
                 'timezone': timezone,
             }
         )
-        if not created:
-            
-            interview.date = date
-            interview.interview_time = interview_time
-            interview.timezone = timezone
         
         if request.user.is_authenticated:
             interview.committee = request.user
