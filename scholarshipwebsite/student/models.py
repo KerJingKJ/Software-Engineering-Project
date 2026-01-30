@@ -165,6 +165,21 @@ class Application(models.Model):
     ea_form = models.FileField(upload_to='ea_forms/',null=True, blank=True)
     payslip = models.FileField(upload_to='payslips/',null=True, blank=True)
 
+    assigned_reviewer = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='assigned_reviews'
+    )
+    assigned_committee_member = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='assigned_committee_tasks'
+    )
+
     class Meta:
         db_table = 'student_application'
 

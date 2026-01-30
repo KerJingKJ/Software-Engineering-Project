@@ -28,7 +28,7 @@ def index(request):
     return render(request, "reviewer/reviewer.html", context)
 
 def review_list(request):
-    applications = Application.objects.all().order_by('submitted_date')
+    applications = Application.objects.filter(assigned_reviewer = request.user).order_by('submitted_date')
     
     for app in applications:
         # Determine display status based on session or DB

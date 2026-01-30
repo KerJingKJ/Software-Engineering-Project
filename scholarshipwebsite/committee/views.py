@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import ScholarshipForm
@@ -84,8 +85,8 @@ def create(response):
 def edit(response):
     return render(response, "committee/editScholarship.html", {})
 
-def reviewApprove(response):
-    applications = Application.objects.filter(reviewer_status = 'Reviewed').order_by('submitted_date')
+def reviewApprove(request):
+    applications = Application.objects.filter(reviewer_status = 'Reviewed', assigned_committee_member=request.user).order_by('submitted_date')
 
     for app in applications:
         # Determine display status based on session or DB
@@ -102,7 +103,7 @@ def reviewApprove(response):
             app.dashboard_status = 'Pending Review'
             app.dashboard_class = 'pending-review'
     
-    return render(response, "committee/reviewApprove.html", {"applications": applications})
+    return render(request, "committee/reviewApprove.html", {"applications": applications})
 
 def view_application_details(request, id):
     application = get_object_or_404(Application, pk=id)
