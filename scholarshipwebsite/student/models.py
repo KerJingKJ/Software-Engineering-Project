@@ -262,3 +262,39 @@ class Bookmark(models.Model):
 
 #     def __str__(self):
 #         return f"Eligibility Check for {self.application.name}"
+
+class Notification(models.Model):
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="notifications"
+    )
+
+    NOTIFICATION_TYPES = [
+        ("Application", "Application"),
+        ("System", "System"),
+        ("Reminder", "Reminder"),
+    ]
+
+    type = models.CharField(
+        max_length=20,
+        choices=NOTIFICATION_TYPES,
+        default="System"
+    )
+
+    message = models.TextField(help_text="Notification message content" )
+    is_read = models.BooleanField(default=False)
+    display_at = models.DateTimeField(
+        default=timezone.now,  # default to current datetime
+        help_text="Date the notification should be displayed" 
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,  # Auto-set to current datetime
+        help_text="Date when the notification was created" 
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.get_type_display()} for {self.student} - {self.created_at}"

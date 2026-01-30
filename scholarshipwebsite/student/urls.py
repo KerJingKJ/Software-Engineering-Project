@@ -20,4 +20,6 @@ urlpatterns = [
 
     path("scholarships/apply", views.application_form, name="applicationForm"), # create path
     path("application/<int:id>/edit/<int:page>", views.edit_application_form, name="edit_application_form"), #edit path
+
+    path("notifications/", views.notifications, name="notifications"), #edit path
 ]

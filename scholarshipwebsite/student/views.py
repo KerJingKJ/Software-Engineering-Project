@@ -319,3 +319,7 @@ def applicationList(request):
     return render(request, "student/applicationList.html", {"applications":applications})
 
 # Create your views here.
+
+
+def notifications (request):
+    return render(request, "student/notifications.html", {"":""})
