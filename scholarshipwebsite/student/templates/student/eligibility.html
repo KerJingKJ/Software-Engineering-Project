@@ -34,9 +34,9 @@
             {% for scholarship in eligible_scholarships %}
             <div class="scholarship-card">
                 <div class="card-body">
-                    <h4>{{ scholarship.name }}</h4>
+                    <h4 style="margin: 0; margin-top: -5px;">{{ scholarship.name }}</h4>
                     <p class="provider">{{ scholarship.provider }}</p>
-                    <div class="card-tags">
+                    <div class="card-tags" style="margin-top: 10px; margin-left: 5px;">
                         <span>{{ scholarship.education_level }}</span>
                         <span>Min GPA: {{ scholarship.min_gpa }}</span>
                     </div>

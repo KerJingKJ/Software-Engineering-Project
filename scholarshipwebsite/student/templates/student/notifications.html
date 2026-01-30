@@ -1,5 +1,36 @@
 {% extends 'student/base.html' %}
+{% load static %}
 
 {% block content %}
-notifications
+<div class="eligibility-container"> <div class="header-flex">
+        <h1 class="page-title">Notifications</h1>
+        {% if notifications %}
+        <a href="{% url 'mark_all_read' %}" class="btn-mark-read">Mark all as read</a>
+        {% endif %}
+    </div>
+
+    <div class="notification-list">
+        {% for note in notifications %}
+        <div class="notification-card {% if not note.is_read %}unread{% endif %}">
+            <div class="notif-icon">
+                {% if not note.is_read %}
+                <span class="dot"></span>
+                {% else %}
+                <span class="read-icon">✓</span>
+                {% endif %}
+            </div>
+            <div class="notif-content">
+                <p class="notif-message">{{ note.message }}</p>
+                <span class="notif-time">{{ note.created_at|date:"F d, Y • h:i A" }}</span>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <img src="{% static 'student/img/no-notif.png' %}" alt="" style="width: 80px; opacity: 0.5; margin-bottom: 15px;">
+            <p>You have no notifications at the moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
 {% endblock %}
