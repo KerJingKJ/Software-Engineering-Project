@@ -34,8 +34,6 @@ def index(request):
 
                     if not user.is_staff and not UserSecurityQuestion.objects.filter(user=user).exists():
                         return redirect('securityquestion')
-
-                    
                     
                     email_domain = user.email.split('@')[-1]
                     
@@ -49,7 +47,7 @@ def index(request):
                     elif 'committee.mmu.edu.my' in email_domain:
                         return redirect('committee')
                     else:
-                        return redirect('committee') 
+                        return redirect('student') 
                 else:
                     messages.error(request, "Wrong password! Try again")
     else:

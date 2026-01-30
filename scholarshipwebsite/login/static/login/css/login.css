@@ -57,6 +57,23 @@ h2 {
     margin-bottom: 20px;
 }
 
+
+.errorform{
+    color: #EC1C24; 
+    margin-bottom: 10px; 
+    font-size: 0.9em;
+    text-decoration: none;
+    text-align: center;
+}
+
+.errorform li{
+    color: #EC1C24; 
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+}
+
 .button {
     background-color: #034EA1;
     color: white;

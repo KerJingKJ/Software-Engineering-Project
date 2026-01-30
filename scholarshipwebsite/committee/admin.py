@@ -19,9 +19,9 @@ class ScholarshipAdmin(admin.ModelAdmin):
 def application_dashboard_view(request, extra_context=None):
     # Gather metrics
     total_apps = Application.objects.count()
-    approved = Application.objects.filter(status='Approved').count()
-    rejected = Application.objects.filter(status='Rejected').count()
-    pending = Application.objects.exclude(status__in=['Approved', 'Rejected']).count()
+    approved = Application.objects.filter(committee_status='Approved').count()
+    rejected = Application.objects.filter(committee_status='Rejected').count()
+    pending = Application.objects.exclude(committee_status__in=['Approved', 'Rejected']).count()
 
     extra_context = extra_context or {}
     extra_context.update({
