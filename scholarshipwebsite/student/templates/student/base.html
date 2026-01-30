@@ -15,6 +15,30 @@
         </li>
     </ul> 
     <ul class="nav-right">
+        <li class="notif-container">
+            <img src="{% static 'student/img/notifications.png' %}" href="javascript:void(0)" class="notif-bell" onclick="toggleNotif()" width="30" height="30" style="margin-right:-13px;"/>
+                {% if unread_count > 0 %}
+                <span class="notif-badge">{{ unread_count }}</span>
+                {% endif %}
+            </a>
+            
+            <div id="notifDropdown" class="notif-content">
+                <div class="notif-header">
+                    <span>Notifications</span>
+                    <a href="{% url 'mark_all_read' %}" class="mark-read">Mark read</a>
+                </div>
+                <div class="notif-list">
+                    {% for note in notifications|slice:":5" %}
+                    <div class="notif-item {% if not note.is_read %}unread{% endif %}">
+                        <p>{{ note.message }}</p>
+                        <small>{{ note.created_at|date:"M d, P" }}</small>
+                    </div>
+                    {% empty %}
+                    <div class="notif-item">No new notifications</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </li>
         <li><a href="#"><img src="{% static 'student/img/usericon.png' %}" alt="User" class="user-icon"/></a></li>
         <li><div class="dropdown">
             <div class="bar1"></div>
@@ -23,15 +47,37 @@
 
             <div class="content">
                 <a href = "{% url 'student' %}">Dashboard</a>
-                <a href = "{% url 'applicationList' %}">Track Application</a>
-                <a href = "{% url 'review' %}">Notification</a>
+                <a href = "{% url 'trackApplication' %}">Track Application</a>
+                <a href="{% url 'notification_list' %}">Notification {% if unread_count > 0 %}({{ unread_count }}){% endif %}</a>
                 <a href = "{% url 'bookmark_list' %}">Bookmark</a>
                 <a href = "{% url 'login' %}">Logout</a>
             </div>
         </div></li>  
     </ul> 
-    </nav>
+</nav>
+<script>
+function toggleNotif() {
+    var dropdown = document.getElementById("notifDropdown");
+    if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+    } else {
+        dropdown.style.display = "block";
+    }
+}
 
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.notif-bell') && !event.target.matches('.notif-badge')) {
+        var dropdowns = document.getElementsByClassName("notif-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.display === "block") {
+                openDropdown.style.display = "none";
+            }
+        }
+    }
+}
+</script>
     {% block content %}
     {% endblock %}
     

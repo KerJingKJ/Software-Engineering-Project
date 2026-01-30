@@ -1,0 +1,52 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="track-application-container">
+    <h1>Track Application</h1>
+    <h2 class="section-title">Your Application</h2>
+
+    {% if applications %}
+    <table class="application-table">
+        <thead>
+            <tr>
+                <th style="text-align: center;">No.</th> <th>Scholarship Applied</th>
+                <th>Date Applied</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th> </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>
+                    <div class="row-number">{{ forloop.counter }}</div>
+                </td>
+                <td>
+                    <div class="scholarship-name" title="{{ app.scholarship.name }}">
+                        {{ app.scholarship.name }}
+                    </div>
+                </td>
+                <td>
+                    <div class="date-applied">{{ app.submitted_date|date:"d-m-Y" }}</div>
+                </td>
+                <td>
+                    <span class="status-badge-table {{ app.committee_status|lower }}">
+                        {{ app.committee_status }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{% url 'application_detail' app.id %}" class="view-details-link">View Details</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state-table">
+        <p>You haven't applied for any scholarships yet.</p>
+        <a href="{% url 'scholarship_list' %}" class="btn-check">Browse Scholarships</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

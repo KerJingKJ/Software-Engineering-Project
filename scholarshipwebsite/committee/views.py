@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import ScholarshipForm
 from .models import Scholarship, Interview, ApprovedApplication
-from student.models import Application, Guardian
+from student.models import Application, Guardian, Notification
 from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
 
 from django.views.decorators.csrf import csrf_exempt
@@ -182,6 +182,11 @@ def decision_page(request, id):
             application.committee_status = 'Approved'
             application.save()
             
+            Notification.objects.create(
+                student=application.student,
+                message=f"Congratulations! Your application for {application.scholarship.name} has been APPROVED."
+            )
+            
             if interview:
                 ApprovedApplication.objects.update_or_create(
                     original_application=application,
@@ -202,7 +207,12 @@ def decision_page(request, id):
         elif decision == 'Rejected':
             application.committee_status = 'Rejected'
             application.save()
-
+            
+            Notification.objects.create(
+                student=application.student,
+                message=f"Update on your application: Your application for {application.scholarship.name} was REJECTED."
+            )
+            
             ApprovedApplication.objects.filter(original_application=application).delete()
 
             # Interview.objects.filter(application=application).delete() # Keep interview record but set status

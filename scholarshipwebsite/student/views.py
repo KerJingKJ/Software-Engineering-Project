@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from .models import Application, Student, Guardian, Bookmark
 from committee.models import Scholarship, Interview
 from .forms import ApplicationForm, GuardianForm
+from datetime import date
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 # Create your views here.
@@ -13,6 +14,42 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     return render(request, "student/student.html", {})
 
+@login_required
+def mark_all_read(request):
+    try:
+        student = request.user.student
+        student.notifications.filter(is_read=False).update(is_read=True)
+    except Student.DoesNotExist:
+        pass
+    return redirect(request.META.get('HTTP_REFERER', 'student'))
+
+from django.utils import timezone
+
+@login_required
+def notification_list(request):
+    # --- MOCK DATA (Frontend Only) ---
+    notifications = [
+        {
+            'message': 'Congratulations! Your application for Merit Scholarship 2026 has been APPROVED.',
+            'created_at': timezone.now(),
+            'is_read': False
+        },
+        {
+            'message': 'Update: Your application for Future Leaders Award was REJECTED.',
+            'created_at': timezone.now(),
+            'is_read': True
+        },
+        {
+            'message': 'Welcome to the Scholarship Portal! Please complete your profile.',
+            'created_at': timezone.now(),
+            'is_read': True
+        }
+    ]
+
+    return render(request, 'student/notifications.html', {
+        'notifications': notifications
+    })
+    
 def scholarship_list(request):
     # Fetch all scholarships from the database
     scholarships = Scholarship.objects.all()
@@ -313,9 +350,79 @@ def guardian_form(request, id=-1, page=-1):
 #     return render(request, "student/applicationForm_p4.html", {})
 
 
-def applicationList(request):
-    student = request.user.student
-    applications = student.applications.all()
-    return render(request, "student/applicationList.html", {"applications":applications})
+@login_required
+def trackApplication(request):
+    # --- MOCK DATA (Frontend Only) ---
+    # We create a fake list of applications to test the UI.
+    applications = [
+        {
+            'id': 1,
+            'scholarship': {'name': 'Merit Scholarship 2026'}, # Nested dict to mimic app.scholarship.name
+            'submitted_date': date(2026, 1, 15),
+            'status': 'Pending',
+            'committee_status': 'Pending',
+        },
+        {
+            'id': 2,
+            'scholarship': {'name': 'Future Leaders Award'},
+            'submitted_date': date(2025, 12, 10),
+            'status': 'Rejected',
+            'committee_status': 'Rejected',
+        },
+        {
+            'id': 3,
+            'scholarship': {'name': 'MMU Foundation Aid'},
+            'submitted_date': date(2025, 11, 5),
+            'status': 'Approved',
+            'committee_status': 'Approved',
+        }
+    ]
 
+    return render(request, "student/trackApplication.html", {
+        'applications': applications
+    })
+
+@login_required
+def application_detail(request, application_id):
+    # --- MOCK DATA FOR A SINGLE APPLICATION ---
+    # This simulates what a real application object would look like
+    application = {
+        'id': application_id,
+        'scholarship': {'name': 'Merit Scholarship 2026'},
+        'submitted_date': date(2026, 1, 15),
+        'status': 'Pending',
+        'committee_status': 'Pending',
+        'name': 'Ali Bin Abu',
+        'ic_no': '010101-10-1234',
+        'email_address': 'ali@student.mmu.edu.my',
+        'contact_number': '012-3456789',
+        'date_of_birth': date(2003, 5, 20),
+        'age': 23,
+        'gender': 'Male',
+        'nationality': 'Malaysian',
+        'race': 'Malay',
+        'home_address': '123 Jalan Multimedia, Cyberjaya',
+        'correspondence_address': '123 Jalan Multimedia, Cyberjaya',
+        'programme': 'Bachelor of Computer Science',
+        'intake': date(2023, 3, 1),
+        'education_level': 'Undergraduate',
+        'monthly_income': '3500.00',
+        'reason_deserve': 'I have maintained a 4.0 GPA while volunteering...',
+        'personal_achievement': 'Dean List 2024, Hackathon Winner',
+    }
+
+    # Mock Guardians
+    guardians = [
+        {
+            'name': 'Abu Bakar',
+            'relationship': 'Father',
+            'contact_number': '019-8765432',
+            'email_address': 'abu@email.com'
+        }
+    ]
+
+    return render(request, 'student/application_detail.html', {
+        'application': application,
+        'guardians': guardians
+    })
 # Create your views here.

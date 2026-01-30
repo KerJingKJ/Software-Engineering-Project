@@ -1,0 +1,160 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="track-application-container" style="max-width: 900px; margin: 40px auto;">
+    
+    <a href="{% url 'trackApplication' %}" style="text-decoration: none; color: #666; display: flex; align-items: center; margin-bottom: 20px;">
+        ← Back to My Applications
+    </a>
+
+    <div class="checker-card">
+        <div class="header-section" style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+            <h1 style="margin: 0; color: #2c3e50;">{{ application.scholarship.name }}</h1>
+            <p style="color: #888; margin: 5px 0;">Submitted on: {{ application.submitted_date }}</p>
+            <span class="status-badge-table {{ application.committee_status|lower }}">{{ application.committee_status }}</span>
+        </div>
+
+        <h3 class="section-heading">Personal Information</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Full Name</label>
+                <p>{{ application.name }}</p>
+            </div>
+            <div class="detail-item">
+                <label>IC Number</label>
+                <p>{{ application.ic_no }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Email</label>
+                <p>{{ application.email_address }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Contact Number</label>
+                <p>{{ application.contact_number }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Date of Birth</label>
+                <p>{{ application.date_of_birth }} (Age: {{ application.age }})</p>
+            </div>
+            <div class="detail-item">
+                <label>Gender</label>
+                <p>{{ application.gender }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Nationality</label>
+                <p>{{ application.nationality }}</p>
+            </div>
+             <div class="detail-item">
+                <label>Race</label>
+                <p>{{ application.race }}</p>
+            </div>
+        </div>
+        
+        <div class="detail-item" style="margin-top: 15px;">
+             <label>Home Address</label>
+             <p>{{ application.home_address }}</p>
+        </div>
+         <div class="detail-item" style="margin-top: 15px;">
+             <label>Correspondence Address</label>
+             <p>{{ application.correspondence_address }}</p>
+        </div>
+
+        <hr>
+
+        <h3 class="section-heading">Academic Information</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Programme</label>
+                <p>{{ application.programme }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Intake Date</label>
+                <p>{{ application.intake }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Education Level</label>
+                <p>{{ application.education_level }}</p>
+            </div>
+             <div class="detail-item">
+                <label>Monthly Income</label>
+                <p>RM {{ application.monthly_income }}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        {% if guardians %}
+        <h3 class="section-heading">Guardian / Parents</h3>
+        {% for guardian in guardians %}
+        <div class="guardian-box" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+            <p><strong>{{ guardian.name }}</strong> ({{ guardian.relationship }})</p>
+            <p style="font-size: 0.9rem; color: #666; margin: 0;">{{ guardian.contact_number }} | {{ guardian.email_address }}</p>
+        </div>
+        {% endfor %}
+        <hr>
+        {% endif %}
+
+        <h3 class="section-heading">Documents & Essays</h3>
+        
+        <div class="detail-item">
+            <label>Why do you deserve this scholarship?</label>
+            <p style="background: #f9f9f9; padding: 10px; border-radius: 5px; font-size: 0.95rem;">{{ application.reason_deserve }}</p>
+        </div>
+        
+        <div class="detail-item">
+            <label>Personal Achievements</label>
+            <p style="background: #f9f9f9; padding: 10px; border-radius: 5px; font-size: 0.95rem;">{{ application.personal_achievement }}</p>
+        </div>
+
+        <div class="documents-list" style="margin-top: 20px;">
+            <label>Uploaded Documents:</label>
+            <ul style="list-style: none; padding: 0;">
+                {% if application.passport_photo %}
+                <li> <a href="{{ application.passport_photo.url }}" target="_blank">Passport Photo</a></li>
+                {% endif %}
+                {% if application.academic_result %}
+                <li><a href="{{ application.academic_result.url }}" target="_blank">Academic Results</a></li>
+                {% endif %}
+                {% if application.supporting_document %}
+                <li> <a href="{{ application.supporting_document.url }}" target="_blank">Supporting Documents</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Internal styles for just this page to keep detail grid neat */
+    .section-heading {
+        color: #007bff;
+        font-size: 1.1rem;
+        margin-top: 20px;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 2 Columns */
+        gap: 15px;
+    }
+    .detail-item label {
+        display: block;
+        font-weight: 600;
+        color: #888;
+        font-size: 0.85rem;
+        margin-bottom: 3px;
+    }
+    .detail-item p {
+        margin: 0;
+        color: #333;
+        font-size: 1rem;
+    }
+    /* Mobile responsive: 1 column */
+    @media (max-width: 600px) {
+        .detail-grid { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
