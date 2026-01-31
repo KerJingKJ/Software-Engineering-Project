@@ -43,44 +43,25 @@
     {% endif %}
 
     {% if is_student %}
-    <a href="{% url 'student_update_profile' %}">Update Profile</a>
+    <a href="{% url 'student_update_profile' %}"
+     class="{% if request.resolver_match.url_name == 'student_update_profile' %}active{% endif %}"
+    >Update Profile</a>
     {% endif %}
         
     </div>
 
-
     <div class="settings-container">
-        <h2>Change Your Password</h2>
-        <div id="change-form">
+        <h2>Update Your Profile</h2>
+            <div id="change-form">
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <div id="button-group">
-
-                {% if '/reviewer/' in request.path %}
                     <button type="submit" class="button">Save Changes</button>
-                
-                {% elif '/committee/' in request.path %}
-                    <button type="submit" class="button">Save Changes</button>
-
-                {% else %}
-                    <button type="submit" class="button">Save Changes</button>
-                {% endif %}
-
-                
-                
-                {% if '/reviewer/' in request.path %}
-                    <a href="{% url 'reviewer' %}" class="button-2">Cancel</a>
-                
-                {% elif '/committee/' in request.path %}
-                    <a href="{% url 'committee' %}" class="button-2">Cancel</a>
-
-                {% else %}
-                    <a href="{% url 'student' %}" class="button-2">Cancel</a>
-                {% endif %}
+                    <button type="submit" name="cancel" class="button-2">Cancel</button>
                 </div>
             </form>
-        </div>
+            </div>
     </div>
 </div>
 
