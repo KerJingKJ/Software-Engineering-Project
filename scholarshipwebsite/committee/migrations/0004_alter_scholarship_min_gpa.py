@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('committee', '0003_committeenotification'),
+        ('committee', '0003_rename_criteria_scholarship_notes_and_more'),
     ]
 
     operations = [
