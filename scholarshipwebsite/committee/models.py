@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 # from student.models import Application, Guardian
 
 class Scholarship(models.Model):
@@ -25,7 +26,11 @@ class Scholarship(models.Model):
             ('Local', 'Local')
         ]
     )
-    min_gpa = models.DecimalField(max_digits=3, decimal_places=2, default=3.0)
+    min_gpa = models.DecimalField(max_digits=3, decimal_places=2, default=3.0,
+                                  validators=[
+        MinValueValidator(0.0),
+        MaxValueValidator(4.0)
+    ])
     notes = models.TextField()
     deadline = models.DateField()
 
@@ -220,7 +225,7 @@ class Interview(models.Model):
     interview_time = models.CharField(max_length=20, default='12:00 PM')  # e.g., "9:00 AM", "10:00 AM"
     timezone = models.CharField(max_length=50)
     # from what i understand, committee would be the ones conducting the interview
-    location = models.CharField(max_length=255, null=True, blank=True)
+    location = models.CharField(max_length=255,default="MMU" )
     remarks = models.TextField(null=True, blank=True)
     committee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
