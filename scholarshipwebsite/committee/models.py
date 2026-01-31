@@ -27,7 +27,7 @@ class Scholarship(models.Model):
         ]
     )
     min_gpa = models.DecimalField(max_digits=3, decimal_places=2, default=3.0)
-    criteria = models.TextField()
+    notes = models.TextField()
     deadline = models.DateField()
 
     # def student_type(self):
@@ -43,7 +43,18 @@ class Scholarship(models.Model):
     def __str__(self):
         return self.name
 
+class ScholarshipCriteria(models.Model):
+    scholarship = models.ForeignKey(
+        Scholarship, 
+        on_delete=models.CASCADE, 
+        related_name='criteria_list'
+    )
+    qualification = models.CharField(max_length=100, help_text="e.g. SPM, STPM, UEC, Foundation")
+    requirement = models.CharField(max_length=200, help_text="e.g. 9As, CGPA 3.50")
+    entitlement = models.CharField(max_length=200, help_text="e.g. 100% Tuition Fee Waiver")
 
+    def __str__(self):
+        return f"{self.qualification} - {self.scholarship.name}"
 # class Interview(models.Model):
 #     application = models.ForeignKey('studet.Application', on_delete=models.CASCADE, related_name='interviews')
 #     date = models.DateField()

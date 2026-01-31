@@ -1,7 +1,7 @@
 from urllib import request
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .forms import ScholarshipForm
+from .forms import ScholarshipForm, CriteriaFormSet
 from .models import Scholarship, Interview, ApprovedApplication
 from student.models import Application, Guardian, Notification
 from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
@@ -29,26 +29,39 @@ from student.models import Student, Application, Guardian
 def create_scholarship(request):
     if request.method == "POST":
         form = ScholarshipForm(request.POST)
-        if form.is_valid():
-            form.save()
+        formset = CriteriaFormSet(request.POST)
+        if form.is_valid() and formset.is_valid():
+            scholarship = form.save()           # Save parent first
+            formset.instance = scholarship      # Link formset to the new scholarship
+            formset.save()                      # Save children (criteria)
             return redirect("manage")
     else:
         form = ScholarshipForm()
+        formset = CriteriaFormSet()             # Empty formset
     
-    return render(request, "committee/create_scholarship.html", {'form': form})
+    return render(request, "committee/create_scholarship.html", {
+        'form': form, 
+        'formset': formset 
+    })
 
 @csrf_exempt
 def edit_scholarship(request, id):
     scholarship = get_object_or_404(Scholarship, pk=id)
     if request.method == "POST":
         form = ScholarshipForm(request.POST, instance=scholarship)
-        if form.is_valid():
+        formset = CriteriaFormSet(request.POST, instance=scholarship)
+        if form.is_valid()and formset.is_valid():
             form.save()
+            formset.save()
             return redirect("manage")
     else:
         form = ScholarshipForm(instance=scholarship)
+        formset = CriteriaFormSet(instance=scholarship) # Load existing data
     
-    return render(request, "committee/create_scholarship.html", {'form': form})
+    return render(request, "committee/create_scholarship.html", {
+        'form': form, 
+        'formset': formset 
+    })
 
 @csrf_exempt
 def delete_scholarship(request, id):
