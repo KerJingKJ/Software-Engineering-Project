@@ -1,10 +1,11 @@
 from django.contrib import admin
-from .models import Student, Application, Bookmark
+from .models import Student, Application, Bookmark, Notification
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 admin.site.register(Student)
+admin.site.register(Notification) # temp create notifs for display
 
 @admin.register(Application)
 class ApplicationAssignment(admin.ModelAdmin):

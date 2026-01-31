@@ -18,7 +18,7 @@ def index(request):
 def mark_all_read(request):
     try:
         student = request.user.student
-        student.notifications.filter(is_read=False).update(is_read=True)
+        student.notifications.filter(is_read=False, display_at__lte=timezone.now()).update(is_read=True)
     except Student.DoesNotExist:
         pass
     return redirect(request.META.get('HTTP_REFERER', 'student'))
@@ -27,24 +27,7 @@ from django.utils import timezone
 
 @login_required
 def notification_list(request):
-    # --- MOCK DATA (Frontend Only) ---
-    notifications = [
-        {
-            'message': 'Congratulations! Your application for Merit Scholarship 2026 has been APPROVED.',
-            'created_at': timezone.now(),
-            'is_read': False
-        },
-        {
-            'message': 'Update: Your application for Future Leaders Award was REJECTED.',
-            'created_at': timezone.now(),
-            'is_read': True
-        },
-        {
-            'message': 'Welcome to the Scholarship Portal! Please complete your profile.',
-            'created_at': timezone.now(),
-            'is_read': True
-        }
-    ]
+    notifications = (request.user.student.notifications.filter(display_at__lte=timezone.now()))
 
     return render(request, 'student/notifications.html', {
         'notifications': notifications
@@ -287,6 +270,3 @@ def application_detail(request, id):
         'application': application,
         'guardians': guardians
     })
-
-def notifications (request):
-    return render(request, "student/notifications.html", {"":""})
