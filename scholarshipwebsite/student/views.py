@@ -59,7 +59,6 @@ def applicationStatus(request, id):
             progress_track = "Interview"
         else:
             progress_track = "Reviewed"
-    print(progress_track)
 
     return render(request, "student/applicationStatus.html", {'application':application, 'progress_track':progress_track})
 
@@ -266,7 +265,63 @@ def applications(request):
 def application_detail(request, id):
     application = get_object_or_404(Application, pk=id)
     guardians = [application.guardian1, application.guardian2]
+    interview = (
+        Interview.objects
+        .filter(application=application)
+        .order_by('-updated_at')
+        .first())
+
+    progress_track = "Pending"
+    if application.reviewer_status== "Rejected" or application.committee_status== "Rejected":
+        progress_track = "Rejected"
+    elif application.committee_status== "Approved":
+        progress_track = "Approved"
+    elif application.reviewer_status == "Pending":
+        progress_track = "Under Review"
+    elif application.reviewer_status == "Reviewed" and application.committee_status == "Pending":
+        if interview:
+            progress_track = "Interview"
+        else:
+            progress_track = "Reviewed"
+
     return render(request, 'student/applicationDetails.html', {
         'application': application,
-        'guardians': guardians
+        'guardians': guardians,
+        'interview':interview,
+        'progress_track':progress_track
     })
+
+
+def reschedule_interview(request, id):
+    application = get_object_or_404(Application, pk=id)
+    interview = get_object_or_404(Interview, application=application)
+    
+    if request.method == "POST":
+        date = request.POST.get('date')
+        interview_time = request.POST.get('interview_time')
+        timezone = request.POST.get('timezone')
+
+        # Check if the time slot is already taken by another application
+        conflict = Interview.objects.filter(date=date, interview_time=interview_time).exclude(application=application).exists()
+        
+        if conflict:
+            messages.error(request, f"The time slot {interview_time} on {date} is already taken. Please choose another time.")
+            return redirect('application_detail', id=id)
+
+        interview, created = Interview.objects.update_or_create(
+            application=application,
+            defaults={
+                'date': date,
+                'interview_time': interview_time,
+                'timezone': timezone,
+            }
+        )
+        interview.save()
+        
+        return redirect('application_detail', id=id)
+
+    return render(request, "student/reschedule_interview.html", {
+        'application': application,
+        'existing_interview': interview,
+        'is_scheduled': interview is not None
+        })

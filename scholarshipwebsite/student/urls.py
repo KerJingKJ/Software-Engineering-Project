@@ -22,6 +22,7 @@ urlpatterns = [
     path("applications/", views.applications, name="applications"), # view all applications in one page
     
     path('application/<int:id>/', views.application_detail, name='application_detail'), # view application's data
+    path('application/<int:id>/reschedule_interview/', views.reschedule_interview, name='reschedule_interview'), # reschedule interview
     path("application/<int:id>/edit/<int:page>", views.edit_application_form, name="edit_application_form"), #edit path
     path("application/<int:id>/status/", views.applicationStatus, name="applicationStatus"), # detailed look into application's status
 ]

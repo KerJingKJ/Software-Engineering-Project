@@ -214,6 +214,8 @@ class Interview(models.Model):
     remarks = models.TextField(null=True, blank=True)
     committee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
         return f"Interview for {self.application.name} on {self.date} at {self.interview_time}"
 

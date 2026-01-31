@@ -12,8 +12,38 @@
         <div class="header-section" style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
             <h1 style="margin: 0; color: #2c3e50;">{{ application.scholarship.name }}</h1>
             <p style="color: #888; margin: 5px 0;">Submitted on: {{ application.submitted_date }}</p>
-            <span class="status-badge-table  {{ application.committee_status|lower }}">{{ application.committee_status }}</span>
+            <span class="status-badge-table  
+                            {% if progress_track == 'Rejected' %}rejected
+                            {% elif progress_track == 'Approved' %}approved
+                            {% else %}pending
+                            {% endif %}
+            ">{{ progress_track }}</span>
         </div>
+
+        {% if application.reviewer_status == "Reviewed" and application.committee_status != "Rejected" %}
+            <h3 class="section-heading">Interview Details</h3>
+            {% if interview %}
+                <div style="display:flex; justify-content: space-between; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                <div>
+                    <p><strong>Date:</strong> {{ interview.date }}</p>
+                    <p><strong>Time:</strong> {{ interview.interview_time }}</p>
+                    <p><strong>Timezone:</strong> {{ interview.timezone }}</p>
+                    {% if interview.location %}
+                    <p><strong>Location:</strong> {{ interview.location }}</p>
+                    {% endif %}
+                    {% if interview.remarks %}
+                    <p><strong>Remarks:</strong> {{ interview.remarks }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <a href="{% url 'reschedule_interview' application.id %}" class="">Reschedule Interview</a>
+                </div>
+                </div>
+            {% else %}
+                <p style="color: #888; font-style: italic;">No interview scheduled yet.</p>
+            {% endif %}
+            <hr>
+        {% endif %}
 
         <h3 class="section-heading">Personal Information</h3>
         <div class="detail-grid">
@@ -121,7 +151,6 @@
                 {% endif %}
             </ul>
         </div>
-
     </div>
 </div>
 
