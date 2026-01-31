@@ -20,7 +20,7 @@
                 {% endif %}
             </div>
             <div class="">
-                <p class="notif-message">{{ note.message }}</p>
+                <p class="notif-message">{{ note.message|safe }}</p>
                 <span class="notif-time">{{ note.created_at|date:"F d, Y • h:i A" }}</span>
             </div>
         </div>

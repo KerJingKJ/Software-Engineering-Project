@@ -40,6 +40,8 @@ def application_status_changed(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Interview)
 def interview_notification(sender, instance, created, **kwargs):
+    if getattr(instance, 'skip_signal', False):
+        return
     if created:
         Notification.objects.create(
             student=instance.application.student,
@@ -52,7 +54,10 @@ def interview_notification(sender, instance, created, **kwargs):
         )
     else:
         # Interview updated
-        previous = Interview.objects.get(pk=instance.pk)
+        try:
+            previous = Interview.objects.get(pk=instance.pk)
+        except Interview.DoesNotExist:
+            return
         fields_changed = []
 
         if previous.date != instance.date:
