@@ -181,6 +181,14 @@
     background: #1e3d6f;
 }
 
+.submit-warn {
+    color: red;
+    margin: 0 auto 0;
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+}
+
 /* Hidden input */
 .hidden-input {
     display: none;
