@@ -9,7 +9,7 @@ from django.contrib.auth import logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
-
+from django.urls import reverse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
@@ -210,14 +210,24 @@ def logout_view(request):
 
 def get_dashboard_redirect(user):
     
-    if hasattr(user, 'student'): 
-        return 'student_dashboard' 
-    elif user.groups.filter(name='Reviewer').exists() or 'reviewer' in user.username:
-        return 'reviewer' 
-    return 'committee' 
+    email_domain = user.email.split('@')[-1]
+
+    if email_domain == 'admin.mmu.edu.my':
+        return '/admin/'  # Admin is usually hardcoded
+    elif email_domain == 'reviewer.mmu.edu.my':
+        return reverse('reviewer')
+    elif email_domain == 'committee.mmu.edu.my':
+        return reverse('committee')
+    else:
+        return reverse('student')  # default fallback
+
+
 
 @login_required(login_url='login')
 def change_password(request):
+    email_domain = request.user.email.split('@')[-1]
+    is_student = email_domain == 'student.mmu.edu.my'
+
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -243,11 +253,16 @@ def change_password(request):
 
     return render(request, 'login/change_password.html', {
         'form': form,
-        'base_template': base_template
+        'base_template': base_template,
+        'is_student': is_student
     })
 
 @login_required(login_url='login')
 def update_security_questions(request):
+
+    email_domain = request.user.email.split('@')[-1]
+    is_student = email_domain == 'student.mmu.edu.my'
+
     try:
         instance = request.user.security_questions
     except UserSecurityQuestion.DoesNotExist:
@@ -278,5 +293,44 @@ def update_security_questions(request):
 
     return render(request, "login/change_securityquestion.html", {
         'form': form,
-        'base_template': base_template
+        'base_template': base_template, 
+        'is_student': is_student
+        })
+
+@login_required(login_url='login')
+def update_profile(request):
+    email_domain = request.user.email.split('@')[-1]
+    is_student = email_domain == 'student.mmu.edu.my'
+
+    try:
+        user_profile = request.user.profile
+    except UserProfile.DoesNotExist:
+        user_profile = UserProfile(user=request.user)
+
+    if request.method == "POST":
+        if 'cancel' in request.POST:
+            return redirect('student')  
+        form = UserProfileForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('student')
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = UserProfileForm(instance=user_profile)
+
+    email_domain = request.user.email.split('@')[-1]
+    
+    if 'student.mmu.edu.my' in email_domain:
+        base_template = 'student/base.html'
+    elif 'reviewer.mmu.edu.my' in email_domain:
+        base_template = 'reviewer/base.html'
+    else:
+        base_template = 'committee/base.html'
+
+    return render(request, "login/update_profile.html", {
+        "form": form, 
+        'base_template': base_template,
+        'is_student': is_student
         })
