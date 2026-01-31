@@ -184,6 +184,15 @@
     .confirm-btn:hover {
         background: #1e3d6f;
     }
+  
+    .submit-warn {
+        color: red;
+        margin: 0 auto 0;
+        width: 100%;
+        max-width: 350px;
+        text-align: center;
+    }
+
 
     /* Hidden input */
     .hidden-input {
@@ -192,7 +201,7 @@
 </style>
 
 <div class="schedule-container">
-    <h1 class="schedule-title">Schedule Interview</h1>
+    <h1 class="schedule-title">Reschedule Interview</h1>
 
     {% if messages %}
     <div class="messages">
@@ -233,8 +242,8 @@
                     <span class="timezone-icon">🌐</span>
                     <span>Time Zone:</span>
                     <select name="timezone" class="timezone-select">
-                        <option value="SST" selected>Singapore Standard Time (SST)</option>
-                        <option value="GMT+8">GMT+8 (Malaysia)</option>
+                        <option value="GMT+8" selected>GMT+8 (Malaysia)</option>
+                        <option value="SST">Singapore Standard Time (SST)</option>
                         <option value="UTC">UTC</option>
                     </select>
                 </div>
@@ -390,5 +399,15 @@
 
     // Initialize calendar
     renderCalendar();
+    document.querySelector(".confirm-btn").addEventListener("click", (ev)=> {
+    const dateValue = document.getElementById('date').value;
+    const timeValue = document.getElementById('interview_time').value;
+
+    if (!dateValue || !timeValue) {
+        event.preventDefault();
+        document.querySelector("#submit-warn").textContent = "Select date, time, and timezone"
+        window.location.hash = "#submit-warn";
+    }
+    })
 </script>
 {% endblock %}

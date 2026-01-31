@@ -185,6 +185,14 @@
         background: #1e3d6f;
     }
 
+    .submit-warn {
+        color: red;
+        margin: 0 auto 0;
+        width: 100%;
+        max-width: 350px;
+        text-align: center;
+    }
+
     /* Hidden input */
     .hidden-input {
         display: none;
@@ -233,8 +241,8 @@
                     <span class="timezone-icon">🌐</span>
                     <span>Time Zone:</span>
                     <select name="timezone" class="timezone-select">
-                        <option value="SST" selected>Singapore Standard Time (SST)</option>
-                        <option value="GMT+8">GMT+8 (Malaysia)</option>
+                        <option value="GMT+8" selected>GMT+8 (Malaysia)</option>
+                        <option value="SST">Singapore Standard Time (SST)</option>
                         <option value="UTC">UTC</option>
                     </select>
                 </div>
@@ -258,8 +266,9 @@
                 <input type="hidden" id="interview_time" name="interview_time" required>
             </div>
         </div>
-
+        
         <button type="submit" class="confirm-btn">Confirm</button>
+        <p class="submit-warn" id="submit-warn"></p>
     </form>
 </div>
 
@@ -319,7 +328,6 @@
 
     function selectDate(year, month, day, element) {
         selectedDate = new Date(year, month, day);
-        console.log(selectedDate)
         // Format for input: YYYY-MM-DD
         const formatted = year + '-' +
             String(month + 1).padStart(2, '0') + '-' +
@@ -390,5 +398,15 @@
 
     // Initialize calendar
     renderCalendar();
+    document.querySelector(".confirm-btn").addEventListener("click", (ev)=> {
+    const dateValue = document.getElementById('date').value;
+    const timeValue = document.getElementById('interview_time').value;
+
+    if (!dateValue || !timeValue) {
+        event.preventDefault();
+        document.querySelector("#submit-warn").textContent = "Select date, time, and timezone"
+        window.location.hash = "#submit-warn";
+    }
+    })
 </script>
 {% endblock %}
