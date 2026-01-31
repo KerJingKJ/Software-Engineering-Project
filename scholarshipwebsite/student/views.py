@@ -18,7 +18,7 @@ def index(request):
 def mark_all_read(request):
     try:
         student = request.user.student
-        student.notifications.filter(is_read=False).update(is_read=True)
+        student.notifications.filter(is_read=False, display_at__lte=timezone.now()).update(is_read=True)
     except Student.DoesNotExist:
         pass
     return redirect(request.META.get('HTTP_REFERER', 'student'))
@@ -27,24 +27,7 @@ from django.utils import timezone
 
 @login_required
 def notification_list(request):
-    # --- MOCK DATA (Frontend Only) ---
-    notifications = [
-        {
-            'message': 'Congratulations! Your application for Merit Scholarship 2026 has been APPROVED.',
-            'created_at': timezone.now(),
-            'is_read': False
-        },
-        {
-            'message': 'Update: Your application for Future Leaders Award was REJECTED.',
-            'created_at': timezone.now(),
-            'is_read': True
-        },
-        {
-            'message': 'Welcome to the Scholarship Portal! Please complete your profile.',
-            'created_at': timezone.now(),
-            'is_read': True
-        }
-    ]
+    notifications = (request.user.student.notifications.filter(display_at__lte=timezone.now()))
 
     return render(request, 'student/notifications.html', {
         'notifications': notifications
@@ -59,14 +42,16 @@ def scholarship_list(request):
         'scholarships': scholarships
     })
 
-def applicationDetails(request, id):
+def applicationStatus(request, id):
     application = get_object_or_404(Application, pk=id)
 
     # progress_track = ""
     # if application.iscomplete:
     #     progress_track = "Pending"
-    if application.reviewer_status== "Rejected" or application.committee_status== "Rejected" or application.committee_status== "Approved":
-        progress_track = "Outcome"
+    if application.reviewer_status== "Rejected" or application.committee_status== "Rejected":
+        progress_track = "Rejected"
+    elif application.committee_status== "Approved":
+        progress_track = "Approved"
     elif application.reviewer_status == "Pending":
         progress_track = "Under Review"
     elif application.reviewer_status == "Reviewed" and application.committee_status == "Pending":
@@ -74,9 +59,8 @@ def applicationDetails(request, id):
             progress_track = "Interview"
         else:
             progress_track = "Reviewed"
-    print(progress_track)
 
-    return render(request, "student/applicationDetails.html", {'application':application, 'progress_track':progress_track})
+    return render(request, "student/applicationStatus.html", {'application':application, 'progress_track':progress_track})
 
 @login_required
 def eligibility_check(request):
@@ -118,9 +102,6 @@ def eligibility_check(request):
     
 @login_required
 def toggle_bookmark(request, scholarship_id):
-    """
-    Adds or removes a scholarship from the student's bookmarks.
-    """
     # Get the logged-in student (handle case where admin/user has no student profile)
     if not hasattr(request.user, 'student'):
         messages.error(request, "Only students can bookmark scholarships.")
@@ -143,11 +124,8 @@ def toggle_bookmark(request, scholarship_id):
 
 
 @login_required
-def scholarship_details(request, scholarship_id):
-    """
-    Displays details and checks if the scholarship is bookmarked.
-    """
-    scholarship = get_object_or_404(Scholarship, id=scholarship_id)
+def scholarship_details(request, id):
+    scholarship = get_object_or_404(Scholarship, id=id)
     is_bookmarked = False
 
     # Check if user is a student and has bookmarked this
@@ -165,9 +143,6 @@ def scholarship_details(request, scholarship_id):
 
 @login_required
 def bookmark_list(request):
-    """
-    Displays the list of bookmarked scholarships.
-    """
     try:
         student = request.user.student
         # Get the list of bookmark objects
@@ -180,10 +155,8 @@ def bookmark_list(request):
     })
 
 def application_form(request):
-    # db query via scholarship fk, if application exists. If exists, redirect to edit, or prefill info?
-    # redirecting would implying there's a whole separate form for these. 
     scholarships = Scholarship.objects.all()
-    # application = Application.objects.filter(scholarship_id=id).first()
+
     
     if request.method == "POST":
         form = ApplicationForm(request.POST, request.FILES)
@@ -273,156 +246,82 @@ def edit_application_form(request, id=-1, page=-1):
             "application": application,
 
         })
-        # return render(request, "student/applicationForm_p3.html", {"form": form, "application":application})
     elif page == 4:
         return render(request, "student/applicationForm_p4.html", {"form": form, "application":application})
     elif page == 5:
-        return redirect("applicationDetails", id=id)
+        return redirect("applicationStatus", id=id)
     else:
         print (f"u stupid {page}")
         return redirect("application_form")
 
-def guardian_form(request, id=-1, page=-1):
-    if page != 3:
-        return redirect("edit_application_form")
-    
-    application = get_object_or_404(Application, pk=id)
-
-    if request.method == "POST":
-        form1 = GuardianForm(
-            request.POST, 
-            request.FILES, 
-            prefix='guardian1',
-            instance=application.guardian1  # None or existing Guardian
-        )
-        form2 = GuardianForm(
-            request.POST, 
-            request.FILES, 
-            prefix='guardian2',
-            instance=application.guardian2  # None or existing Guardian
-        )
-        
-        # Validate both forms
-        if form1.is_valid() and form2.is_valid():
-            # Save first guardian
-            guardian1 = form1.save()
-            
-            # Save second guardian
-            guardian2 = form2.save()
-            
-            # Link guardians to application
-            application.guardian1 = guardian1
-            application.guardian2 = guardian2
-            application.save()
-            
-            return redirect('edit_application_form', id=application.id, page=page+1)
-
-        else:
-            # Display errors
-            print("Form 1 Errors:", form1.errors)
-            print("Form 2 Errors:", form2.errors)
-    else:
-        # GET request - initialize forms with existing guardians
-        form1 = GuardianForm(
-            prefix='guardian1', 
-            instance=application.guardian1
-        )
-        form2 = GuardianForm(
-            prefix='guardian2', 
-            instance=application.guardian2
-        )
-    
-    return render(request, "student/applicationForm_p2.html", {
-        "form1": form1, 
-        "form2": form2, 
-        "application": application,
-        "page": page
-    })
-
-# def edit_application_form_p2(request, id, page):
-#     # application = Application.objects.filter(scholarship_id=id).first()
-#     return render(request, "student/applicationForm_p2.html", {})
-
-# def edit_application_form_p3(request, id, page):
-#     return render(request, "student/applicationForm_p3.html", {})
-
-# def edit_application_form_p4(request, id, page):
-#     return render(request, "student/applicationForm_p4.html", {})
-
-
 @login_required
-def trackApplication(request):
-    # --- MOCK DATA (Frontend Only) ---
-    # We create a fake list of applications to test the UI.
-    applications = [
-        {
-            'id': 1,
-            'scholarship': {'name': 'Merit Scholarship 2026'}, # Nested dict to mimic app.scholarship.name
-            'submitted_date': date(2026, 1, 15),
-            'status': 'Pending',
-            'committee_status': 'Pending',
-        },
-        {
-            'id': 2,
-            'scholarship': {'name': 'Future Leaders Award'},
-            'submitted_date': date(2025, 12, 10),
-            'status': 'Rejected',
-            'committee_status': 'Rejected',
-        },
-        {
-            'id': 3,
-            'scholarship': {'name': 'MMU Foundation Aid'},
-            'submitted_date': date(2025, 11, 5),
-            'status': 'Approved',
-            'committee_status': 'Approved',
-        }
-    ]
-
-    return render(request, "student/trackApplication.html", {
+def applications(request):
+    applications = request.user.student.applications.all()
+    return render(request, "student/applications.html", {
         'applications': applications
     })
 
 @login_required
-def application_detail(request, application_id):
-    # --- MOCK DATA FOR A SINGLE APPLICATION ---
-    # This simulates what a real application object would look like
-    application = {
-        'id': application_id,
-        'scholarship': {'name': 'Merit Scholarship 2026'},
-        'submitted_date': date(2026, 1, 15),
-        'status': 'Pending',
-        'committee_status': 'Pending',
-        'name': 'Ali Bin Abu',
-        'ic_no': '010101-10-1234',
-        'email_address': 'ali@student.mmu.edu.my',
-        'contact_number': '012-3456789',
-        'date_of_birth': date(2003, 5, 20),
-        'age': 23,
-        'gender': 'Male',
-        'nationality': 'Malaysian',
-        'race': 'Malay',
-        'home_address': '123 Jalan Multimedia, Cyberjaya',
-        'correspondence_address': '123 Jalan Multimedia, Cyberjaya',
-        'programme': 'Bachelor of Computer Science',
-        'intake': date(2023, 3, 1),
-        'education_level': 'Undergraduate',
-        'monthly_income': '3500.00',
-        'reason_deserve': 'I have maintained a 4.0 GPA while volunteering...',
-        'personal_achievement': 'Dean List 2024, Hackathon Winner',
-    }
+def application_detail(request, id):
+    application = get_object_or_404(Application, pk=id)
+    guardians = [application.guardian1, application.guardian2]
+    interview = (
+        Interview.objects
+        .filter(application=application)
+        .order_by('-updated_at')
+        .first())
 
-    # Mock Guardians
-    guardians = [
-        {
-            'name': 'Abu Bakar',
-            'relationship': 'Father',
-            'contact_number': '019-8765432',
-            'email_address': 'abu@email.com'
-        }
-    ]
+    progress_track = "Pending"
+    if application.reviewer_status== "Rejected" or application.committee_status== "Rejected":
+        progress_track = "Rejected"
+    elif application.committee_status== "Approved":
+        progress_track = "Approved"
+    elif application.reviewer_status == "Pending":
+        progress_track = "Under Review"
+    elif application.reviewer_status == "Reviewed" and application.committee_status == "Pending":
+        if interview:
+            progress_track = "Interview"
+        else:
+            progress_track = "Reviewed"
 
-    return render(request, 'student/application_detail.html', {
+    return render(request, 'student/applicationDetails.html', {
         'application': application,
-        'guardians': guardians
+        'guardians': guardians,
+        'interview':interview,
+        'progress_track':progress_track
     })
-# Create your views here.
+
+
+def reschedule_interview(request, id):
+    application = get_object_or_404(Application, pk=id)
+    interview = get_object_or_404(Interview, application=application)
+    
+    if request.method == "POST":
+        date = request.POST.get('date')
+        interview_time = request.POST.get('interview_time')
+        timezone = request.POST.get('timezone')
+
+        # Check if the time slot is already taken by another application
+        conflict = Interview.objects.filter(date=date, interview_time=interview_time).exclude(application=application).exists()
+        
+        if conflict:
+            messages.error(request, f"The time slot {interview_time} on {date} is already taken. Please choose another time.")
+            return redirect('application_detail', id=id)
+
+        interview, created = Interview.objects.update_or_create(
+            application=application,
+            defaults={
+                'date': date,
+                'interview_time': interview_time,
+                'timezone': timezone,
+            }
+        )
+        interview.save()
+        
+        return redirect('application_detail', id=id)
+
+    return render(request, "student/reschedule_interview.html", {
+        'application': application,
+        'existing_interview': interview,
+        'is_scheduled': interview is not None
+        })

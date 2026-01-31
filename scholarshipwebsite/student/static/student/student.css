@@ -701,15 +701,6 @@ html{
 }
 
 /* Status Badge */
-.status-badge {
-    /* position: absolute;
-    top: 15px;
-    right: 15px; */
-    font-size: 0.75rem;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-weight: bold;
-}
 
 .status-badge.active { background-color: #e6f4ea; color: #1e7e34; }
 .status-badge.closed { background-color: #fce8e6; color: #c53030; }
@@ -1297,25 +1288,15 @@ html{
     font-weight: 700;
 }
 
-.status-badge.pending {
-    display: inline-block;
-    background-color: #ffc107; 
-    color: #333;
+/* --- STATUS BADGES (Approved/Pending) --- */
+.status-badge {
     padding: 5px 12px;
     border-radius: 15px;
     font-size: 0.9rem;
-    font-weight: 700;
-    width: fit-content;
-}
-
-/* --- STATUS BADGES (Approved/Pending) --- */
-.status-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
     font-weight: bold;
     text-transform: uppercase;
     display: inline-block;
+    width: fit-content;
 }
 
 .status-badge.pending { background: #fff3cd; color: #856404; }
@@ -1530,29 +1511,9 @@ html{
     display: inline-block;
 }
 
-.status-badge-table.pending {
-    background-color: #B9B9B9;
-    color: #ffffff;
-    padding: 5px 15px; 
-    border-radius: 4px;
-    font-weight: bold;
-}
-
-.status-badge-table.approved {
-    background-color: #34A853;
-    color: #ffffff;
-    padding: 5px 15px; 
-    border-radius: 4px;
-    font-weight: bold;
-}
-
-.status-badge-table.rejected {
-    background-color: #ff0707;
-    color: #ffffff;
-    padding: 5px 15px; 
-    border-radius: 4px;
-    font-weight: bold;
-}
+.status-badge-table.pending { background: #fff3cd; color: #856404; }
+.status-badge-table.approved { background: #d4edda; color: #155724; }
+.status-badge-table.rejected { background: #f8d7da; color: #721c24; }
 
 /* Empty State */
 .empty-state-table {

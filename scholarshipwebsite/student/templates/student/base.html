@@ -47,7 +47,7 @@
 
             <div class="content">
                 <a href = "{% url 'student' %}">Dashboard</a>
-                <a href = "{% url 'trackApplication' %}">Track Application</a>
+                <a href = "{% url 'applications' %}">Track Application</a>
                 <a href="{% url 'notification_list' %}">Notification {% if unread_count > 0 %}({{ unread_count }}){% endif %}</a>
                 <a href = "{% url 'bookmark_list' %}">Bookmark</a>
                 <a href = "{% url 'login' %}">Logout</a>

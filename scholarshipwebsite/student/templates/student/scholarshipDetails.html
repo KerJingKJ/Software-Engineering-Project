@@ -6,7 +6,7 @@
     
     <h1 class="main-title">Scholarships Offer</h1>
 
-    <div id="content-chancellor" class="scholarship-content" style="display: none;">
+    <div class="scholarship-content">
         <div class="header-container" style="display: flex; align-items: center; gap: 15px;">
             <h1 class="scholarship-title">{{ scholarship.name }}</h1>
 
@@ -18,8 +18,8 @@
                 {% endif %}
             </a>
         </div>
-        <p class="description">Awarded to high-flying students...</p>
-
+        <p class="description">{{ scholarship.description }}</p>
+        <p>Deadline: {{ scholarship.deadline }}</p>
         <h3 class="section-title"><u>Criteria & Entitlement</u></h3>
         <h4 class="sub-title">Foundation Programmes</h4>
         <table class="criteria-table">
@@ -32,52 +32,20 @@
                 <tr><td class="col-left">O-Level</td></tr>
             </tbody>
         </table>
+        <div>Programme: {{ scholarship.education_level }}</div>
+        <div>Nationality: {{ scholarship.student_type }}</div>
+        <div>Minimum GPA: {{ scholarship.min_gpa }}</div>
+        <div>Criteria: {{ scholarship.criteria }}</div>
     </div>
-
-    <div id="content-merit" class="scholarship-content" style="display: none;">
-        <div class="scholarship-header">
-            <h2 class="scholarship-name">MMU Merit Scholarship</h2>
-            <img src="{% static 'student/img/bookmarkicon.png' %}" 
-                alt="Bookmark" 
-                class="bookmark-icon" 
-                onclick="toggleBookmark(this)">
-        </div>
-        <p class="description">Scholarship based on CGPA tiers for undergraduate students.</p>
-
-        <h3 class="section-title"><u>Entitlement Structure</u></h3>
-        <table class="criteria-table">
-            <thead>
-                <tr>
-                    <th style="background:#f0f0f0;">CGPA</th>
-                    <th style="background:#f0f0f0;">Entitlement</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>3.75 - 4.00</td>
-                    <td>50% Tuition Waiver</td>
-                </tr>
-                <tr>
-                    <td>3.50 - 3.74</td>
-                    <td>30% Tuition Waiver</td>
-                </tr>
-                <tr>
-                    <td>3.33 - 3.49</td>
-                    <td>25% Tuition Waiver</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
     <div class="action-buttons">
         <a href="{% url 'scholarship_list' %}" class="btn-nav">Back</a>
-        <a href="#" class="btn-nav">Apply Now</a>
+        <a href="{% url 'application_form' %}" class="btn-nav">Apply Now</a>
     </div>
 
 </div>
 
 <script>
-    // 1. Get the URL parameters (e.g., ?id=merit)
+    {% comment %} // 1. Get the URL parameters (e.g., ?id=merit)
     const urlParams = new URLSearchParams(window.location.search);
     const scholarshipId = urlParams.get('id');
 
@@ -92,7 +60,7 @@
     } else {
         // Fallback if ID doesn't exist
         document.getElementById('content-chancellor').style.display = 'block';
-    }
+    } {% endcomment %}
 
     function toggleBookmark(imgElement) {
         // Check if the current source contains the 'empty' image name
