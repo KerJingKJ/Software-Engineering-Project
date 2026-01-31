@@ -308,6 +308,8 @@ html{
 
 #scholarship-form-container {
     max-width: 800px; 
+    margin-top: 100px;
+    font-size: 20px;
 }
 
 #scholarship-form-container h2 {
