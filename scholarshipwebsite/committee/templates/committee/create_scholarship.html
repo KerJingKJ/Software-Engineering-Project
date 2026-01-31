@@ -2,31 +2,122 @@
 {% load static %}
 
 {% block content %}
-
 <div id="scholarship-form-container">
     <h2>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Scholarship</h2>
-<div id="create-form">
-    <form method="post">
-        {% csrf_token %}
+    
+    <div id="create-form">
+        <form method="post">
+            {% csrf_token %}
 
-        {% for field in form %}
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }}
-            {% if field.help_text %}
-            <span class="helptext">{{ field.help_text }}</span>
-            {% endif %}
-            {% if field.errors %}
-            <ul class="errorlist">
-                {% for error in field.errors %}
-                <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        
-        {% endfor %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="helptext">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                        {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endfor %}
 
-        <button type="submit" clas="button">Save Scholarship</button>
-    </form>
+            <hr style="margin: 30px 0;">
+
+            <div class="criteria-section">
+                <h3>Criteria & Entitlement</h3>
+                <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">
+                    Add requirements like "SPM: 9As" or "Foundation: CGPA 3.5"
+                </p>
+                
+                {{ formset.management_form }}
+
+                <table id="criteria-table" style="width: 100%; text-align: left; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Qualification</th>
+                            <th style="width: 30%;">Requirement</th>
+                            <th style="width: 30%;">Entitlement</th>
+                            <th style="width: 10%;">Delete?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for form in formset %}
+                            <tr class="criteria-row">
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                                
+                                <td>{{ form.qualification }}</td>
+                                <td>{{ form.requirement }}</td>
+                                <td>{{ form.entitlement }}</td>
+                                <td>
+                                    {% if formset.can_delete %}
+                                        {{ form.DELETE }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if form.errors %}
+                            <tr>
+                                <td colspan="4" style="color: red; padding-bottom: 10px;">
+                                    {{ form.errors }}
+                                </td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <button type="button" id="add-criteria-btn" class="button" style="background-color: #034EA1; color: white; margin-top: 10px; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.7em;">
+                    + Add Another Criteria
+                </button>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <button type="submit" class="button">Save Scholarship</button>
+            </div>
+        </form>
+    </div>
 </div>
-</div>
+
+<script type="text/template" id="empty-form-template">
+    <tr class="criteria-row">
+        <td>{{ formset.empty_form.qualification }}</td>
+        <td>{{ formset.empty_form.requirement }}</td>
+        <td>{{ formset.empty_form.entitlement }}</td>
+        <td>
+            {% if formset.can_delete %}
+                {{ formset.empty_form.DELETE }}
+            {% endif %}
+        </td>
+    </tr>
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addBtn = document.getElementById('add-criteria-btn');
+        const tableBody = document.querySelector('#criteria-table tbody');
+        const totalFormsInput = document.querySelector('input[name$="-TOTAL_FORMS"]'); 
+        // We get the content from the script tag now
+        const emptyFormHtml = document.getElementById('empty-form-template').innerHTML;
+
+        addBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // 1. Get current form count
+            let formIdx = parseInt(totalFormsInput.value);
+
+            // 2. Replace __prefix__ with the new index
+            let newRowHtml = emptyFormHtml.replace(/__prefix__/g, formIdx);
+
+            // 3. Append the new row
+            tableBody.insertAdjacentHTML('beforeend', newRowHtml);
+
+            // 4. Update the management form count
+            totalFormsInput.value = formIdx + 1;
+        });
+    });
+</script>
 {% endblock %}

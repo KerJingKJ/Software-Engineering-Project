@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Scholarship, Interview, ApprovedApplication
+from .models import Scholarship, Interview, ApprovedApplication, ScholarshipCriteria
 from student.models import Application, Guardian
 from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
 from .forms import ScholarshipForm
@@ -12,9 +12,14 @@ from django.urls import reverse
 # admin.site.register(Interview)
 # admin.site.register(ApprovedApplication)
 
+class ScholarshipCriteriaInline(admin.TabularInline):
+    model = ScholarshipCriteria
+    extra = 1
+    
 @admin.register(Scholarship)
 class ScholarshipAdmin(admin.ModelAdmin):
     form = ScholarshipForm
+    inlines = [ScholarshipCriteriaInline]
 
 def application_dashboard_view(request, extra_context=None):
     total_apps = Application.objects.count()

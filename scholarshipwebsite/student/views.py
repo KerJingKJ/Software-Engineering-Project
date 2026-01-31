@@ -12,7 +12,44 @@ from committee.models import CommitteeNotification
 # views.py
 
 def index(request):
-    return render(request, "student/student.html", {})
+    latest_app = None
+    scholarship_status = "No Application" 
+    recommended_scholarships = []
+
+    if request.user.is_authenticated and hasattr(request.user, 'student'):
+        student = request.user.student
+        # Get the most recent application
+        latest_app = Application.objects.filter(student=student).order_by('-submitted_date').first()
+        
+        if latest_app:
+            # Determine status (reusing the logic from the previous step)
+            if latest_app.reviewer_status == "Rejected" or latest_app.committee_status == "Rejected":
+                scholarship_status = "Rejected"
+            elif latest_app.committee_status == "Approved":
+                scholarship_status = "Approved"
+            else:
+                scholarship_status = "Pending"
+
+        active_scholarships = Scholarship.objects.filter(deadline__gte=timezone.now().date())
+        
+        # Filter by CGPA (Scholarship Min GPA <= Student Current GPA)
+        if student.current_gpa:
+            active_scholarships = active_scholarships.filter(min_gpa__lte=student.current_gpa)
+            
+        # Optional: Filter by Education Level & Student Type for better accuracy
+        if student.education_level:
+            active_scholarships = active_scholarships.filter(education_level=student.education_level)
+        if student.student_type:
+            active_scholarships = active_scholarships.filter(student_type=student.student_type)
+            
+        # Take the first 3 matching scholarships
+        recommended_scholarships = active_scholarships.order_by('deadline')[:3]
+
+    return render(request, "student/student.html", {
+        'latest_app': latest_app,
+        'scholarship_status': scholarship_status,
+        'recommended_scholarships': recommended_scholarships  # Pass this to template
+    })
 
 @login_required
 def mark_all_read(request):
