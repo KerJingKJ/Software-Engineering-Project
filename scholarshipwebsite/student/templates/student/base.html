@@ -30,7 +30,7 @@
                 <div class="notif-list">
                     {% for note in notifications|slice:":5" %}
                     <div class="notif-item {% if not note.is_read %}unread{% endif %}">
-                        <p>{{ note.message }}</p>
+                        <p>{{ note.message|safe }}</p>
                         <small>{{ note.created_at|date:"M d, P" }}</small>
                     </div>
                     {% empty %}

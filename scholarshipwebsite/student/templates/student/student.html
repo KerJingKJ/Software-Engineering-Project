@@ -25,20 +25,20 @@
             <a href="{% url 'applications' %}" style="text-decoration: none;"><h2>Application Tracking</h2></a>
             <div class="card-body">
                 {% if latest_app %}
-                    <table class="application-table" style="margin-bottom: 0;">
+                    <table class="application-table" style="margin-bottom: 0; margin-top: -20px;">
                         <thead>
                             <tr>
-                                <th style="text-align: center;">No.</th> 
-                                <th>Scholarship Applied</th>
-                                <th>Date Applied</th>
-                                <th>Status</th>
-                                <th style="text-align: right;">Action</th> 
+                                <th style="text-align: center; font-size: 17px; color: #333;">No.</th> 
+                                <th style="font-size: 17px; color: #333;">Scholarship Applied</th>
+                                <th style="font-size: 17px; color: #333;">Date Applied</th>
+                                <th style="font-size: 17px; color: #333;">Status</th>
+                                <th style="text-align: right; font-size: 17px; color: #333;">Action</th> 
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>
-                                    <div class="row-number">1</div>
+                                    <div class="row-number" >1</div>
                                 </td>
                                 <td>
                                     <div class="scholarship-name" title="{{ latest_app.scholarship.name }}">

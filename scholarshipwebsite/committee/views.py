@@ -5,7 +5,7 @@ from .forms import ScholarshipForm, CriteriaFormSet
 from .models import Scholarship, Interview, ApprovedApplication
 from student.models import Application, Guardian
 from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
-
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
@@ -22,7 +22,7 @@ from rest_framework.response import Response
 
 from django.db.models import Count
 
-from student.models import Student, Application, Guardian
+from student.models import Student, Application, Guardian, Notification
 
 from .models import CommitteeNotification
 
@@ -141,6 +141,8 @@ def view_family_background(request, id):
 
     return render(request, "committee/family_background_review.html", {'application': application, 'guardians': guardians})
 
+# In scholarshipwebsite/committee/views.py
+
 def schedule_interview(request, id):
     application = get_object_or_404(Application, pk=id)
     existing_interview = Interview.objects.filter(application=application).first()
@@ -150,7 +152,7 @@ def schedule_interview(request, id):
         interview_time = request.POST.get('interview_time')
         timezone = request.POST.get('timezone')
 
-        # Check if the time slot is already taken by another application
+        # Check for conflicts
         conflict = Interview.objects.filter(date=date, interview_time=interview_time).exclude(application=application).exists()
         
         if conflict:
@@ -161,6 +163,7 @@ def schedule_interview(request, id):
                 'is_scheduled': existing_interview is not None
             })
 
+        # Save the interview
         interview, created = Interview.objects.update_or_create(
             application=application,
             defaults={
@@ -172,7 +175,21 @@ def schedule_interview(request, id):
         
         if request.user.is_authenticated:
             interview.committee = request.user
+        interview.skip_signal = True
         interview.save()
+        
+        # --- SEND NOTIFICATION (ONE TIME ONLY) ---
+        reschedule_url = reverse('reschedule_interview', args=[application.id])
+        
+        Notification.objects.create(
+            student=application.student,
+            type="Application",
+            message=(
+                f"Interview scheduled for {date} at {interview_time}. "
+                f"<a href='{reschedule_url}' style='color: #007bff; text-decoration: underline;'>Click here to reschedule</a> if this time works for you."
+            )
+        )
+        # ----------------------------------------
         
         return redirect('decision_page', id=id)
 
@@ -180,7 +197,7 @@ def schedule_interview(request, id):
         'application': application,
         'existing_interview': existing_interview,
         'is_scheduled': existing_interview is not None
-        })
+    })
 
 def decision_page(request, id):
     application = get_object_or_404(Application, pk=id)

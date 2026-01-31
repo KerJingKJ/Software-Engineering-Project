@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .models import Application, Student, Guardian, Bookmark
+from .models import Application, Student, Guardian, Bookmark, Notification
 from committee.models import Scholarship, Interview
 from .forms import ApplicationForm, GuardianForm
 from datetime import date
@@ -329,8 +329,11 @@ def application_detail(request, id):
     })
 
 
+# In scholarshipwebsite/student/views.py
+
 def reschedule_interview(request, id):
     application = get_object_or_404(Application, pk=id)
+    # Get the specific interview linked to this application
     interview = get_object_or_404(Interview, application=application)
     
     if request.method == "POST":
@@ -338,26 +341,26 @@ def reschedule_interview(request, id):
         interview_time = request.POST.get('interview_time')
         timezone = request.POST.get('timezone')
 
-        # Check if the time slot is already taken by another application
+        # 1. Check for conflicts
         conflict = Interview.objects.filter(date=date, interview_time=interview_time).exclude(application=application).exists()
         
         if conflict:
             messages.error(request, f"The time slot {interview_time} on {date} is already taken. Please choose another time.")
             return redirect('application_detail', id=id)
 
-        interview, created = Interview.objects.update_or_create(
-            application=application,
-            defaults={
-                'date': date,
-                'interview_time': interview_time,
-                'timezone': timezone,
-            }
-        )
-        interview.save()
+        # 2. Update the interview details
+        interview.date = date
+        interview.interview_time = interview_time
+        interview.timezone = timezone
+        interview.save() # Save the changes
 
-        if application.assigned_committee_member:
+        # 3. Notify the Committee (ONE TIME ONLY)
+        # We check who should be notified: either the assigned member OR the person who created the interview
+        recipient = application.assigned_committee_member or interview.committee
+
+        if recipient:
             CommitteeNotification.objects.create(
-                user=application.assigned_committee_member,
+                user=recipient,
                 message=(
                     f"Reschedule Alert: {application.name} "
                     f"changed their interview for {application.scholarship.name} "
@@ -365,10 +368,17 @@ def reschedule_interview(request, id):
                 )
             )
         
+        # 4. Notify the Student (ONE TIME ONLY)
+        Notification.objects.create(
+            student=application.student,
+            type="System",
+            message=f"Reschedule Confirmed: You have successfully rescheduled your interview for {application.scholarship.name} to {date} at {interview_time}."
+        )
+        
         return redirect('application_detail', id=id)
 
     return render(request, "student/reschedule_interview.html", {
         'application': application,
         'existing_interview': interview,
         'is_scheduled': interview is not None
-        })
+    })
