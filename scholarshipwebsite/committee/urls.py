@@ -23,5 +23,8 @@ urlpatterns = [
 
     
     path('api/', views.ChartData.as_view(), name='api_data'),
+
+    #notification
+    path("notification/markasread/", views.committee_mark_all_read, name="committee_mark_all_read"),
     
 ]

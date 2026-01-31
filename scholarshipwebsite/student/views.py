@@ -6,8 +6,8 @@ from .models import Application, Student, Guardian, Bookmark
 from committee.models import Scholarship, Interview
 from .forms import ApplicationForm, GuardianForm
 from datetime import date
-# Create your views here.
 from django.contrib.auth.decorators import login_required
+from committee.models import CommitteeNotification
 # Create your views here.
 # views.py
 
@@ -317,6 +317,16 @@ def reschedule_interview(request, id):
             }
         )
         interview.save()
+
+        if application.assigned_committee_member:
+            CommitteeNotification.objects.create(
+                user=application.assigned_committee_member,
+                message=(
+                    f"Reschedule Alert: {application.name} "
+                    f"changed their interview for {application.scholarship.name} "
+                    f"to {interview.date} at {interview.interview_time}."
+                )
+            )
         
         return redirect('application_detail', id=id)
 
