@@ -21,21 +21,35 @@
         <p class="description">{{ scholarship.description }}</p>
         <p>Deadline: {{ scholarship.deadline }}</p>
         <h3 class="section-title"><u>Criteria & Entitlement</u></h3>
-        <h4 class="sub-title">Foundation Programmes</h4>
-        <table class="criteria-table">
-            <tbody>
+
+        <table class="criteria-table" style="border: 2px solid #034EA1; ">
+            <thead>
                 <tr>
-                    <td class="col-left">SPM</td>
-                    <td class="col-center" rowspan="2">9As and above</td>
-                    <td class="col-right" rowspan="2">100% discount</td>
+                    <th style="border-right: 1px solid #034EA1; border-bottom: 1px solid #034EA1;">Qualification</th>
+                    <th style="border-right: 1px solid #034EA1; border-bottom: 1px solid #034EA1;">Requirement</th>
+                    <th style="border-bottom: 1px solid #034EA1;">Entitlement</th>
                 </tr>
-                <tr><td class="col-left">O-Level</td></tr>
+            </thead>
+            <tbody>
+                {% for criteria in scholarship.criteria_list.all %}
+                <tr style="border: 1px solid #034EA1;">
+                    <td class="col-left" style="border: 1px solid #034EA1;">{{ criteria.qualification }}</td>
+                    <td class="col-center" style="border: 1px solid #034EA1;">{{ criteria.requirement }}</td>
+                    <td class="col-right" style="border: 1px solid #034EA1;">{{ criteria.entitlement }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" style="text-align:center;">
+                        Check requirements in description.
+                    </td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
         <div>Programme: {{ scholarship.education_level }}</div>
         <div>Nationality: {{ scholarship.student_type }}</div>
         <div>Minimum GPA: {{ scholarship.min_gpa }}</div>
-        <div>Criteria: {{ scholarship.criteria }}</div>
+        <div>Notes: {{ scholarship.notes }}</div>
     </div>
     <div class="action-buttons">
         <a href="{% url 'scholarship_list' %}" class="btn-nav">Back</a>
