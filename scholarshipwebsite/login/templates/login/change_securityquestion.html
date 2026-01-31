@@ -16,7 +16,8 @@
            class="{% if request.resolver_match.url_name == 'reviewer_update_security_questions' %}active{% endif %}">
            Update Security Question
         </a>
-    {% else %}
+    
+    {% elif '/committee/' in request.path %}
         <a href="{% url 'committee_change_password' %}" 
            class="{% if request.resolver_match.url_name == 'committee_change_password' %}active{% endif %}">
            Change Password
@@ -25,7 +26,23 @@
            class="{% if request.resolver_match.url_name == 'committee_update_security_questions' %}active{% endif %}">
            Update Security Question
         </a>
+
+    {% else %}
+    <a href="{% url 'student_change_password' %}" 
+           class="{% if request.resolver_match.url_name == 'student_change_password' %}active{% endif %}">
+           Change Password
+        </a>
+        <a href="{% url 'student_update_security_questions' %}"
+           class="{% if request.resolver_match.url_name == 'student_update_security_questions' %}active{% endif %}">
+           Update Security Question
+        </a>
+
     {% endif %}
+
+    {% if is_student %}
+    <a href="{% url 'student_update_profile' %}">Update Profile</a>
+    {% endif %}
+
 </div>
 
 
@@ -68,12 +85,23 @@
         {% endif %}
 
         <div class="actions" style="margin-top: 20px;">
-            <button type="submit" class="button">Update Security Questions</button>
+            {% if '/reviewer/' in request.path %}
+                <button type="submit" class="button">Update Security Questions</button>
+                
+            {% elif '/committee/' in request.path %}
+                <button type="submit" class="button">Update Security Questions</button>
+
+            {% else %}
+                <button type="submit" class="button">Update Security Questions</button>
+            {% endif %}
+
+            
             {% if '/reviewer/' in request.path %}
                     <a href="{% url 'reviewer' %}" class="button-2">Cancel</a>
-                
+            {% elif '/committee/' in request.path %}
+                    <a href="{% url 'committee' %}" class="button-2">Cancel</a>    
             {% else %}
-                <a href="{% url 'committee' %}" class="button-2">Cancel</a>
+                <a href="{% url 'student' %}" class="button-2">Cancel</a>
             {% endif %}
         </div>
     </form>

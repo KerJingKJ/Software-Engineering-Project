@@ -3,7 +3,6 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 # from student.models import Application, Guardian
 
-
 class Scholarship(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
@@ -255,4 +254,21 @@ class ApprovedApplication(models.Model):
     class Meta:
         db_table = 'approved_applications'
 
-    
+
+#committee can get the notification too for rescheduled interview
+class CommitteeNotification(models.Model):
+    # Points to the Committee User (email contains 'committee.mmu.edu.my')
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name="committee_alerts"
+    )
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Alert for {self.user.username} - {self.created_at.strftime('%Y-%m-%d')}"

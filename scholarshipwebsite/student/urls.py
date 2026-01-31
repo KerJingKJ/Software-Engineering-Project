@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from login import views as login_views 
 
 urlpatterns = [
 
@@ -13,6 +14,11 @@ urlpatterns = [
     path("scholarships/", views.scholarship_list, name="scholarship_list"),
     path("scholarships/apply", views.application_form, name="application_form"), # initial create path for applications
     path('scholarship/<int:id>/', views.scholarship_details, name='scholarship_details'),
+
+    #change password and security question
+    path('changepassword/', login_views.change_password, name='student_change_password'),
+    path('changesecurityquestion/', login_views.update_security_questions, name='student_update_security_questions'),
+    path("updateprofile/", login_views.update_profile, name="student_update_profile"),
 
     # Action to toggle the bookmark
     path('scholarship/<int:scholarship_id>/bookmark/toggle/', views.toggle_bookmark, name='toggle_bookmark'),
