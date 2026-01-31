@@ -8,15 +8,63 @@
             <li><a href="#explore" style="text-decoration: none;"><button class="btn btn-red">Explore Scholarships</button></li>
             <li><a href="{% url 'application_form' %}" style="text-decoration: none;"><button class="btn btn-red">Apply for Scholarship</button></a></li>
             <li><a href="{% url 'eligibility_check' %}" style="text-decoration: none;"><button class="btn btn-blue">Eligibility Checker</button></a></li>
-            <li><button class="btn btn-grey">Scholarship Status: </button></li>
+            <li>
+                {% if scholarship_status == "Approved" %}
+                    <button class="btn btn-green" style="background-color: #28a745; color: white; border: none; cursor: default;">Scholarship Status: {{ scholarship_status }}</button>
+                {% elif scholarship_status == "Rejected" %}
+                    <button class="btn btn-red">Scholarship Status: {{ scholarship_status }}</button>
+                {% else %}
+                    <button class="btn btn-grey">Scholarship Status: {{ scholarship_status|default:"Pending" }}</button>
+                {% endif %}
+            </li>
         </ul>
     </div>
     <div class="card-wrapper">
         
         <div class="card">
-            <h2>Application Tracking</h2> 
+            <a href="{% url 'applications' %}" style="text-decoration: none;"><h2>Application Tracking</h2></a>
             <div class="card-body">
-                <p></p> 
+                {% if latest_app %}
+                    <table class="application-table" style="margin-bottom: 0;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">No.</th> 
+                                <th>Scholarship Applied</th>
+                                <th>Date Applied</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Action</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="row-number">1</div>
+                                </td>
+                                <td>
+                                    <div class="scholarship-name" title="{{ latest_app.scholarship.name }}">
+                                        {{ latest_app.scholarship.name }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date-applied">{{ latest_app.submitted_date|date:"d-m-Y" }}</div>
+                                </td>
+                                <td>
+                                    <span class="status-badge-table {{ scholarship_status|lower }}">
+                                        {{ scholarship_status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{% url 'applicationStatus' latest_app.id %}" class="view-details-link">View Details</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="empty-state-table" style="padding: 20px; box-shadow: none;">
+                        <p>You haven't applied for any scholarships yet.</p>
+                        <a href="{% url 'scholarship_list' %}" class="btn-check" style="margin-top: 10px;">Browse Scholarships</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
         <p style="font-family: Inter; font-size: 20px; font-weight: 600;">Click below to check on MMU’s scholarship details</p>
@@ -66,7 +114,40 @@
         <div class="card">
             <h2>Recommended Scholarships</h2> 
             <div class="card-body">
-                <p>MMU Merit Scholarship</p> 
+                {% if recommended_scholarships %}
+                    <div class="scholarship-grid" style="margin-top: 0;">
+                        {% for scholarship in recommended_scholarships %}
+                        <div class="scholarship-card">
+                            <h3 style="min-height: 40px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                {{ scholarship.name }}
+                            </h3>
+                            
+                            <div class="description">
+                                {{ scholarship.description|truncatewords:10 }}
+                            </div>
+
+                            <div class="meta-info">
+                                <span><strong>Level:</strong> {{ scholarship.education_level }}</span>
+                                <span><strong>Min CGPA:</strong> {{ scholarship.min_gpa }}</span>
+                                <span style="color: #d9534f;"><strong>Deadline:</strong> {{ scholarship.deadline|date:"d M Y" }}</span>
+                            </div>
+
+                            <div class="card-actions">
+                                <a href="{% url 'scholarship_details' scholarship.id %}" class="btn-view">View Details</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state-table" style="padding: 30px; text-align: center; border: none; box-shadow: none;">
+                        {% if request.user.student.current_gpa %}
+                            <p>No scholarships currently match your profile (CGPA: {{ request.user.student.current_gpa }}).</p>
+                        {% else %}
+                            <p>Please update your CGPA in your profile to see recommendations.</p>
+                        {% endif %}
+                        <a href="{% url 'scholarship_list' %}" class="btn-check" style="margin-top: 15px;">Browse all scholarships</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
