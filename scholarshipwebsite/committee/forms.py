@@ -1,5 +1,6 @@
 from django import forms
-from .models import Scholarship
+from .models import Scholarship, ScholarshipCriteria
+from django.forms import inlineformset_factory
 from datetime import date
 
 class ScholarshipForm(forms.ModelForm):
@@ -17,7 +18,7 @@ class ScholarshipForm(forms.ModelForm):
 
     class Meta:
         model = Scholarship
-        fields = ['name', 'description', 'education_level', 'student_type', 'min_gpa', 'criteria', 'deadline']
+        fields = ['name', 'description', 'education_level', 'student_type', 'min_gpa', 'notes', 'deadline']
         widgets = {
             'deadline': forms.DateInput(attrs={'type': 'date'}),
         }
@@ -62,3 +63,11 @@ class ScholarshipForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+    
+CriteriaFormSet = inlineformset_factory(
+    Scholarship,
+    ScholarshipCriteria,
+    fields=('qualification', 'requirement', 'entitlement'),
+    extra=1,            # Number of empty rows to show by default
+    can_delete=True     # Allows checking a box to delete a row
+)
