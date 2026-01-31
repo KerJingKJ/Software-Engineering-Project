@@ -60,6 +60,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'student.context_processors.user_notifications',
+                'committee.notification.committee_notif_context',
             ],
         },
     },

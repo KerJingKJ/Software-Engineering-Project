@@ -404,3 +404,201 @@ html{
   max-width: 500px;   
   height: 300px;
 }
+
+/* Notification styling */
+/* Header alignment */
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.btn-mark-read {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border: 1px solid #007bff;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-mark-read:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Notification List Container */
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between cards */
+}
+
+/* Individual Notification Card */
+.notification-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Soft shadow like your dashboard */
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 5px solid transparent; /* default border */
+}
+
+.notification-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+/* Unread State - Highlighted */
+.notification-card.unread {
+    background-color: #ffffff;
+    border-left: 5px solid #007bff; /* Blue accent on the left */
+}
+
+.notification-card.unread .notif-message {
+    font-weight: 700; /* Bold text for unread */
+    color: #2c3e50;
+}
+
+/* Icons */
+.notif-icon {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dot {
+    height: 12px;
+    width: 12px;
+    background-color: #007bff;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.read-icon {
+    color: #cbd5e0;
+    font-size: 1.2rem;
+}
+
+/* Text Content */
+.notif-content {
+    flex: 1;
+}
+
+.notif-message {
+    margin: 0;
+    font-size: 1rem;
+    color: #4a5568;
+    line-height: 1.4;
+}
+
+.notif-time {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: #a0aec0;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 50px;
+    background: white;
+    border-radius: 10px;
+    color: #a0aec0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* --- Notification System Styles --- */
+.notif-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-right: 15px; /* Space between bell and user icon */
+}
+
+.notif-bell {
+    font-size: 24px;
+    text-decoration: none;
+    position: relative;
+    cursor: pointer;
+}
+
+.notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Dropdown Box */
+.notif-content {
+    display: none; /* Hidden by default */
+    position: absolute;
+    right: 0;
+    top: 40px; /* Push it down below the navbar */
+    background-color: #f9f9f9;
+    min-width: 300px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.notif-header {
+    background-color: #eee;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+.mark-read {
+    font-size: 12px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.notif-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notif-item {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    color: black;
+    text-align: left;
+}
+
+.notif-item p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.notif-item small {
+    color: #888;
+    font-size: 11px;
+}
+
+/* Highlight unread messages */
+.notif-item.unread {
+    background-color: #e3f2fd; /* Light blue background for unread */
+}
+
+.notif-item:hover {
+    background-color: #ddd;
+}

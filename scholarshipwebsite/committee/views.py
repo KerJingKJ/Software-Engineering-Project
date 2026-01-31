@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import ScholarshipForm
 from .models import Scholarship, Interview, ApprovedApplication
-from student.models import Application, Guardian, Notification
+from student.models import Application, Guardian
 from .models import Scholarship#, ScholarshipApplication, Guardian, Interview, ApprovedApplication
 
 from django.views.decorators.csrf import csrf_exempt
@@ -23,6 +23,8 @@ from rest_framework.response import Response
 from django.db.models import Count
 
 from student.models import Student, Application, Guardian
+
+from .models import CommitteeNotification
 
 
 @csrf_exempt
@@ -182,11 +184,6 @@ def decision_page(request, id):
             application.committee_status = 'Approved'
             application.save()
             
-            Notification.objects.create(
-                student=application.student,
-                message=f"Congratulations! Your application for {application.scholarship.name} has been APPROVED."
-            )
-            
             if interview:
                 ApprovedApplication.objects.update_or_create(
                     original_application=application,
@@ -207,12 +204,7 @@ def decision_page(request, id):
         elif decision == 'Rejected':
             application.committee_status = 'Rejected'
             application.save()
-            
-            Notification.objects.create(
-                student=application.student,
-                message=f"Update on your application: Your application for {application.scholarship.name} was REJECTED."
-            )
-            
+
             ApprovedApplication.objects.filter(original_application=application).delete()
 
             # Interview.objects.filter(application=application).delete() # Keep interview record but set status
@@ -337,3 +329,15 @@ class ChartData(APIView):
             'chartdata': chartdata,
         }
         return Response(data)
+    
+
+@login_required
+def committee_mark_all_read(request):
+    # Only update notifications belonging to the logged-in committee user
+    CommitteeNotification.objects.filter(
+        user=request.user, 
+        is_read=False
+    ).update(is_read=True)
+    
+    # Redirect back to the page the user was on
+    return redirect(request.META.get('HTTP_REFERER', 'committee_dashboard'))

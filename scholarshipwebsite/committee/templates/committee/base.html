@@ -14,6 +14,32 @@
     <li class= "nav-left"><a href="{% url 'committee' %}"><img src="{% static 'landingpage/img/logo.png' %} " alt="MMU Logo" style="width:150px; height:auto;"/></a>
         <h3> Multimedia University Scholarship </h3>
     </li>
+
+    <li class="notif-container">
+    <div class="bell-wrapper" onclick="toggleNotif()">
+        <img src="{% static 'student/img/notifications.png' %}" width="30" height="30" />
+        {% if comm_unread_count > 0 %}
+            <span class="notif-badge">{{ comm_unread_count }}</span>
+        {% endif %}
+    </div>
+
+    <div id="notifDropdown" class="notif-content" style="display:none;">
+        <div class="notif-header">
+            <span>Notification</span>
+            <a href="{% url 'committee_mark_all_read' %}" class="mark-read">Mark all as read</a>
+        </div>
+        <div class="notif-list">
+            {% for alert in comm_alerts %}
+                <div class="notif-item {% if not alert.is_read %}unread{% endif %}">
+                    <p>{{ alert.message }}</p>
+                    <small>{{ alert.created_at|date:"M d, P" }}</small>
+                </div>
+            {% empty %}
+                <div class="notif-item">No student updates.</div>
+            {% endfor %}
+        </div>
+    </div>
+</li>
         
     <a href = "{% url 'committee_change_password' %}" id="user-icon">
         <img src="{% static 'committee/img/user.png' %} " alt="User">
@@ -40,4 +66,26 @@
     {% endblock %}
     
 </body>
+
+<script>
+function toggleNotif() {
+    var dropdown = document.getElementById("notifDropdown");
+    if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+    } else {
+        dropdown.style.display = "block";
+    }
+}
+
+// Close the dropdown if the user clicks anywhere else on the screen
+window.onclick = function(event) {
+    // Check if the click was outside the bell wrapper
+    if (!event.target.closest('.bell-wrapper')) {
+        var dropdown = document.getElementById("notifDropdown");
+        if (dropdown && dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+        }
+    }
+}
+</script>
 </html>
