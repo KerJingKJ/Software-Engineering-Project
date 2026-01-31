@@ -14,10 +14,14 @@ def index(request):
     Renders the main dashboard page.
     """
     # Calculate summary stats for cards
+ 
     total_apps = Application.objects.count()
     approved = Application.objects.filter(committee_status='Approved').count()
-    rejected = Application.objects.filter(committee_status='Rejected').count()
-    pending = Application.objects.exclude(committee_status__in=['Approved', 'Rejected']).count()
+    committee_rejected = Application.objects.filter(committee_status='Rejected').count() 
+    reviewer_rejected =  Application.objects.filter(reviewer_status='Rejected').count()
+    rejected = committee_rejected + reviewer_rejected
+    committee_pending = Application.objects.filter(committee_status='Pending').count() 
+    pending = committee_pending - reviewer_rejected
     
     context = {
         'total_apps': total_apps,
