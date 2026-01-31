@@ -40,22 +40,25 @@
                             <th style="width: 30%;">Qualification</th>
                             <th style="width: 30%;">Requirement</th>
                             <th style="width: 30%;">Entitlement</th>
-                            <th style="width: 10%;">Delete?</th>
+                            <th style="width: 10%; padding-left: 5px; text-align: center;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for form in formset %}
-                            <tr class="criteria-row">
+                            <tr class="criteria-row" {% if form.DELETE.value %}style="display:none"{% endif %}>
                                 {% for hidden in form.hidden_fields %}
                                     {{ hidden }}
                                 {% endfor %}
                                 
-                                <td>{{ form.qualification }}</td>
-                                <td>{{ form.requirement }}</td>
-                                <td>{{ form.entitlement }}</td>
+                                <td style="padding-right: 10px; padding-bottom: 10px;">{{ form.qualification }}</td>
+                                <td style="padding-right: 10px; padding-bottom: 10px;">{{ form.requirement }}</td>
+                                <td style="padding-bottom: 10px;">{{ form.entitlement }}</td>
                                 <td>
                                     {% if formset.can_delete %}
-                                        {{ form.DELETE }}
+                                        <span style="display: none;">{{ form.DELETE }}</span>
+                                        <button type="button" class="remove-row-btn">
+                                            Remove
+                                        </button>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -84,12 +87,15 @@
 
 <script type="text/template" id="empty-form-template">
     <tr class="criteria-row">
-        <td>{{ formset.empty_form.qualification }}</td>
-        <td>{{ formset.empty_form.requirement }}</td>
-        <td>{{ formset.empty_form.entitlement }}</td>
+        <td style="padding-right: 10px; padding-bottom: 10px;">{{ formset.empty_form.qualification }}</td>
+        <td style="padding-right: 10px; padding-bottom: 10px;">{{ formset.empty_form.requirement }}</td>
+        <td style="padding-bottom: 10px;">{{ formset.empty_form.entitlement }}</td>
         <td>
             {% if formset.can_delete %}
-                {{ formset.empty_form.DELETE }}
+                <span style="display: none;">{{ formset.empty_form.DELETE }}</span>
+                <button type="button" class="remove-row-btn">
+                    Remove
+                </button>
             {% endif %}
         </td>
     </tr>
@@ -117,6 +123,25 @@
 
             // 4. Update the management form count
             totalFormsInput.value = formIdx + 1;
+
+        });
+        tableBody.addEventListener('click', function(e) {
+                if (e.target && e.target.classList.contains('remove-row-btn')) {
+                    e.preventDefault();
+                    const row = e.target.closest('tr');
+                    
+                    // Find the hidden delete checkbox in this row
+                    const deleteCheckbox = row.querySelector('input[type="checkbox"][name$="-DELETE"]');
+                    
+                    if (deleteCheckbox) {
+                        // If it's an existing row (or standard Django formset row), check the delete box and hide
+                        deleteCheckbox.checked = true;
+                        row.style.display = 'none';
+                    } else {
+                        // Fallback for safety: if no checkbox found (unlikely), just remove DOM
+                        row.remove();
+                    }
+                }
         });
     });
 </script>

@@ -602,3 +602,19 @@ html{
 .notif-item:hover {
     background-color: #ddd;
 }
+
+.remove-row-btn {
+    background-color: #dc3545;      
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-left: 5px;
+    margin-bottom: 7px;
+}
+
+.remove-row-btn:hover {
+    background-color: #a21419;      
+}
