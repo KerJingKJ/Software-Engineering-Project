@@ -117,6 +117,18 @@ class Application(models.Model):
         ('Rejected', 'Rejected'),
     ]
 
+    ACCEPTANCE_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('Declined', 'Declined'),
+    ]
+    
+    acceptance_status = models.CharField(
+        max_length=20, 
+        choices=ACCEPTANCE_STATUS_CHOICES, 
+        default='Pending',
+        help_text="Student's decision after committee approval"
+    )
     submitted_date = models.DateField(         default=timezone.now,  # Auto-set to current date
         help_text="Date when the application was submitted" 
      )

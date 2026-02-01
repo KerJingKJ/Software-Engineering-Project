@@ -33,7 +33,10 @@ class Scholarship(models.Model):
     # ])
     notes = models.TextField()
     deadline = models.DateField()
-
+    def get_notes_list(self):
+        """Splits the notes into a list based on new lines."""
+        # This splits the text line by line and removes empty lines
+        return [note.strip() for note in self.notes.splitlines() if note.strip()]
     # def student_type(self):
     #     return self.open_for.split(', ')[0] if self.open_for else ''
 
