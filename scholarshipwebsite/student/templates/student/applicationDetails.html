@@ -20,6 +20,41 @@
             ">{{ progress_track }}</span>
         </div>
 
+        {% if application.committee_status == 'Approved' %}
+        <div style="background-color: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center;">
+            
+            {% if application.acceptance_status == 'Pending' %}
+                <h3 style="color: #2e7d32; margin-top: 0;">🎉 Congratulations!</h3>
+                <p style="color: #1b5e20;">Your application has been approved by the committee. Please respond to this offer.</p>
+                
+                <div style="margin-top: 15px; display: flex; gap: 15px; justify-content: center;">
+                    <a href="{% url 'respond_to_offer' application.id 'Accepted' %}" 
+                       style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                       Accept Offer
+                    </a>
+                    
+                    <a href="{% url 'respond_to_offer' application.id 'Declined' %}" 
+                       onclick="return confirm('Are you sure you want to decline this scholarship? This action cannot be undone.');"
+                       style="background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                       Decline Offer
+                    </a>
+                </div>
+
+            {% else %}
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    {% if application.acceptance_status == 'Accepted' %}
+                        <h3 style="color: #28a745; margin: 0;">Offer Accepted <img src="{% static 'student/img/checkmark.png' %}" alt="Checkmark" style="width: 20px; height: 20px; vertical-align: middle;"></h3>
+                        <p>You have accepted this scholarship offer.</p>
+                    {% else %}
+                        <h3 style="color: #dc3545; margin: 0;">Offer Declined <img src="{% static 'student/img/crossmark.png' %}" alt="Crossmark" style="width: 20px; height: 20px; vertical-align: middle;"></h3>
+                        <p>You have declined this scholarship offer.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+        </div>
+        {% endif %}
+
         {% if application.reviewer_status == "Reviewed" and application.committee_status != "Rejected" %}
             <h3 class="section-heading">Interview Details</h3>
             {% if interview %}

@@ -100,6 +100,27 @@ def applicationStatus(request, id):
     return render(request, "student/applicationStatus.html", {'application':application, 'progress_track':progress_track})
 
 @login_required
+def respond_to_offer(request, id, response):
+    # Fetch the application and ensure it belongs to the logged-in student
+    application = get_object_or_404(Application, pk=id, student=request.user.student)
+    
+    # Security check: only allow response if committee has approved
+    if application.committee_status != 'Approved':
+        messages.error(request, "You cannot respond to an application that is not yet approved.")
+        return redirect('application_detail', id=id)
+    
+    # Update status based on student's choice
+    if response in ['Accepted', 'Declined']:
+        application.acceptance_status = response
+        application.save()
+        
+        status_msg = "accepted" if response == "Accepted" else "declined"
+        messages.success(request, f"You have successfully {status_msg} the scholarship offer.")
+    
+    return redirect('application_detail', id=id)
+
+import re
+@login_required
 def eligibility_check(request):
     try:
         student = request.user.student
@@ -109,6 +130,8 @@ def eligibility_check(request):
     # 1. Start with active scholarships
     scholarships = Scholarship.objects.filter(deadline__gte=timezone.now().date())
 
+    if student.student_type:
+        scholarships = scholarships.filter(student_type=student.student_type)
     # --- GET INPUTS (Use Form Data if available, otherwise use Student Profile) ---
     search_level = request.GET.get('study_level') or student.education_level
     search_gpa = request.GET.get('gpa')
@@ -116,22 +139,47 @@ def eligibility_check(request):
     # Use profile GPA if form GPA is empty
     if not search_gpa and student.current_gpa:
         search_gpa = student.current_gpa
+        
+    def extract_gpa(text):
+        match = re.search(r"(\d+(\.\d+)?)", str(text))
+        return float(match.group(1)) if match else 0.0
+    
+    eligible_scholarships = []
 
+    if search_level and search_gpa:
+        user_gpa = float(search_gpa)
+
+        for scholarship in scholarships:
+            # Check all criteria for this scholarship
+            for criteria in scholarship.criteria_list.all():
+                
+                # 1. Match Qualification (e.g., "Foundation" == "Foundation")
+                # Case-insensitive comparison for safety
+                if criteria.qualification.strip().lower() == search_level.strip().lower():
+                    
+                    # 2. Match Requirement (e.g., 3.8 >= 3.5)
+                    required_gpa = extract_gpa(criteria.requirement)
+                    if user_gpa >= required_gpa:
+                        scholarship.matching_entitlement = criteria.entitlement
+                        eligible_scholarships.append(scholarship)
+                        break # Found one matching criteria, so scholarship is eligible
+    else:
+        eligible_scholarships = list(scholarships)
     # 2. Filter by Level
-    if search_level:
-        scholarships = scholarships.filter(education_level=search_level)
+    # if search_level:
+    #     scholarships = scholarships.filter(education_level=search_level)
 
-    # 3. Filter by GPA
-    if search_gpa:
-        scholarships = scholarships.filter(min_gpa__lte=search_gpa)
+    # # 3. Filter by GPA
+    # if search_gpa:
+    #     scholarships = scholarships.filter(min_gpa__lte=search_gpa)
 
     # 4. Filter by Student Type (Always stick to student's actual type for safety)
-    if student.student_type:
-        scholarships = scholarships.filter(student_type=student.student_type)
+    # if student.student_type:
+    #     scholarships = scholarships.filter(student_type=student.student_type)
 
     return render(request, 'student/eligibility.html', {
         'student': student,
-        'eligible_scholarships': scholarships, 
+        'eligible_scholarships': eligible_scholarships,
         # Pass these back so the form stays filled after searching
         'search_level': search_level,
         'search_gpa': search_gpa

@@ -31,4 +31,5 @@ urlpatterns = [
     path('application/<int:id>/reschedule_interview/', views.reschedule_interview, name='reschedule_interview'), # reschedule interview
     path("application/<int:id>/edit/<int:page>", views.edit_application_form, name="edit_application_form"), #edit path
     path("application/<int:id>/status/", views.applicationStatus, name="applicationStatus"), # detailed look into application's status
+    path('application/<int:id>/respond/<str:response>/', views.respond_to_offer, name='respond_to_offer'),
 ]
