@@ -6,27 +6,34 @@
     
     <h1 class="page-title">Eligibility Checker</h1>
 
-    <div class="checker-card">
-        <form method="GET" action="{% url 'eligibility_check' %}" class="checker-form">
-            <div class="form-group">
-                <label for="study_level">Study Level</label>
-                <select name="study_level" id="study_level">
-                    <option value="">Select Level</option>
-                    <option value="Foundation" {% if search_level == 'Foundation' %}selected{% endif %}>Foundation</option>
-                    <option value="Undergraduate" {% if search_level == 'Undergraduate' %}selected{% endif %}>Undergraduate</option>
-                    <option value="Postgraduate" {% if search_level == 'Postgraduate' %}selected{% endif %}>Postgraduate</option>
-                    <option value="Diploma" {% if search_level == 'Diploma' %}selected{% endif %}>Diploma</option>
-                </select>
-            </div>
+    <form method="GET" action="{% url 'eligibility_check' %}" class="checker-form">
+    <div class="form-row">
+        <div class="form-group">
+            <label>Your Qualification</label>
+            <select name="qualification" id="qualification">
+                <option value="">-- Select --</option>
+                <option value="SPM" {% if search_qual == 'SPM' %}selected{% endif %}>SPM</option>
+                <option value="STPM" {% if search_qual == 'STPM' %}selected{% endif %}>STPM</option>
+                <option value="UEC" {% if search_qual == 'UEC' %}selected{% endif %}>UEC</option>
+                <option value="Foundation" {% if search_qual == 'Foundation' %}selected{% endif %}>Foundation/Matriculation</option>
+                <option value="Diploma" {% if search_qual == 'Diploma' %}selected{% endif %}>Diploma</option>
+                <option value="Undergraduate" {% if search_qual == 'Undergraduate' %}selected{% endif %}>Undergraduate Degree</option>
+            </select>
+        </div>
 
-            <div class="form-group">
-                <label for="gpa">Current CGPA / Result</label>
-                <input type="number" step="0.01" name="gpa" id="gpa" placeholder="e.g. 3.75" value="{{ search_gpa|default:'' }}">
-            </div>
+        <div class="form-group">
+            <label>GPA (if applicable)</label>
+            <input type="number" step="0.01" name="gpa" value="{{ search_gpa }}">
+        </div>
 
-            <button type="submit" class="btn-check">Check Eligibility</button>
-        </form>
+        <div class="form-group">
+            <label>Number of As (if applicable)</label>
+            <input type="number" name="a_count" value="{{ search_as }}">
+        </div>
     </div>
+    
+    <button type="submit" class="btn-check">Check Eligibility</button>
+    </form>
 
     <div class="results-section">
         <h3>Matching Scholarships</h3>
@@ -38,7 +45,8 @@
                     <p class="provider">{{ scholarship.provider }}</p>
                     <div class="card-tags" style="margin-top: 10px; margin-left: 5px;">
                         <span>{{ scholarship.education_level }}</span>
-                        <span>Min GPA: {{ scholarship.min_gpa }}</span>
+                        <span>Deadline: {{ scholarship.deadline }}</span>
+                        
                     </div>
                 </div>
                 <div class="card-footer">
