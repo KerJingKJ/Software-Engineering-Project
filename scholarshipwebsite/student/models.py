@@ -26,6 +26,15 @@ class Student(models.Model):
         blank=True,
     )
 
+    a_count = models.PositiveIntegerField(null=True, blank=True)
+
+    qualification = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        help_text="e.g. SPM, STPM, UEC, Foundation"
+    )
+    
     course = models.CharField(
         max_length=50,
         null=True,

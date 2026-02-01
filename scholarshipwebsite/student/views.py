@@ -98,45 +98,61 @@ def applicationStatus(request, id):
             progress_track = "Reviewed"
 
     return render(request, "student/applicationStatus.html", {'application':application, 'progress_track':progress_track})
-
-@login_required
 def eligibility_check(request):
-    try:
-        student = request.user.student
-    except Student.DoesNotExist:
-        return redirect('home')
-
-    # 1. Start with active scholarships
-    scholarships = Scholarship.objects.filter(deadline__gte=timezone.now().date())
-
-    # --- GET INPUTS (Use Form Data if available, otherwise use Student Profile) ---
-    search_level = request.GET.get('study_level') or student.education_level
+    # 1. Capture GET inputs (Profile is now optional)
+    search_qual = request.GET.get('qualification')
+    search_level = request.GET.get('study_level')
     search_gpa = request.GET.get('gpa')
-    
-    # Use profile GPA if form GPA is empty
-    if not search_gpa and student.current_gpa:
-        search_gpa = student.current_gpa
+    search_as = request.GET.get('a_count')
 
-    # 2. Filter by Level
+    # 2. Initial Filter (Active & Level)
+    scholarships = Scholarship.objects.filter(deadline__gte=timezone.now().date())
+    
     if search_level:
         scholarships = scholarships.filter(education_level=search_level)
 
-    # 3. Filter by GPA
-    if search_gpa:
-        scholarships = scholarships.filter(min_gpa__lte=search_gpa)
+    eligible_scholarships = []
 
-    # 4. Filter by Student Type (Always stick to student's actual type for safety)
-    if student.student_type:
-        scholarships = scholarships.filter(student_type=student.student_type)
+    # 3. Match logic
+    for scholarship in scholarships:
+        criteria_list = scholarship.criteria_list.all()
+        
+        # If no criteria exist, it's open to all in that study level
+        if not criteria_list:
+            eligible_scholarships.append(scholarship)
+            continue
+
+        match_found = False
+        for criteria in criteria_list:
+            # First, qualification MUST match
+            if search_qual and criteria.qualification == search_qual:
+                
+                # Logic for 'GPA' type
+                if criteria.criteria_type == 'GPA' and search_gpa:
+                    if float(search_gpa) >= float(criteria.min_value):
+                        match_found = True
+                
+                # Logic for 'A_COUNT' type (e.g., SPM 9As)
+                elif criteria.criteria_type == 'A_COUNT' and search_as:
+                    if int(search_as) >= int(criteria.min_value):
+                        match_found = True
+                
+                # Logic for 'TEXT' (Always show so they can read manual reqs)
+                elif criteria.criteria_type == 'TEXT':
+                    match_found = True
+
+            if match_found:
+                eligible_scholarships.append(scholarship)
+                break
 
     return render(request, 'student/eligibility.html', {
-        'student': student,
-        'eligible_scholarships': scholarships, 
-        # Pass these back so the form stays filled after searching
+        'eligible_scholarships': eligible_scholarships,
         'search_level': search_level,
-        'search_gpa': search_gpa
+        'search_gpa': search_gpa,
+        'search_qual': search_qual,
+        'search_as': search_as,
     })
-    
+
 @login_required
 def toggle_bookmark(request, scholarship_id):
     # Get the logged-in student (handle case where admin/user has no student profile)
