@@ -34,7 +34,14 @@
                 {% for criteria in scholarship.criteria_list.all %}
                 <tr style="border: 1px solid #034EA1;">
                     <td class="col-left" style="border: 1px solid #034EA1;">{{ criteria.qualification }}</td>
-                    <td class="col-center" style="border: 1px solid #034EA1;">{{ criteria.requirement }}</td>
+                    <td class="col-center" style="border: 1px solid #034EA1;">
+                        {{ criteria.get_criteria_type_display }}: 
+                        {% if criteria.criteria_type == 'A_COUNT' %}
+                            {{ criteria.min_value|floatformat:0 }}
+                        {% else %}
+                            {{ criteria.min_value }}
+                        {% endif %}
+                    </td>
                     <td class="col-right" style="border: 1px solid #034EA1;">{{ criteria.entitlement }}</td>
                 </tr>
                 {% empty %}
@@ -48,8 +55,17 @@
         </table>
         <div>Programme: {{ scholarship.education_level }}</div>
         <div>Nationality: {{ scholarship.student_type }}</div>
-        <div>Minimum GPA: {{ scholarship.min_gpa }}</div>
-        <div>Notes: {{ scholarship.notes }}</div>
+        
+        <div class="notes-section">
+            <strong>Notes:</strong>
+            <ol style="margin-top: 5px; padding-left: 20px;">
+                {% for note in scholarship.get_notes_list %}
+                    <li>{{ note }}</li>
+                {% empty %}
+                    <li>No notes provided.</li>
+                {% endfor %}
+            </ol>
+        </div>
     </div>
     <div class="action-buttons">
         <a href="{% url 'scholarship_list' %}" class="btn-nav">Back</a>

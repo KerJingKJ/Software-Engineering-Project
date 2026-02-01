@@ -18,7 +18,7 @@ class ScholarshipForm(forms.ModelForm):
 
     class Meta:
         model = Scholarship
-        fields = ['name', 'description', 'education_level', 'student_type', 'min_gpa', 'notes', 'deadline']
+        fields = ['name', 'description', 'education_level', 'student_type', 'notes', 'deadline']
         widgets = {
             'deadline': forms.DateInput(attrs={'type': 'date'}),
         }
@@ -67,7 +67,7 @@ class ScholarshipForm(forms.ModelForm):
 CriteriaFormSet = inlineformset_factory(
     Scholarship,
     ScholarshipCriteria,
-    fields=('qualification', 'requirement', 'entitlement'),
+    fields=('qualification', 'criteria_type', 'min_value', 'entitlement'),
     extra=1,            # Number of empty rows to show by default
     can_delete=True     # Allows checking a box to delete a row
 )

@@ -33,17 +33,45 @@ def index(request):
         active_scholarships = Scholarship.objects.filter(deadline__gte=timezone.now().date())
         
         # Filter by CGPA (Scholarship Min GPA <= Student Current GPA)
-        if student.current_gpa:
-            active_scholarships = active_scholarships.filter(min_gpa__lte=student.current_gpa)
-            
-        # Optional: Filter by Education Level & Student Type for better accuracy
         if student.education_level:
             active_scholarships = active_scholarships.filter(education_level=student.education_level)
         if student.student_type:
             active_scholarships = active_scholarships.filter(student_type=student.student_type)
             
+        # Optional: Filter by Education Level & Student Type for better accuracy
+        if student.current_gpa:
+            # Optimize by prefetching criteria to avoid database spam
+            scholarship_list = list(active_scholarships.prefetch_related('criteria_list'))
+            filtered_list = []
+
+            for scholarship in scholarship_list:
+                # Find if there is a GPA requirement
+                gpa_criteria = None
+                for criteria in scholarship.criteria_list.all():
+                    if criteria.criteria_type == 'GPA':
+                        gpa_criteria = criteria
+                        break
+                
+                # Logic: If GPA criteria exists, check against student's GPA. 
+                # If NO GPA criteria exists, assume it's open/eligible.
+                if gpa_criteria and gpa_criteria.min_value:
+                    if student.current_gpa >= float(gpa_criteria.min_value):
+                        filtered_list.append(scholarship)
+                else:
+                    filtered_list.append(scholarship)
+            
+            # Use the filtered list
+            active_scholarships = filtered_list
+            
+        if isinstance(active_scholarships, list):
+            # Sort list by deadline
+            active_scholarships.sort(key=lambda x: x.deadline)
+            recommended_scholarships = active_scholarships[:3]
+        else:
+            # Sort QuerySet by deadline
+            recommended_scholarships = active_scholarships.order_by('deadline')[:3]
+            
         # Take the first 3 matching scholarships
-        recommended_scholarships = active_scholarships.order_by('deadline')[:3]
 
     return render(request, "student/student.html", {
         'latest_app': latest_app,
@@ -119,72 +147,87 @@ def respond_to_offer(request, id, response):
     
     return redirect('application_detail', id=id)
 
-import re
-@login_required
 def eligibility_check(request):
     try:
         student = request.user.student
-    except Student.DoesNotExist:
-        return redirect('home')
+    except AttributeError:
+        # Handle case where user is admin/committee or not logged in
+        student = None
 
-    # 1. Start with active scholarships
-    scholarships = Scholarship.objects.filter(deadline__gte=timezone.now().date())
+    # 1. Fetch Active Scholarships
+    scholarships = Scholarship.objects.filter(
+        deadline__gte=timezone.now().date()
+    ).prefetch_related('criteria_list')
 
-    if student.student_type:
-        scholarships = scholarships.filter(student_type=student.student_type)
-    # --- GET INPUTS (Use Form Data if available, otherwise use Student Profile) ---
-    search_level = request.GET.get('study_level') or student.education_level
+    # 2. Get Inputs (from GET request or Student Profile)
+    # Default to profile data if inputs are empty
+    search_qual = request.GET.get('qualification')
     search_gpa = request.GET.get('gpa')
-    
-    # Use profile GPA if form GPA is empty
-    if not search_gpa and student.current_gpa:
-        search_gpa = student.current_gpa
-        
-    def extract_gpa(text):
-        match = re.search(r"(\d+(\.\d+)?)", str(text))
-        return float(match.group(1)) if match else 0.0
-    
+    search_as = request.GET.get('a_count')
+
+    if student:
+        if not search_qual:
+            search_qual = student.qualification # e.g. "Foundation"
+        if not search_gpa and student.current_gpa:
+            search_gpa = student.current_gpa
+        if not search_as and student.a_count:
+            search_as = student.a_count
+
     eligible_scholarships = []
 
-    if search_level and search_gpa:
-        user_gpa = float(search_gpa)
+    # 3. Matching Logic
+    if search_qual: 
+        # Convert inputs to float for comparison (handle empty strings)
+        try:
+            user_gpa = float(search_gpa) if search_gpa else 0.0
+            user_as = int(search_as) if search_as else 0
+        except ValueError:
+            user_gpa = 0.0
+            user_as = 0
 
         for scholarship in scholarships:
-            # Check all criteria for this scholarship
+            is_match = False
+            # Check every criteria set by the committee
             for criteria in scholarship.criteria_list.all():
                 
-                # 1. Match Qualification (e.g., "Foundation" == "Foundation")
-                # Case-insensitive comparison for safety
-                if criteria.qualification.strip().lower() == search_level.strip().lower():
+                # A. Check Qualification Match (e.g. "SPM" == "SPM")
+                if criteria.qualification.strip().lower() == search_qual.strip().lower():
                     
-                    # 2. Match Requirement (e.g., 3.8 >= 3.5)
-                    required_gpa = extract_gpa(criteria.requirement)
-                    if user_gpa >= required_gpa:
+                    # B. Check Requirement based on Type
+                    if criteria.criteria_type == 'GPA':
+                        # Compare GPA
+                        if criteria.min_value and user_gpa >= criteria.min_value:
+                            is_match = True
+                            # Pass entitlement data to the template for this specific match
+                            scholarship.matching_entitlement = criteria.entitlement 
+                    
+                    elif criteria.criteria_type == 'A_COUNT':
+                        # Compare Number of As
+                        if criteria.min_value and user_as >= criteria.min_value:
+                            is_match = True
+                            scholarship.matching_entitlement = criteria.entitlement
+
+                    elif criteria.criteria_type == 'TEXT':
+                        # Always show text-based criteria (manual review needed)
+                        is_match = True
                         scholarship.matching_entitlement = criteria.entitlement
-                        eligible_scholarships.append(scholarship)
-                        break # Found one matching criteria, so scholarship is eligible
+
+                if is_match:
+                    eligible_scholarships.append(scholarship)
+                    break # Stop checking other criteria for this scholarship if one matches
+
     else:
-        eligible_scholarships = list(scholarships)
-    # 2. Filter by Level
-    # if search_level:
-    #     scholarships = scholarships.filter(education_level=search_level)
-
-    # # 3. Filter by GPA
-    # if search_gpa:
-    #     scholarships = scholarships.filter(min_gpa__lte=search_gpa)
-
-    # 4. Filter by Student Type (Always stick to student's actual type for safety)
-    # if student.student_type:
-    #     scholarships = scholarships.filter(student_type=student.student_type)
+        # If no search performed, show all active (or none, depending on preference)
+        eligible_scholarships = scholarships
 
     return render(request, 'student/eligibility.html', {
         'student': student,
         'eligible_scholarships': eligible_scholarships,
-        # Pass these back so the form stays filled after searching
-        'search_level': search_level,
-        'search_gpa': search_gpa
+        'search_qual': search_qual,
+        'search_gpa': search_gpa,
+        'search_as': search_as,
     })
-    
+
 @login_required
 def toggle_bookmark(request, scholarship_id):
     # Get the logged-in student (handle case where admin/user has no student profile)

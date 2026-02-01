@@ -38,7 +38,9 @@
                     <thead>
                         <tr>
                             <th style="width: 30%;">Qualification</th>
-                            <th style="width: 30%;">Requirement</th>
+                            <th style="width: 30%;">Criteria Type </th>
+                            <th style="width: 30%;">Minimum Requirement</th>
+                            {% comment %} <th style="width: 30%;">Requirement</th> {% endcomment %}
                             <th style="width: 30%;">Entitlement</th>
                             <th style="width: 10%; padding-left: 5px; text-align: center;">Action</th>
                         </tr>
@@ -51,7 +53,9 @@
                                 {% endfor %}
                                 
                                 <td style="padding-right: 10px; padding-bottom: 10px;">{{ form.qualification }}</td>
-                                <td style="padding-right: 10px; padding-bottom: 10px;">{{ form.requirement }}</td>
+                                <td style="padding-right: 10px; padding-bottom: 10px;">{{ form.criteria_type }}</td>
+                                <td style="padding-right: 10px; padding-bottom: 10px;">{{ form.min_value }}</td>
+                                {% comment %} <td style="padding-right: 10px; padding-bottom: 10px;">{{ form.requirement }}</td> {% endcomment %}
                                 <td style="padding-bottom: 10px;">{{ form.entitlement }}</td>
                                 <td>
                                     {% if formset.can_delete %}
@@ -88,7 +92,9 @@
 <script type="text/template" id="empty-form-template">
     <tr class="criteria-row">
         <td style="padding-right: 10px; padding-bottom: 10px;">{{ formset.empty_form.qualification }}</td>
-        <td style="padding-right: 10px; padding-bottom: 10px;">{{ formset.empty_form.requirement }}</td>
+        <td style="padding-right: 10px; padding-bottom: 10px;">{{ formset.empty_form.criteria_type }}</td>
+        <td style="padding-right: 10px; padding-bottom: 10px;">{{ formset.empty_form.min_value }}</td>
+        {% comment %} <td style="padding-right: 10px; padding-bottom: 10px;">{{ formset.empty_form.requirement }}</td> {% endcomment %}
         <td style="padding-bottom: 10px;">{{ formset.empty_form.entitlement }}</td>
         <td>
             {% if formset.can_delete %}
