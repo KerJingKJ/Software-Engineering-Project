@@ -5,47 +5,45 @@
 <div class="eligibility-container">
     
     <h1 class="page-title">Eligibility Checker</h1>
+    <div class="checker-card">
+        <form method="GET" action="{% url 'eligibility_check' %}" class="checker-form">
+            <div class="form-group">
+                <label>Your Qualification</label>
+                <select name="qualification" id="qualification">
+                    <option value="">-- Select --</option>
+                    <option value="SPM" {% if search_qual == 'SPM' %}selected{% endif %}>SPM</option>
+                    <option value="STPM" {% if search_qual == 'STPM' %}selected{% endif %}>STPM</option>
+                    <option value="UEC" {% if search_qual == 'UEC' %}selected{% endif %}>UEC</option>
+                    <option value="Foundation" {% if search_qual == 'Foundation' %}selected{% endif %}>Foundation/Matriculation</option>
+                    <option value="Diploma" {% if search_qual == 'Diploma' %}selected{% endif %}>Diploma</option>
+                    <option value="Undergraduate" {% if search_qual == 'Undergraduate' %}selected{% endif %}>Undergraduate Degree</option>
+                </select>
+            </div>
 
-    <form method="GET" action="{% url 'eligibility_check' %}" class="checker-form">
-    <div class="form-row">
-        <div class="form-group">
-            <label>Your Qualification</label>
-            <select name="qualification" id="qualification">
-                <option value="">-- Select --</option>
-                <option value="SPM" {% if search_qual == 'SPM' %}selected{% endif %}>SPM</option>
-                <option value="STPM" {% if search_qual == 'STPM' %}selected{% endif %}>STPM</option>
-                <option value="UEC" {% if search_qual == 'UEC' %}selected{% endif %}>UEC</option>
-                <option value="Foundation" {% if search_qual == 'Foundation' %}selected{% endif %}>Foundation/Matriculation</option>
-                <option value="Diploma" {% if search_qual == 'Diploma' %}selected{% endif %}>Diploma</option>
-                <option value="Undergraduate" {% if search_qual == 'Undergraduate' %}selected{% endif %}>Undergraduate Degree</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label>GPA (if applicable)</label>
+                <input type="number" step="0.01" name="gpa" value="{{ search_gpa }}">
+            </div>
 
-        <div class="form-group">
-            <label>GPA (if applicable)</label>
-            <input type="number" step="0.01" name="gpa" value="{{ search_gpa }}">
-        </div>
-
-        <div class="form-group">
-            <label>Number of As (if applicable)</label>
-            <input type="number" name="a_count" value="{{ search_as }}">
-        </div>
+            <div class="form-group">
+                <label>Number of As (if applicable)</label>
+                <input type="number" name="a_count" value="{{ search_as }}">
+            </div>
+        <button type="submit" class="btn-check" style="margin-top: -10px;">Check Eligibility</button>
+        </form>
     </div>
-    
-    <button type="submit" class="btn-check">Check Eligibility</button>
-    </form>
-
     <div class="results-section">
         <h3>Matching Scholarships</h3>
         <div class="scholarship-grid">
             {% for scholarship in eligible_scholarships %}
             <div class="scholarship-card">
                 <div class="card-body">
-                    <h4 style="margin: 0; margin-top: -5px;">{{ scholarship.name }}</h4>
+                    <h4 style="margin: 0; margin-top: -2px; font-size: 21px; padding-bottom: 5px;">{{ scholarship.name }}</h4>
                     <p class="provider">{{ scholarship.provider }}</p>
-                    <div class="card-tags" style="margin-top: 10px; margin-left: 5px;">
-                        <span>{{ scholarship.education_level }}</span>
-                        <span>Deadline: {{ scholarship.deadline }}</span>
+                    <div class="card-tags" style="margin-top: 10px; margin-left: 0px; display: flex; gap: 10px; flex-direction: column; align-items: flex-start;">
+                        <span style="font-weight: bold; color: #034EA1; background-color: #034da14b;">{{ scholarship.education_level }}</span>
+                        <span style="font-weight: bold; color: #444444; background-color: transparent; padding: 0px;">Offered: {% for criteria in scholarship.criteria_list.all %}{% if criteria.qualification == search_qual %}{{ criteria.entitlement }}{% endif %}{% endfor %}</span>
+                        <span style="background-color: transparent; font-weight: bold; color: #ff2c2c; padding: 0; border-radius: 3px;">Deadline: {{ scholarship.deadline }}</span>
                         
                     </div>
                 </div>
