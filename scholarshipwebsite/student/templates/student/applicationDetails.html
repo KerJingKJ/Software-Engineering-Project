@@ -20,6 +20,17 @@
             ">{{ progress_track }}</span>
         </div>
 
+        <div class="progress-track">
+        <h3 class="section-heading">Progress</h3>
+        <ul class="progressbar">
+            <li class="{% if progress_track == 'Pending'%}active{% endif %}">Application Received</li>
+            <li class="{% if progress_track == 'Under Review' %}active{% endif %}">Under Review</li>
+            <li class="{% if progress_track == 'Reviewed' %}active{% endif %}">Reviewed</li>
+            <li class="{% if progress_track == 'Interview' %}active{% endif %}">Interview</li>
+            <li class="{% if progress_track == 'Rejected' or progress_track == 'Approved' %}active{% endif %}">Outcome</li>
+        </ul>
+        </div>
+
         {% if application.committee_status == 'Approved' %}
         <div style="background-color: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center;">
             
@@ -54,7 +65,7 @@
             
         </div>
         {% endif %}
-
+        <hr>
         {% if application.reviewer_status == "Reviewed" and application.committee_status != "Rejected" %}
             <h3 class="section-heading">Interview Details</h3>
             {% if interview %}
