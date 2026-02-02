@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from student.forms import StudentProfileForm
 
 def index(request):
     if request.method == "POST":
@@ -116,18 +117,30 @@ def setup_profile(request):
     except UserProfile.DoesNotExist:
         user_profile = UserProfile(user=request.user)
 
+    email_domain = request.user.email.split('@')[-1]
+    is_student = 'student.mmu.edu.my' in email_domain
+    student_instance = None
+    if is_student:
+        # We use get_or_create to ensure the Student object exists 
+        # (It might not exist if they just came from Signup)
+        student_instance, created = Student.objects.get_or_create(user=request.user)
+        
     if request.method == "POST":
         if 'skip' in request.POST:
              return redirect('login')
              
         form = UserProfileForm(request.POST, instance=user_profile)
-        if form.is_valid():
+        student_form = StudentProfileForm(request.POST, instance=student_instance) if is_student else None
+        if form.is_valid() and (student_form is None or student_form.is_valid()):
             form.save()
+            if student_form:
+                student_form.save()
             return redirect('login')
     else:
         form = UserProfileForm(instance=user_profile)
+        student_form = StudentProfileForm(instance=student_instance) if is_student else None
     
-    return render(request, "login/setup_profile.html", {"form": form})
+    return render(request, "login/setup_profile.html", {"form": form, "student_form": student_form, "is_student": is_student})
 
 def forgot_password(request):
     if request.method == 'POST':
@@ -307,18 +320,26 @@ def update_profile(request):
     except UserProfile.DoesNotExist:
         user_profile = UserProfile(user=request.user)
 
+    student_instance = None
+    if is_student and hasattr(request.user, 'student'):
+        student_instance = request.user.student
+        
     if request.method == "POST":
         if 'cancel' in request.POST:
             return redirect('student')  
         form = UserProfileForm(request.POST, instance=user_profile)
-        if form.is_valid():
+        student_form = StudentProfileForm(request.POST, instance=student_instance) if is_student else None
+        if form.is_valid() and (student_form is None or student_form.is_valid()):
             form.save()
+            if student_form:
+                student_form.save()
             messages.success(request, "Profile updated successfully!")
             return redirect('student')
         else:
             messages.error(request, "Please fix the errors below.")
     else:
         form = UserProfileForm(instance=user_profile)
+        student_form = StudentProfileForm(instance=student_instance) if is_student else None
 
     email_domain = request.user.email.split('@')[-1]
     
@@ -331,6 +352,7 @@ def update_profile(request):
 
     return render(request, "login/update_profile.html", {
         "form": form, 
+        "student_form": student_form,
         'base_template': base_template,
         'is_student': is_student
         })

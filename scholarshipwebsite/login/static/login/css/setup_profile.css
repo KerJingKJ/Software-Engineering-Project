@@ -132,3 +132,73 @@ h2 {
     margin: 0;
     padding: 0;
 }
+
+/* --- Academic Section Styles --- */
+
+.academic-container {
+    margin-top: 5px;
+    padding-top: 5px;
+    text-align: left;
+}
+
+.academic-title {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* The Grid Layout */
+
+/* Individual Fields */
+.academic-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.academic-field label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+/* Make inputs look decent within the grid */
+.academic-field input,
+.academic-field select,
+.academic-field textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Ensures padding doesn't break layout */
+    font-size: 0.95rem;
+}
+
+.academic-field textarea {
+    width: 100%;          /* Allows it to shrink on small screens */
+    max-width: 500px;     /* LIMITS the width to 500px (approx half screen) */
+    resize: vertical;     /* User can only resize height, not width */
+}
+
+/* Error Text */
+.field-error {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+/* Utility to make Extracurricular span both columns */
+.full-width {
+    grid-column: span 2;
+}
+
+/* Mobile Responsiveness: Stack columns on small screens */
+@media (max-width: 500px) {
+    .academic-grid {
+        grid-template-columns: 1fr;
+    }
+    .full-width {
+        grid-column: span 1;
+    }
+}

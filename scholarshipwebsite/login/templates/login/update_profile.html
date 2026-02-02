@@ -53,14 +53,23 @@
     <div class="settings-container">
         <h2>Update Your Profile</h2>
             <div id="change-form">
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <div id="button-group">
-                    <button type="submit" class="button">Save Changes</button>
-                    <button type="submit" name="cancel" class="button-2">Cancel</button>
-                </div>
-            </form>
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <h3>Personal Information</h3>
+                    {{ form.as_p }}
+
+                    {% if is_student and student_form %}
+                        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
+                        <h3>Academic Information</h3>
+                        {{ student_form.as_p }}
+                    {% endif %}
+
+                    <div id="button-group">
+                        <button type="submit" class="button">Save Changes</button>
+                        <button type="submit" name="cancel" class="button-2">Cancel</button>
+                    </div>
+                </form>
             </div>
     </div>
 </div>
