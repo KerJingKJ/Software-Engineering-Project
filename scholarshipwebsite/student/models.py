@@ -166,13 +166,20 @@ class Application(models.Model):
     contact_number = models.CharField(max_length=20)
     monthly_income = models.DecimalField(max_digits=12, decimal_places=2)
     email_address = models.EmailField()
-    # QUALIFICATION_CHOICES = choices=[
-    #     ('Foundation', 'Foundation'),
-    #     ('Undergraduate', 'Undergraduate'),
-    #     ('Diploma', 'Diploma'),
-    #     ('Postgraduate', 'Postgraduate')
-    # ]
-    # education_level = models.CharField(max_length=200, choices=QUALIFICATION_CHOICES)
+    EDUCATION_LEVEL_CHOICES = [
+        ('Foundation', 'Foundation'),
+        ('Undergraduate', 'Undergraduate'),
+        ('Diploma', 'Diploma'),
+        ('Postgraduate', 'Postgraduate')
+    ]
+
+    education_level = models.CharField(
+        max_length=50,
+        choices=EDUCATION_LEVEL_CHOICES,
+        null=True,    # Important: Allows existing rows to be empty without crashing
+        blank=True,
+        help_text="Level of education snapshot at time of application"
+    )
     # 1. Define the choices for Previous Qualification
     PREVIOUS_QUALIFICATION_CHOICES = [
         ('SPM', 'SPM'),
