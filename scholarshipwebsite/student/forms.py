@@ -11,7 +11,7 @@ class ApplicationForm(forms.ModelForm):
             'scholarship', 'name', 'home_address', 'correspondence_address',
             'ic_no', 'age', 'date_of_birth', 'intake', 'programme', 'student_identification_number',
             'nationality', 'race', 'gender', 'contact_number', 'monthly_income', 'email_address',
-            'passport_photo', 'education_level', 'academic_result', 
+            'passport_photo', 'highest_qualification', 'academic_result', 
             'personal_achievement', 'supporting_document',
             'ea_form', 'payslip', 'reason_deserve', 
         ]
@@ -92,9 +92,8 @@ class ApplicationForm(forms.ModelForm):
                 'class': 'file-input',
                 
             }),
-            'education_level': forms.Select(attrs={
-                'class': 'form-input',
-                
+            'highest_qualification': forms.Select(attrs={
+                'class': 'form-input small-select',
             }),
             'academic_result': forms.FileInput(attrs={
                 'class': 'file-input',

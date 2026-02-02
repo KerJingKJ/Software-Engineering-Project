@@ -166,14 +166,34 @@ class Application(models.Model):
     contact_number = models.CharField(max_length=20)
     monthly_income = models.DecimalField(max_digits=12, decimal_places=2)
     email_address = models.EmailField()
-    QUALIFICATION_CHOICES = choices=[
+    # QUALIFICATION_CHOICES = choices=[
+    #     ('Foundation', 'Foundation'),
+    #     ('Undergraduate', 'Undergraduate'),
+    #     ('Diploma', 'Diploma'),
+    #     ('Postgraduate', 'Postgraduate')
+    # ]
+    # education_level = models.CharField(max_length=200, choices=QUALIFICATION_CHOICES)
+    # 1. Define the choices for Previous Qualification
+    PREVIOUS_QUALIFICATION_CHOICES = [
+        ('SPM', 'SPM'),
+        ('STPM', 'STPM'),
+        ('UEC', 'UEC'),
+        ('Matriculation', 'Matriculation'),
         ('Foundation', 'Foundation'),
-        ('Undergraduate', 'Undergraduate'),
         ('Diploma', 'Diploma'),
-        ('Postgraduate', 'Postgraduate')
+        ('A-Level', 'A-Level'),
+        ('IB', 'International Baccalaureate'),
+        ('Other', 'Other'),
     ]
-    education_level = models.CharField(max_length=200, choices=QUALIFICATION_CHOICES)
-    
+
+    # 2. Add the field
+    highest_qualification = models.CharField(
+        max_length=50,
+        choices=PREVIOUS_QUALIFICATION_CHOICES,
+        null=True,     # Allow null initially to avoid migration errors on existing rows
+        blank=True,
+        help_text="The highest academic qualification you have completed (e.g. STPM, UEC)"
+    )
     # Uploads
     passport_photo = models.ImageField(upload_to='passport_photos/', null=True, blank=True)
     academic_result = models.FileField(upload_to='academic_results/', null=True, blank=True)
@@ -200,7 +220,7 @@ class Application(models.Model):
         blank=True, 
         related_name='assigned_committee_tasks'
     )
-
+    
     class Meta:
         db_table = 'student_application'
 
