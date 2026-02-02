@@ -295,6 +295,7 @@ def application_form(request):
             application = form.save(commit=False)
             try:
                 application.student = request.user.student
+                application.education_level = request.user.student.education_level
             except Student.DoesNotExist:
                 form.add_error(None, "Not a student.")
                 print(form.errors)
