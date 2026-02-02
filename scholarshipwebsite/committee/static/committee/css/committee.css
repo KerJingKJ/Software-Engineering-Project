@@ -618,3 +618,15 @@ html{
 .remove-row-btn:hover {
     background-color: #a21419;      
 }
+
+#criteria-table select[name$="criteria_type"] {
+    width: 200px;
+}
+
+#criteria-table input[name$="min_value"] {
+    width: 130px;
+}
+
+#criteria-table input[name$="entitlement"] {
+    width: 300px;
+}
