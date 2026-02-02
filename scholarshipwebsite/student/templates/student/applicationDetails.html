@@ -149,8 +149,8 @@
                 <p>{{ application.intake }}</p>
             </div>
             <div class="detail-item">
-                <label>Education Level</label>
-                <p>{{ application.education_level }}</p>
+                <label>Highest Qualification</label>
+                <p>{{ application.get_highest_qualification_display|default:"-" }}</p>
             </div>
              <div class="detail-item">
                 <label>Monthly Income</label>
