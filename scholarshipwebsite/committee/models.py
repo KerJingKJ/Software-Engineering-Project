@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from decimal import Decimal
 # from student.models import Application, Guardian
 
 class Scholarship(models.Model):
@@ -59,7 +60,7 @@ class ScholarshipCriteria(models.Model):
 
     QUALIFICATION_CHOICES = [
     ('SPM', 'SPM'),
-    ('STPM', 'STPM'),
+    ('STPM/A-Level', 'STPM/A-Level'),
     ('UEC', 'UEC'),
     ('Foundation', 'Foundation/Matriculation'),
     ('Diploma', 'Diploma'),
@@ -87,7 +88,10 @@ class ScholarshipCriteria(models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        help_text="GPA or number of As"
+        validators=[
+        MinValueValidator(Decimal('0.00'))
+    ],
+    help_text="GPA or number of As (0.00 – 4.00)"
     )
 
     entitlement = models.CharField(max_length=200)
