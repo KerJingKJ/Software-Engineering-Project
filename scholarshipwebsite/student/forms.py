@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from .models import Application, Guardian
+from .models import Student, Application, Guardian
 from committee.models import Scholarship
 from datetime import date
 
@@ -255,3 +255,27 @@ class GuardianForm(forms.ModelForm):
                 raise forms.ValidationError("Age doesn't match the date of birth provided.")
         
         return cleaned_data
+    
+class StudentProfileForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = [
+            'student_type',
+            'education_level',
+            'course',
+            'year_of_study',
+            'current_gpa',
+            'qualification',
+            'a_count',
+            'extracurricular_activities'
+        ]
+        widgets = {
+            'student_type': forms.Select(attrs={'class': 'form-input small-select'}),
+            'education_level': forms.Select(attrs={'class': 'form-input'}),
+            'course': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'e.g. Computer Science'}),
+            'year_of_study': forms.NumberInput(attrs={'class': 'form-input small-input'}),
+            'current_gpa': forms.NumberInput(attrs={'class': 'form-input medium-input', 'step': '0.01'}),
+            'qualification': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'e.g. SPM/STPM/Foundation'}),
+            'a_count': forms.NumberInput(attrs={'class': 'form-input small-input'}),
+            'extracurricular_activities': forms.Textarea(attrs={'class': 'form-input', 'rows': 4}),
+        }

@@ -17,14 +17,53 @@
     <p>Welcome, {{ request.user.username }}!</p>
     <form method="post">
         {% csrf_token %}
-
+        <h3>Personal Information</h3>
         {{ form.as_p }}
-
-        <button type="submit" name="save" class="button">Save</button>
-        <button type="submit" name="skip" class="button-2">Skip For Now</button>
+        <hr>
+        {% if is_student and student_form %}
+            <div class="academic-container">
+                <h3 class="academic-title">Academic Information</h3>
+                
+                
+                    {% for field in student_form %}
+                    <div class="academic-field {% if field.name == 'extracurricular_activities' %}full-width{% endif %}">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="field-error">{{ field.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                
+            </div>
+        {% endif %}
+        <div style="margin-top: 20px;">
+            <button type="submit" name="save" class="button" style="max-width: fit-content; padding-left: 40px; padding-right: 40px;">Save</button>
+            <button type="submit" name="skip" class="button-2">Skip For Now</button>
+        </div>
     </form>
 </div>
 
 </body>
+<style>
+select, input[type="text"], input[type="email"], input[type="number"], input[type="date"], textarea {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    width: 100%; /* Ensure they fill the column */
+    box-sizing: border-box; /* Fix padding issues */
+    background-color: #fcfcfc;
+}
 
+select{
+    max-width: fit-content;
+    margin-bottom: 10px;
+}
+
+textarea[extracurricular_activities]{
+    width: 90%;
+}
+</style>
 </html>
