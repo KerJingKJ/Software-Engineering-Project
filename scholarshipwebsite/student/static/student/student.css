@@ -1536,3 +1536,59 @@ html{
     border-radius: 5px;
     font-weight: bold;
 }
+
+/* Remove bullets and default padding from the error list */
+.alert-danger ul.errorlist {
+    list-style-type: none; /* Removes the dot */
+    margin: 0;
+    padding: 0;
+}
+
+/* Style individual error messages */
+.alert-danger ul.errorlist li {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+/* Remove the bottom margin from the last error so it fits the box */
+.alert-danger ul.errorlist li:last-child {
+    margin-bottom: 0;
+}
+
+/* --- Field Error Styling --- */
+
+/* The container we added in HTML */
+.field-error {
+    margin-top: 5px;
+}
+
+/* Target the list that Django generates */
+.field-error .errorlist {
+    list-style: none; /* Removes the bullet point */
+    padding: 0;
+    margin: 0;
+}
+
+/* Style the individual error text */
+.field-error .errorlist li {
+    color: #dc3545; /* Standard error red */
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+}
+
+/* Create a custom "!" icon before the text */
+.field-error .errorlist li::before {
+    content: "!";
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    margin-right: 8px;
+    font-size: 10px;
+    font-weight: bold;
+}

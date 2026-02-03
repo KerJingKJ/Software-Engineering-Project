@@ -21,6 +21,7 @@
     enctype="multipart/form-data"
   >
         {% csrf_token %}
+        
         {% comment %} LOL. wacky workaround {% endcomment %}
         <div style="display:none;">
           {{ form.scholarship }}

@@ -235,10 +235,17 @@ class Application(models.Model):
         return f"{self.name} - {self.scholarship.name}"
 
     def save(self, *args, **kwargs):
+        exclude_fields = [
+            'education_level',           # Exclude as per previous request
+            'assigned_reviewer',         # Filled by admin, not student
+            'assigned_committee_member', # Filled by admin, not student
+            'guardian2'                  # <--- ADD THIS to make 2nd guardian optional
+        ]
         # Get all nullable fields
         nullable_fields = [
             field.name for field in self._meta.get_fields()
             if hasattr(field, 'null') and field.null and hasattr(field, 'blank') and field.blank
+            and field.name not in exclude_fields
         ]
         
         # Check if all nullable fields have values
