@@ -248,9 +248,87 @@
                                 name="competition_participant"></td>
                     </tr>
                 </table>
+                
+                <!-- Error message container -->
+                <div id="validation-errors" style="display: none; background-color: #f8d7da; color: #721c24; padding: 15px; margin-top: 20px; border-radius: 5px; border: 1px solid #f5c6cb;">
+                    <strong>Please fix the following errors:</strong>
+                    <ul id="error-list" style="margin: 10px 0 0 20px;"></ul>
+                </div>
+                
                 <br>
                 <button type="submit" style="padding: 10px 20px; cursor: pointer;">Next</button>
             </form>
+            
+            <script>
+            document.querySelector('form').addEventListener('submit', function(e) {
+                var errors = [];
+                var errorContainer = document.getElementById('validation-errors');
+                var errorList = document.getElementById('error-list');
+                
+                // Qualifying Exam - must select exactly one
+                var qualifyingExamFields = ['exam_foundation_spm', 'exam_degree_stpm_uec', 'exam_degree_matriculation'];
+                var qualifyingExamChecked = qualifyingExamFields.filter(function(name) {
+                    var checkbox = document.querySelector('input[name="' + name + '"]');
+                    return checkbox && checkbox.checked;
+                });
+                
+                if (qualifyingExamChecked.length === 0) {
+                    errors.push('Please select one option for Qualifying Exam.');
+                } else if (qualifyingExamChecked.length > 1) {
+                    errors.push('Please select only ONE option for Qualifying Exam.');
+                }
+                
+                // Minimum Grades/CGPA - must select exactly one
+                var gradesFields = ['grade_spm', 'grade_stpm', 'grade_uec', 'grade_foundation'];
+                var gradesChecked = gradesFields.filter(function(name) {
+                    var checkbox = document.querySelector('input[name="' + name + '"]');
+                    return checkbox && checkbox.checked;
+                });
+                
+                if (gradesChecked.length === 0) {
+                    errors.push('Please select one option for Minimum Grades/CGPA.');
+                } else if (gradesChecked.length > 1) {
+                    errors.push('Please select only ONE option for Minimum Grades/CGPA.');
+                }
+                
+                // Academic Performance (Grades) - must select at least one
+                var academicPerformanceFields = ['academic_borderline', 'academic_competent', 'academic_superior', 'academic_elite'];
+                var academicPerformanceChecked = academicPerformanceFields.filter(function(name) {
+                    var checkbox = document.querySelector('input[name="' + name + '"]');
+                    return checkbox && checkbox.checked;
+                });
+                
+                if (academicPerformanceChecked.length === 0) {
+                    errors.push('Please select at least one option for Academic Performance (Grades).');
+                }
+                
+                // Academic Rigor & Awards - must select at least one
+                var rigorFields = ['rigor_best_student', 'rigor_competitions', 'rigor_none'];
+                var rigorChecked = rigorFields.filter(function(name) {
+                    var checkbox = document.querySelector('input[name="' + name + '"]');
+                    return checkbox && checkbox.checked;
+                });
+                
+                if (rigorChecked.length === 0) {
+                    errors.push('Please select at least one option for Academic Rigor & Awards.');
+                }
+                
+                // Show errors if any
+                if (errors.length > 0) {
+                    e.preventDefault();
+                    errorList.innerHTML = '';
+                    errors.forEach(function(error) {
+                        var li = document.createElement('li');
+                        li.textContent = error;
+                        errorList.appendChild(li);
+                    });
+                    errorContainer.style.display = 'block';
+                    errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    errorContainer.style.display = 'none';
+                }
+            });
+            </script>
             {% else %}
             <p>Select an application to view eligibility check.</p>
             {% endif %}
