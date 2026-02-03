@@ -54,7 +54,6 @@
     </div>
 
     <div class="form-content">
-
       <div class="form-row">
         <label>Name:</label>
         {{ form.name }}
@@ -75,20 +74,45 @@
         {{ form.ic_no }}
       </div>
 
+      
       <div class="form-row">
         <label>Age:</label>
         {{ form.age }}
+        <div style="color: red; font-size: 0.9em;">
+          {{ form.age.errors }}
+        </div>
       </div>
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
+          {% for error in form.non_field_errors %}
+              <p style="margin: 0; padding: 0;">
+                  <i class="fas fa-exclamation-circle"></i> {{ error }}
+              </p>
+          {% endfor %}
+      </div>
+      {% endif %}
       <div class="form-row">
         <label>Date of Birth:</label>
         {{ form.date_of_birth }}
+        <div style="color: red; font-size: 0.9em;">
+            {{ form.date_of_birth.errors }}
+        </div>
       </div>
 
       <div class="form-row">
         <label>Intake:</label>
         {{ form.intake }}
       </div>
-
+      {% if form.intake.errors %}
+        <div style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
+            {% for error in form.intake.errors %}
+                <p style="margin: 0; padding: 0;">
+                  <i class="fas fa-exclamation-circle"></i> {{ error }}
+                </p>
+            {% endfor %}
+        </div>
+      {% endif %}
       <div class="form-row">
         <label>Programme:</label>
         {{ form.programme }}
