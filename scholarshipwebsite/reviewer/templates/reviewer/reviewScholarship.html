@@ -54,6 +54,18 @@
                         N/A
                         {% endif %}  
                     </div>
+
+
+                    <div style="margin-top: 5px;">
+                        <strong>Supporting Documents: </strong>
+                        {% if app.supporting_document %}
+                            <a href="{{ app.supporting_document.url }}" target="_blank">supportdocuments.pdf</a>
+                            {% else %}
+                            N/A
+                            {% endif %} 
+                    </div>
+
+                    
                     
                 </div>
             </div>
