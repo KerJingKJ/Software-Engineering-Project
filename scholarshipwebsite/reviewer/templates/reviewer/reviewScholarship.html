@@ -40,14 +40,22 @@
                     <strong>Documents:</strong>
                     <div style="margin-top: 5px;">
                         <strong>IC/Passport:</strong>
-                        {% if app.ic_passport_file %}<a href="{{ app.ic_passport_file.url }}" target="_blank">View
-                            File</a>{% else %}N/A{% endif %}
+                        {% if app.passport_photo %}
+                        <a href="{{ app.passport_photo.url }}" target="_blank">passportphoto.jpg</a>
+                        {% else %}
+                        N/A
+                        {% endif %}
                     </div>
+
                     <div style="margin-top: 5px;">
-                        <strong>Offer Letter:</strong>
-                        {% if app.offer_letter %}<a href="{{ app.offer_letter.url }}" target="_blank">View File</a>{%
-                        else %}N/A{% endif %}
+                        <strong>Academic Result:</strong>
+                        {% if app.academic_result %}
+                        <a href="{{ app.academic_result.url }}" target="_blank">result.pdf</a>
+                        {% else %}
+                        N/A
+                        {% endif %}  
                     </div>
+                    
                 </div>
             </div>
             {% else %}
