@@ -27,23 +27,14 @@ class Scholarship(models.Model):
             ('Local', 'Local')
         ]
     )
-    # min_gpa = models.DecimalField(max_digits=3, decimal_places=2, default=3.0,
-    #                               validators=[
-    #     MinValueValidator(0.0),
-    #     MaxValueValidator(4.0)
-    # ])
+   
     notes = models.TextField()
     deadline = models.DateField()
     def get_notes_list(self):
         """Splits the notes into a list based on new lines."""
         # This splits the text line by line and removes empty lines
         return [note.strip() for note in self.notes.splitlines() if note.strip()]
-    # def student_type(self):
-    #     return self.open_for.split(', ')[0] if self.open_for else ''
-
-    # def education_level(self):
-    #     return self.open_for.split(', ')[1] if ', ' in self.open_for else ''
-    
+       
     @property
     def status(self):
         return "Open" if self.deadline >= timezone.now().date() else "Closed"

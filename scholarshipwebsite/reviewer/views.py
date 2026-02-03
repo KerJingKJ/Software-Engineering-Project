@@ -3,12 +3,12 @@ from django.db.models import Count, F
 from django.contrib import messages
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.contrib.auth.decorators import login_required
 from committee.models import Scholarship
 from student.models import Student, Application
 from .models import EligibilityCheck
 
-
+@login_required
 def index(request):
     """
     Renders the main dashboard page.
@@ -31,6 +31,7 @@ def index(request):
     }
     return render(request, "reviewer/reviewer.html", context)
 
+@login_required
 def review_list(request):
     applications = Application.objects.filter(assigned_reviewer = request.user).order_by('submitted_date')
     
@@ -51,6 +52,7 @@ def review_list(request):
             
     return render(request, "reviewer/review_list.html", {'applications': applications})
 
+@login_required
 def review_detail(request, app_id):
     app = Application.objects.filter(id=app_id).first()
     if not app:
@@ -132,7 +134,7 @@ def review_detail(request, app_id):
     }
     return render(request, "reviewer/reviewScholarship.html", context)
 
-
+@login_required
 def review_step2(request, app_id):
     app = Application.objects.filter(id=app_id).first()
     if not app:
@@ -215,6 +217,7 @@ def review_step2(request, app_id):
     }
     return render(request, "reviewer/review_step2.html", context)
 
+@login_required
 def review_step3(request, app_id):
     app = Application.objects.filter(id=app_id).first()
     if not app:
