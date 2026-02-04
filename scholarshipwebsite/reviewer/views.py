@@ -77,18 +77,44 @@ def review_detail(request, app_id):
     if request.method == "POST":
         data = request.session.get(f'review_{app.id}', {})
         
-        step1_fields = [
-            'citizenship_check', 'programme_level_check', 'exam_foundation_spm',
-            'exam_degree_stpm_uec', 'exam_degree_matriculation', 'grade_spm',
-            'grade_stpm', 'grade_uec', 'grade_foundation', 'documents_verified',
-            'academic_borderline', 'academic_competent', 'academic_superior', 'academic_elite',
-            'rigor_best_student', 'rigor_competitions', 'rigor_none',
+        # Fields that remain checkboxes
+        checkbox_fields = ['citizenship_check', 'programme_level_check', 'documents_verified']
+        for f in checkbox_fields:
+            data[f] = request.POST.get(f) == 'on'
+
+        # Group 1: Qualifying Exam (Radio)
+        qual_exam = request.POST.get('qualifying_exam')
+        data['exam_foundation_spm'] = (qual_exam == 'exam_foundation_spm')
+        data['exam_degree_stpm_uec'] = (qual_exam == 'exam_degree_stpm_uec')
+        data['exam_degree_matriculation'] = (qual_exam == 'exam_degree_matriculation')
+
+        # Group 2: Minimum Grades/CGPA (Radio)
+        min_grades = request.POST.get('minimum_grades')
+        data['grade_spm'] = (min_grades == 'grade_spm')
+        data['grade_stpm'] = (min_grades == 'grade_stpm')
+        data['grade_uec'] = (min_grades == 'grade_uec')
+        data['grade_foundation'] = (min_grades == 'grade_foundation')
+
+        # Group 3: Academic Performance (Radio)
+        acad_perf = request.POST.get('academic_performance')
+        data['academic_borderline'] = (acad_perf == 'academic_borderline')
+        data['academic_competent'] = (acad_perf == 'academic_competent')
+        data['academic_superior'] = (acad_perf == 'academic_superior')
+        data['academic_elite'] = (acad_perf == 'academic_elite')
+
+        # Group 4: Academic Rigor (Radio)
+        acad_rigor = request.POST.get('academic_rigor')
+        data['rigor_best_student'] = (acad_rigor == 'rigor_best_student')
+        data['rigor_competitions'] = (acad_rigor == 'rigor_competitions')
+        data['rigor_none'] = (acad_rigor == 'rigor_none')
+
+        # Fields that remain checkboxes (Leadership/Competition)
+        other_checkboxes = [
             'leadership_leader', 'leadership_subleader', 'leadership_secretary',
             'leadership_committee', 'leadership_member', 'competition_national',
             'competition_state', 'competition_university', 'competition_participant'
         ]
-        
-        for f in step1_fields:
+        for f in other_checkboxes:
             data[f] = request.POST.get(f) == 'on'
         
         request.session[f'review_{app.id}'] = data
