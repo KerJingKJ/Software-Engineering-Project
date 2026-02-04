@@ -140,23 +140,29 @@ def review_step2(request, app_id):
     if not app:
         return redirect('review')
     
-    # Step 2 fields
-    step2_fields = [
-        'integrity_income_check', 'financial_priority',
-        'hardship_single_income', 'hardship_large_family', 'hardship_retiree', 'hardship_medical',
-        'essay_compelling', 'essay_generic', 'essay_poor'
-    ]
-    
+    # Step 2 fields - now hardship and essay are single radio values
     if request.method == "POST":
         # Get existing session data (from step 1)
         data = request.session.get(f'review_{app.id}', {})
         
-        # Save step 2 checkbox fields
-        for f in step2_fields:
-            if f == 'financial_priority':
-                data[f] = request.POST.get(f, '')
-            else:
-                data[f] = request.POST.get(f) == 'on'
+        # Save step 2 fields
+        data['integrity_income_check'] = request.POST.get('integrity_income_check') == 'on'
+        data['financial_priority'] = request.POST.get('financial_priority', '')
+        
+        # Hardship - radio button, convert to individual booleans for DB compatibility
+        hardship_value = request.POST.get('hardship', '')
+        data['hardship_single_income'] = hardship_value == 'single_income'
+        data['hardship_large_family'] = hardship_value == 'large_family'
+        data['hardship_retiree'] = hardship_value == 'retiree'
+        data['hardship_medical'] = hardship_value == 'medical'
+        data['hardship'] = hardship_value  # Store the actual value too
+        
+        # Essay - radio button, convert to individual booleans for DB compatibility
+        essay_value = request.POST.get('essay', '')
+        data['essay_compelling'] = essay_value == 'compelling'
+        data['essay_generic'] = essay_value == 'generic'
+        data['essay_poor'] = essay_value == 'poor'
+        data['essay'] = essay_value  # Store the actual value too
         
         # Save to session
         request.session[f'review_{app.id}'] = data
@@ -169,15 +175,42 @@ def review_step2(request, app_id):
             return redirect('review_step3', app_id=app.id)
     
     # Load existing data from session or DB
-    existing_data = request.session.get(f'review_{app.id}')
-    if existing_data is None:
-        ec = EligibilityCheck.objects.filter(application=app).first()
-        if ec:
-            existing_data = {}
-            for f in step2_fields:
-                existing_data[f] = getattr(ec, f, False) if f != 'financial_priority' else (getattr(ec, f, '') or '')
-        else:
-            existing_data = {}
+    # First check if we have step 2 data in session, otherwise load from DB
+    session_data = request.session.get(f'review_{app.id}', {})
+    
+    # Check if step 2 fields exist in session
+    has_step2_in_session = 'hardship' in session_data or 'essay' in session_data or 'financial_priority' in session_data
+    
+    # Load from database
+    ec = EligibilityCheck.objects.filter(application=app).first()
+    
+    if ec and not has_step2_in_session:
+        # Load step 2 data from database
+        existing_data = session_data.copy()  # Keep step 1 data if exists
+        existing_data.update({
+            'integrity_income_check': ec.integrity_income_check,
+            'financial_priority': ec.financial_priority or '',
+            'hardship_single_income': ec.hardship_single_income,
+            'hardship_large_family': ec.hardship_large_family,
+            'hardship_retiree': ec.hardship_retiree,
+            'hardship_medical': ec.hardship_medical,
+            'essay_compelling': ec.essay_compelling,
+            'essay_generic': ec.essay_generic,
+            'essay_poor': ec.essay_poor,
+        })
+        # Derive radio values from booleans
+        if ec.hardship_single_income: existing_data['hardship'] = 'single_income'
+        elif ec.hardship_large_family: existing_data['hardship'] = 'large_family'
+        elif ec.hardship_retiree: existing_data['hardship'] = 'retiree'
+        elif ec.hardship_medical: existing_data['hardship'] = 'medical'
+        else: existing_data['hardship'] = ''
+        
+        if ec.essay_compelling: existing_data['essay'] = 'compelling'
+        elif ec.essay_generic: existing_data['essay'] = 'generic'
+        elif ec.essay_poor: existing_data['essay'] = 'poor'
+        else: existing_data['essay'] = ''
+    else:
+        existing_data = session_data
     
     # Get guardians for display
     guardians = []
@@ -193,6 +226,8 @@ def review_step2(request, app_id):
     
     # Prepare checked attributes for template
     fp_value = existing_data.get('financial_priority', '')
+    hardship_value = existing_data.get('hardship', '')
+    essay_value = existing_data.get('essay', '')
     
     context = {
         'app': app,
@@ -207,13 +242,15 @@ def review_step2(request, app_id):
         'fp_2_attr': 'checked' if fp_value == '2' else '',
         'fp_3_attr': 'checked' if fp_value == '3' else '',
         'fp_4_attr': 'checked' if fp_value == '4' else '',
-        'hs_attr': 'checked' if existing_data.get('hardship_single_income') else '',
-        'hl_attr': 'checked' if existing_data.get('hardship_large_family') else '',
-        'hr_attr': 'checked' if existing_data.get('hardship_retiree') else '',
-        'hm_attr': 'checked' if existing_data.get('hardship_medical') else '',
-        'ec_attr': 'checked' if existing_data.get('essay_compelling') else '',
-        'eg_attr': 'checked' if existing_data.get('essay_generic') else '',
-        'ep_attr': 'checked' if existing_data.get('essay_poor') else '',
+        # Hardship radio
+        'hs_attr': 'checked' if hardship_value == 'single_income' else '',
+        'hl_attr': 'checked' if hardship_value == 'large_family' else '',
+        'hr_attr': 'checked' if hardship_value == 'retiree' else '',
+        'hm_attr': 'checked' if hardship_value == 'medical' else '',
+        # Essay radio
+        'ec_attr': 'checked' if essay_value == 'compelling' else '',
+        'eg_attr': 'checked' if essay_value == 'generic' else '',
+        'ep_attr': 'checked' if essay_value == 'poor' else '',
     }
     return render(request, "reviewer/review_step2.html", context)
 

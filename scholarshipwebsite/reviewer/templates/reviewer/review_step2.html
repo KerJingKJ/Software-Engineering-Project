@@ -1,7 +1,6 @@
 {% extends 'reviewer/base.html' %}
 {% block content %}
 <style>
-    
     .review-container {
         display: flex;
         flex-direction: row;
@@ -92,7 +91,7 @@
         display: block;
     }
 
-    
+
     .rubric-section {
         border: 1px solid #7da5d8;
         border-radius: 8px;
@@ -187,7 +186,7 @@
     <h1>Scholarship Review - Step 2</h1>
 
     <div class="review-container">
-        
+
         <div class="column">
             <div class="column-header">Applicant Form</div>
             <div class="scrollable-content">
@@ -260,10 +259,10 @@
                 <p>No Guardian Information Available.</p>
                 {% endfor %}
 
-                
+
                 <div class="guardian-card" style="background-color: white; border: 2px solid #2b5797; padding: 15px;">
                     <span class="docs-header">Supporting Documents:</span>
-                    
+
                     <div style="margin-top: 5px;">
                         <strong>EA Form:</strong>
                         {% if app.ea_form and app.ea_form.name %}<a href="{{ app.ea_form.url }}"
@@ -279,14 +278,14 @@
             </div>
         </div>
 
-        
+
         <div class="column">
             <div class="column-header">Criteria Rubrics</div>
             <div class="scrollable-content">
                 <form method="post">
                     {% csrf_token %}
 
-                    
+
                     <div class="rubric-section" style="border: 2px solid #2b5797;">
                         <div class="rubric-title">1. Data Integrity Check</div>
                         <div class="rubric-box"
@@ -301,7 +300,7 @@
                         </div>
                     </div>
 
-                    
+
                     <div class="rubric-section" style="border: 2px solid #2b5797;">
                         <div class="rubric-title">2. Financial Priority Scoring</div>
                         <div class="rubric-box">
@@ -352,20 +351,20 @@
                         </div>
                     </div>
 
-                    
+
                     <div class="rubric-section" style="border: 2px solid #2b5797;">
                         <div class="rubric-title">3. Hardship & Burden Indicators</div>
                         <div class="rubric-box">
                             <div class="checkbox-group">
                                 <label class="checkbox-item" style="cursor: pointer;">
-                                    <input type="checkbox" name="hardship_single_income" {{ hs_attr }}>
+                                    <input type="radio" name="hardship" value="single_income" {{ hs_attr }}>
                                     <div>
                                         <div style="font-weight: bold;">Single Income/Single Parent</div>
                                         <div style="font-size: 0.85rem; color: #555;">Only one breadwinner listed</div>
                                     </div>
                                 </label>
                                 <label class="checkbox-item" style="cursor: pointer;">
-                                    <input type="checkbox" name="hardship_large_family" {{ hl_attr }}>
+                                    <input type="radio" name="hardship" value="large_family" {{ hl_attr }}>
                                     <div>
                                         <div style="font-weight: bold;">Large Family</div>
                                         <div style="font-size: 0.85rem; color: #555;">5+ dependents (siblings) listed in
@@ -373,7 +372,7 @@
                                     </div>
                                 </label>
                                 <label class="checkbox-item" style="cursor: pointer;">
-                                    <input type="checkbox" name="hardship_retiree" {{ hr_attr }}>
+                                    <input type="radio" name="hardship" value="retiree" {{ hr_attr }}>
                                     <div>
                                         <div style="font-weight: bold;">Retiree/Pensioner</div>
                                         <div style="font-size: 0.85rem; color: #555;">Guardian age is >60 or listed as
@@ -381,7 +380,7 @@
                                     </div>
                                 </label>
                                 <label class="checkbox-item" style="cursor: pointer;">
-                                    <input type="checkbox" name="hardship_medical" {{ hm_attr }}>
+                                    <input type="radio" name="hardship" value="medical" {{ hm_attr }}>
                                     <div>
                                         <div style="font-weight: bold;">Medical Burden</div>
                                         <div style="font-size: 0.85rem; color: #555;">Evidence of chronic illness in the
@@ -391,13 +390,13 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="rubric-section" style="border: 2px solid #2b5797;">
                         <div class="rubric-title">C. Personal Statement / Essay Quality</div>
                         <div class="rubric-box">
                             <div class="checkbox-group">
                                 <label class="checkbox-item" style="cursor: pointer;">
-                                    <input {{ ec_attr }} type="checkbox" name="essay_compelling">
+                                    <input type="radio" name="essay" value="compelling" {{ ec_attr }}>
                                     <div>
                                         <div style="font-weight: bold;">Compelling</div>
                                         <div style="font-size: 0.85rem; color: #555;">Unique story, clear goals,
@@ -405,7 +404,7 @@
                                     </div>
                                 </label>
                                 <label class="checkbox-item" style="cursor: pointer;">
-                                    <input {{ eg_attr }} type="checkbox" name="essay_generic">
+                                    <input type="radio" name="essay" value="generic" {{ eg_attr }}>
                                     <div>
                                         <div style="font-weight: bold;">Generic</div>
                                         <div style="font-size: 0.85rem; color: #555;">Standard answers, lacks specific
@@ -413,7 +412,7 @@
                                     </div>
                                 </label>
                                 <label class="checkbox-item" style="cursor: pointer;">
-                                    <input {{ ep_attr }} type="checkbox" name="essay_poor">
+                                    <input type="radio" name="essay" value="poor" {{ ep_attr }}>
                                     <div>
                                         <div style="font-weight: bold;">Poor</div>
                                         <div style="font-size: 0.85rem; color: #555;">Grammatical errors, off-topic, or
@@ -424,11 +423,47 @@
                         </div>
                     </div>
 
-                    
                     <div class="nav-buttons">
                         <button type="submit" name="previous" class="btn-nav btn-prev">Previous</button>
-                        <button type="submit" name="next" class="btn-nav btn-next">Next</button>
+                        <button type="submit" name="next" class="btn-nav btn-next"
+                            onclick="return validateForm()">Next</button>
                     </div>
+
+                    <script>
+                        function validateForm() {
+                            let errors = [];
+
+                            // 1. Data Integrity Check - must be checked
+                            const integrity = document.querySelector('input[name="integrity_income_check"]');
+                            if (!integrity || !integrity.checked) {
+                                errors.push("Data Integrity Check must be selected");
+                            }
+
+                            // 2. Financial Priority - must select one
+                            const fp = document.querySelector('input[name="financial_priority"]:checked');
+                            if (!fp) {
+                                errors.push("Financial Priority Scoring must have one option selected");
+                            }
+
+                            // 3. Hardship - must select one
+                            const hardship = document.querySelector('input[name="hardship"]:checked');
+                            if (!hardship) {
+                                errors.push("Hardship & Burden Indicators must have one option selected");
+                            }
+
+                            // 4. Essay Quality - must select one
+                            const essay = document.querySelector('input[name="essay"]:checked');
+                            if (!essay) {
+                                errors.push("Personal Statement / Essay Quality must have one option selected");
+                            }
+
+                            if (errors.length > 0) {
+                                alert("Please complete the following requirements:\n\n- " + errors.join("\n- "));
+                                return false;
+                            }
+                            return true;
+                        }
+                    </script>
 
                 </form>
             </div>
