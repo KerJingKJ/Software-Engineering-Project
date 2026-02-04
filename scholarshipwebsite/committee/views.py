@@ -178,7 +178,7 @@ def schedule_interview(request, id):
         interview.skip_signal = True
         interview.save()
         
-        # --- SEND NOTIFICATION (ONE TIME ONLY) ---
+        # send notification to student, and allow student to reschedule interview
         reschedule_url = reverse('reschedule_interview', args=[application.id])
         
         Notification.objects.create(
@@ -189,7 +189,7 @@ def schedule_interview(request, id):
                 f"<a href='{reschedule_url}' style='color: #007bff; text-decoration: underline;'>Click here to reschedule</a> if this time works for you."
             )
         )
-        # ----------------------------------------
+        
         
         return redirect('decision_page', id=id)
 

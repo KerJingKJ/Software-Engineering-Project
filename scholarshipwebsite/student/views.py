@@ -8,6 +8,7 @@ from .forms import ApplicationForm, GuardianForm
 from datetime import date
 from django.contrib.auth.decorators import login_required
 from committee.models import CommitteeNotification
+
 # Create your views here.
 # views.py
 
@@ -283,7 +284,9 @@ def bookmark_list(request):
     })
 
 def application_form(request):
-    scholarships = Scholarship.objects.all()
+    today = timezone.now().date()
+    # scholarships = Scholarship.objects.all()
+    scholarships = Scholarship.objects.filter(deadline__gte=today)
 
     
     if request.method == "POST":
