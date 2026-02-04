@@ -60,6 +60,20 @@ def review_detail(request, app_id):
     if not app:
         return redirect('review')
 
+    # Auto-check citizenship for Malaysian students (Local)
+    if app.nationality == 'Local':
+        eligibility, created = EligibilityCheck.objects.get_or_create(application=app)
+        if not eligibility.citizenship_check:
+            eligibility.citizenship_check = True
+            eligibility.save()
+            
+            # Update session if it already exists to reflect the change immediately
+            data = request.session.get(f'review_{app.id}')
+            if data is not None:
+                data['citizenship_check'] = True
+                request.session[f'review_{app.id}'] = data
+                request.session.modified = True
+
     if request.method == "POST":
         data = request.session.get(f'review_{app.id}', {})
         
