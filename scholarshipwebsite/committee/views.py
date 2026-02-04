@@ -19,7 +19,10 @@ from django.views.generic import View
  
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 
+from django.db import models
 from django.db.models import Count
 
 from student.models import Student, Application, Guardian, Notification
@@ -73,22 +76,26 @@ def delete_scholarship(request, id):
         return redirect("manage")
     return redirect("manage")
 
-def index(response):
-    total_apps = Application.objects.count()
-    approved = Application.objects.filter(committee_status='Approved').count()
-    committee_rejected = Application.objects.filter(committee_status='Rejected').count() 
-    reviewer_rejected =  Application.objects.filter(reviewer_status='Rejected').count()
+@login_required
+def index(request):
+    user_apps = Application.objects.filter(assigned_committee_member=request.user)
+    total_apps = user_apps.count()
+    total_scholarships = Scholarship.objects.count()
+    approved = user_apps.filter(committee_status='Approved').count()
+    committee_rejected = user_apps.filter(committee_status='Rejected').count() 
+    reviewer_rejected =  user_apps.filter(reviewer_status='Rejected').count()
     rejected = committee_rejected + reviewer_rejected
-    committee_pending = Application.objects.filter(committee_status='Pending').count() 
+    committee_pending = user_apps.filter(committee_status='Pending').count() 
     pending = committee_pending - reviewer_rejected
     
     context = {
         'total_apps': total_apps,
+        'total_scholarships': total_scholarships,
         'approved': approved,
         'rejected': rejected,
         'pending': pending
     }
-    return render(response, "committee/committee.html", context)
+    return render(request, "committee/committee.html", context)
 
 def manage(response):
     scholarships = Scholarship.objects.all()
@@ -344,22 +351,66 @@ def view_reviewer_mark(request, id):
  
 
 class ChartData(APIView):
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
  
-    def get(self, request, format = None):
-        scholarships = Scholarship.objects.annotate(
-            app_count=Count('applications')
-        )
+    def get(self, request, format=None):
+        # Filter applications by the logged-in committee member
+        user_apps_query = Application.objects.filter(assigned_committee_member=request.user)
 
-        labels = [s.name for s in scholarships]
-        chartLabel = "Scholarship Application Volume"
-        chartdata = [s.app_count for s in scholarships]
-        total_applications = Application.objects.count()
-        data ={
-            'labels': labels,
-            'chartLabel': chartLabel,
-            'chartdata': chartdata,
+        # 1. Growth Chart: Cumulative Applications
+        daily_apps = user_apps_query.values('submitted_date').annotate(
+            count=Count('id')
+        ).order_by('submitted_date')
+        
+        line_labels = []
+        line_data = []
+        cumulative_count = 0
+        for entry in daily_apps:
+            if entry['submitted_date']:
+                line_labels.append(entry['submitted_date'].strftime('%d-%m-%Y'))
+                cumulative_count += entry['count']
+                line_data.append(cumulative_count)
+
+        # 2. Status Chart: Approved vs Rejected vs Pending
+        # For committee, they care about committee_status
+        approved = user_apps_query.filter(committee_status='Approved').count()
+        rejected = user_apps_query.filter(committee_status='Rejected').count()
+        pending = user_apps_query.exclude(committee_status__in=['Approved', 'Rejected']).count()
+        
+        # 3. Popularity Chart: Apps per Scholarship (Only for assigned apps)
+        scholarships = Scholarship.objects.filter(application__assigned_committee_member=request.user).annotate(
+            count=Count('application', filter=models.Q(application__assigned_committee_member=request.user))
+        ).distinct()
+        sch_labels = [s.name for s in scholarships]
+        sch_data = [s.count for s in scholarships]
+
+        # 4. Demographic Chart: Education Level
+        edu_levels = user_apps_query.values('student__education_level').annotate(
+            count=Count('id')
+        )
+        edu_labels = [e['student__education_level'] for e in edu_levels if e['student__education_level']]
+        edu_data = [e['count'] for e in edu_levels if e['student__education_level']]
+
+        data = {
+            "growth_chart": {
+                "labels": line_labels,
+                "data": line_data,
+                "label": "Total Applications"
+            },
+            "status_chart": {
+                "labels": ["Approved", "Rejected", "Pending"],
+                "data": [approved, rejected, pending]
+            },
+            "scholarship_chart": {
+                "labels": sch_labels,
+                "data": sch_data,
+                "label": "Applications"
+            },
+            "education_chart": {
+                "labels": edu_labels,
+                "data": edu_data
+            }
         }
         return Response(data)
     
