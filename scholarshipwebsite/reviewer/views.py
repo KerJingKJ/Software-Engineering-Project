@@ -471,11 +471,11 @@ class ChartData(APIView):
         sch_data = [s.count for s in scholarships]
 
         # 4. Demographic Chart
-        edu_levels = Application.objects.values('student__education_level').annotate(
+        edu_levels = Application.objects.values('education_level').annotate(
             count=Count('id')
         )
-        edu_labels = [e['student__education_level'] for e in edu_levels if e['student__education_level']]
-        edu_data = [e['count'] for e in edu_levels if e['student__education_level']]
+        edu_labels = [e['education_level'] for e in edu_levels if e['education_level']]
+        edu_data = [e['count'] for e in edu_levels if e['education_level']]
 
         data = {
             "growth_chart": {
