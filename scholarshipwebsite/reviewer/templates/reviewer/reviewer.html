@@ -11,25 +11,19 @@
 
   <!-- Summary Cards -->
   <div class="row" style="margin-bottom: 3rem;">
-    <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
+    <div class="col-md-4 col-sm-6" style="margin-bottom: 1rem;">
       <div class="metric-card border-primary">
         <div class="metric-title text-primary-custom">Total Applications</div>
         <div class="metric-value">{{ total_apps }}</div>
       </div>
     </div>
-    <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
-      <div class="metric-card border-success">
-        <div class="metric-title text-success-custom">Approved</div>
-        <div class="metric-value">{{ approved }}</div>
-      </div>
-    </div>
-    <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
+    <div class="col-md-4 col-sm-6" style="margin-bottom: 1rem;">
       <div class="metric-card border-danger">
         <div class="metric-title text-danger-custom">Rejected</div>
         <div class="metric-value">{{ rejected }}</div>
       </div>
     </div>
-    <div class="col-md-3 col-sm-6" style="margin-bottom: 1rem;">
+    <div class="col-md-4 col-sm-6" style="margin-bottom: 1rem;">
       <div class="metric-card border-warning">
         <div class="metric-title text-warning-custom">Pending</div>
         <div class="metric-value">{{ pending }}</div>
@@ -175,8 +169,8 @@
           labels: data.labels,
           datasets: [{
             data: data.data,
-            backgroundColor: ['#1cc88a', '#e74a3b', '#f6c23e'],
-            hoverBackgroundColor: ['#17a673', '#be2617', '#dda20a'],
+            backgroundColor: ['#e74a3b', '#f6c23e'],
+            hoverBackgroundColor: ['#be2617', '#dda20a'],
             hoverBorderColor: "rgba(234, 236, 244, 1)",
           }]
         },

@@ -4,10 +4,7 @@
     Scholarship Application Form
   </h1>
   <hr class="divider" />
-  <form
-    method="POST"
-    enctype="multipart/form-data"
-  >
+  <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div style="display:none;">
       {% comment %} {{ form.scholarship }} {% endcomment %}
@@ -37,12 +34,12 @@
     </div>
     <div class="form-row" style="margin-bottom: 30px">
       <label class="form-label">Scholarship Type:</label>
-          {{ form.scholarship }}
+      {{ form.scholarship }}
     </div>
 
     <div class="tabs-wrapper">
       <a href="#" class="tab active">Part 1: Personal Information</a>
-      {% if  form.instance.pk %}
+      {% if form.instance.pk %}
       <a href="{% url 'edit_application_form' form.instance.pk 2 %}" class="tab">Part 2</a>
       <a href="{% url 'edit_application_form' form.instance.pk 3 %}" class="tab">Part 3</a>
       <a href="{% url 'edit_application_form' form.instance.pk 4 %}" class="tab">Part 4</a>
@@ -74,7 +71,7 @@
         {{ form.ic_no }}
       </div>
 
-      
+
       <div class="form-row">
         <label>Age:</label>
         {{ form.age }}
@@ -84,19 +81,24 @@
       </div>
 
       {% if form.non_field_errors %}
-      <div class="alert alert-danger" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
-          {% for error in form.non_field_errors %}
-              <p style="margin: 0; padding: 0;">
-                  <i class="fas fa-exclamation-circle"></i> {{ error }}
-              </p>
-          {% endfor %}
+      <div class="alert alert-danger"
+        style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
+        {% for error in form.non_field_errors %}
+        <p style="margin: 0; padding: 0;">
+          <i class="fas fa-exclamation-circle"></i> {{ error }}
+        </p>
+        {% endfor %}
       </div>
       {% endif %}
       <div class="form-row">
         <label>Date of Birth:</label>
         {{ form.date_of_birth }}
+        <div id="js-age-dob-error"
+          style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 5px 10px; border-radius: 4px; font-size: 0.9em; margin-top: 5px; display: none;">
+          <i class="fas fa-exclamation-circle"></i> Age doesn't match the date of birth provided.
+        </div>
         <div style="color: red; font-size: 0.9em;">
-            {{ form.date_of_birth.errors }}
+          {{ form.date_of_birth.errors }}
         </div>
       </div>
 
@@ -105,13 +107,14 @@
         {{ form.intake }}
       </div>
       {% if form.intake.errors %}
-        <div style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
-            {% for error in form.intake.errors %}
-                <p style="margin: 0; padding: 0;">
-                  <i class="fas fa-exclamation-circle"></i> {{ error }}
-                </p>
-            {% endfor %}
-        </div>
+      <div
+        style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
+        {% for error in form.intake.errors %}
+        <p style="margin: 0; padding: 0;">
+          <i class="fas fa-exclamation-circle"></i> {{ error }}
+        </p>
+        {% endfor %}
+      </div>
       {% endif %}
       <div class="form-row">
         <label>Programme:</label>
@@ -176,4 +179,51 @@
     </div>
   </form>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const ageInput = document.getElementById('id_age');
+    const dobInput = document.getElementById('id_date_of_birth');
+    const errorDiv = document.getElementById('js-age-dob-error');
+    const form = document.querySelector('form');
+
+    function validateAgeVsDob() {
+      const age = parseInt(ageInput.value);
+      const dobValue = dobInput.value;
+
+      if (!isNaN(age) && dobValue) {
+        const dob = new Date(dobValue);
+        const today = new Date();
+
+        // Calculate age
+        let calculatedAge = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+          calculatedAge--;
+        }
+
+        // Match backend logic: abs(calculated_age - age) > 1 is an error
+        if (Math.abs(calculatedAge - age) > 1) {
+          errorDiv.style.display = 'block';
+          return false;
+        } else {
+          errorDiv.style.display = 'none';
+          return true;
+        }
+      }
+      errorDiv.style.display = 'none';
+      return true;
+    }
+
+    ageInput.addEventListener('input', validateAgeVsDob);
+    dobInput.addEventListener('change', validateAgeVsDob);
+
+    form.addEventListener('submit', function (e) {
+      if (!validateAgeVsDob()) {
+        e.preventDefault();
+        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+</script>
 {% endblock %}
