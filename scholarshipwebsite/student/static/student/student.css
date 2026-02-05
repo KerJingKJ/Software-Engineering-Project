@@ -1409,8 +1409,8 @@ html{
 .application-table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 10px; /* Space between rows */
-    table-layout: fixed; /* <--- CRITICAL: Keeps columns stable */
+    border-spacing: 0 10px; 
+    table-layout: fixed; 
 }
 
 /* --- Shared Cell Styles --- */
@@ -1418,7 +1418,7 @@ html{
 .application-table td {
     padding: 15px 20px;
     vertical-align: middle;
-    text-align: left; /* Default alignment */
+    text-align: left; 
 }
 
 /* --- Header Specifics --- */
@@ -1432,7 +1432,6 @@ html{
 /* --- Body Specifics --- */
 .application-table td {
     background-color: white;
-    /* Keeps text on one line so rows stay aligned */
     white-space: nowrap; 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1591,4 +1590,80 @@ html{
     margin-right: 8px;
     font-size: 10px;
     font-weight: bold;
+}
+
+/* --- Professional File Input Styling --- */
+
+/* Matches your existing .form-input style */
+/* --- File Input Card Styling --- */
+
+/* The container that looks like a text input */
+/* --- Professional File Input Styling --- */
+
+.file-display-box {
+    /* 1. FIXED SIZE: Use px instead of % to keep it compact */
+    width: 350px; 
+    max-width: 100%; /* Ensures it fits on mobile screens */
+    
+    height: 45px;    /* Fixed height for neatness */
+    padding: 0 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    /* 2. TRUNCATION MAGIC: This forces the text to shrink if too long */
+    flex: 1;       
+    min-width: 0;  
+}
+
+.file-icon {
+    color: #0056b3;
+    font-size: 1.1rem;
+    flex-shrink: 0; /* Prevents icon from getting squashed */
+}
+
+.file-link {
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: 600;
+    
+    /* 3. CUT OFF TEXT: Adds '...' at the end */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.file-link:hover {
+    text-decoration: underline;
+}
+
+/* Change Button (Keep this as is) */
+.btn-change {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0 0 0 10px;
+    border-left: 1px solid #ddd;
+    margin-left: 10px;
+    flex-shrink: 0; 
+    white-space: nowrap;
+}
+
+.btn-change:hover {
+    color: #0056b3;
 }

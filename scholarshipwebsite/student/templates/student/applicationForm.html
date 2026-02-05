@@ -71,34 +71,18 @@
         {{ form.ic_no }}
       </div>
 
-
       <div class="form-row">
         <label>Age:</label>
         {{ form.age }}
-        <div style="color: red; font-size: 0.9em;">
-          {{ form.age.errors }}
-        </div>
+        
       </div>
 
-      {% if form.non_field_errors %}
-      <div class="alert alert-danger"
-        style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
-        {% for error in form.non_field_errors %}
-        <p style="margin: 0; padding: 0;">
-          <i class="fas fa-exclamation-circle"></i> {{ error }}
-        </p>
-        {% endfor %}
-      </div>
-      {% endif %}
+      
       <div class="form-row">
         <label>Date of Birth:</label>
         <div class="stacked-inputs">
           {{ form.date_of_birth }}
 
-          <div id="js-age-dob-error"
-            style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 5px 10px; border-radius: 4px; font-size: 0.9em; margin-top: 5px;">
-            <i class="fas fa-exclamation-circle"></i> Age doesn't match the date of birth provided.
-          </div>
         </div>
       </div>
 
@@ -154,21 +138,76 @@
         {{ form.email_address }}
       </div>
 
-      <div class="form-row">
+      <div class="form-row align-top">
         <label>Upload your Passport Photo:</label>
-        {{ form.passport_photo }}
+        
+        <div class="stacked-inputs">
+            {% if form.instance.passport_photo %}
+                
+                <div id="display_passport_photo" class="file-display-box">
+                    <div class="file-info">
+                        <i class="fas fa-file-image file-icon"></i>
+                        <a href="{{ form.instance.passport_photo.url }}" target="_blank" class="file-link">
+                            {{ form.instance.passport_photo.name|slice:"16:" }}
+                        </a>
+                    </div>
+                    <button type="button" class="btn-change" onclick="toggleFileField('passport_photo')">
+                        Change
+                    </button>
+                </div>
+
+                <div id="input_passport_photo" style="display: none;">
+                    {{ form.passport_photo }}
+                    <div class="sub-label">Supported formats: JPG, PNG, PDF</div>
+                    <div style="margin-top:5px;">
+                        <small><a href="#" onclick="cancelFileChange('passport_photo'); return false;" style="color: #666;">Cancel change</a></small>
+                    </div>
+                </div>
+
+            {% else %}
+                <div style="width: 250px;">{{ form.passport_photo }}</div>
+                <div class="sub-label" >Supported formats: JPG, PNG, PDF</div>
+            {% endif %}
+        </div>
       </div>
 
-      <div class="form-row align-top">
+      <div class="form-row">
         <label>Highest Qualification:</label>
         <div class="stacked-inputs">
           {{ form.highest_qualification }}
         </div>
       </div>
 
-      <div class="form-row">
+      <div class="form-row align-top">
         <label>Academic Result:</label>
-        {{ form.academic_result }}
+        <div class="stacked-inputs">
+            {% if form.instance.academic_result %}
+                
+                <div id="display_academic_result" class="file-display-box">
+                    <div class="file-info">
+                        <i class="fas fa-file-image file-icon"></i>
+                        <a href="{{ form.instance.academic_result.url }}" target="_blank" class="file-link">
+                            {{ form.instance.academic_result.name|slice:"16:" }}
+                        </a>
+                    </div>
+                    <button type="button" class="btn-change" onclick="toggleFileField('academic_result')">
+                        Change
+                    </button>
+                </div>
+
+                <div id="input_academic_result" style="display: none;">
+                    {{ form.academic_result }}
+                    <div class="sub-label">Supported formats: JPG, PNG, PDF</div>
+                    <div style="margin-top:5px;">
+                        <small><a href="#" onclick="cancelFileChange('academic_result'); return false;" style="color: #666;">Cancel change</a></small>
+                    </div>
+                </div>
+
+            {% else %}
+                <div style="width: 250px;">{{ form.academic_result }}</div>
+                <div class="sub-label" >Supported formats: JPG, PNG, PDF</div>
+            {% endif %}
+        </div>
       </div>
 
       <div class="button-container">
@@ -179,99 +218,119 @@
 </div>
 
 <script>
+  // --- Helper Functions for File Inputs ---
+  function toggleFileField(fieldName) {
+    document.getElementById('display_' + fieldName).style.display = 'none';
+    document.getElementById('input_' + fieldName).style.display = 'block';
+  }
+
+  function cancelFileChange(fieldName) {
+    document.getElementById('display_' + fieldName).style.display = 'flex';
+    document.getElementById('input_' + fieldName).style.display = 'none';
+    const input = document.querySelector('#input_' + fieldName + ' input[type="file"]');
+    if (input) input.value = ''; 
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    // --- Elements ---
     const ageInput = document.getElementById('id_age');
     const dobInput = document.getElementById('id_date_of_birth');
-    const errorDiv = document.getElementById('js-age-dob-error');
-
+    const ageErrorDiv = document.getElementById('js-age-dob-error');
+    
     const intakeInput = document.getElementById('id_intake');
     const intakeErrorDiv = document.getElementById('js-intake-error');
-
+    
     const form = document.querySelector('form');
 
-    function validateAgeVsDob() {
-      const age = parseInt(ageInput.value);
+    // --- 1. Auto-Calculate Age Logic ---
+    function autoCalculateAge() {
       const dobValue = dobInput.value;
 
-      if (!isNaN(age) && dobValue) {
-        const dob = new Date(dobValue);
+      // Only run if a Date is selected
+      if (dobValue) {
+        // Parse Date (Local Time)
+        const parts = dobValue.split('-');
+        const year = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1; 
+        const day = parseInt(parts[2]);
+        
+        const dob = new Date(year, month, day);
         const today = new Date();
 
-        // Calculate age
         let calculatedAge = today.getFullYear() - dob.getFullYear();
         const m = today.getMonth() - dob.getMonth();
+        
+        // Adjust if birthday hasn't happened yet this year
         if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
           calculatedAge--;
         }
 
-        // Match backend logic: abs(calculated_age - age) > 1 is an error
-        if (Math.abs(calculatedAge - age) > 1) {
-          errorDiv.style.display = 'block';
-          return false;
-        } else {
-          errorDiv.style.display = 'none';
-          return true;
-        }
+        // AUTO-FILL THE AGE INPUT
+        ageInput.value = calculatedAge;
+        
+        // Hide error message since it's now mathematically correct
+        if (ageErrorDiv) ageErrorDiv.style.display = 'none';
       }
-      errorDiv.style.display = 'none';
-      return true;
     }
+
+    // --- 2. Intake Validation Logic ---
     function validateIntake() {
         const intakeValue = intakeInput.value;
         if (intakeValue) {
-            // Get today's date in YYYY-MM-DD string format
             const today = new Date();
             const year = today.getFullYear();
             const month = String(today.getMonth() + 1).padStart(2, '0');
             const day = String(today.getDate()).padStart(2, '0');
             const todayString = `${year}-${month}-${day}`;
 
-            // Compare strings (ISO format YYYY-MM-DD allows direct comparison)
             if (intakeValue > todayString) {
-                intakeErrorDiv.style.display = 'block'; // Show error in the next line
+                if (intakeErrorDiv) intakeErrorDiv.style.display = 'block';
                 return false;
             }
         }
-        intakeErrorDiv.style.display = 'none';
+        if (intakeErrorDiv) intakeErrorDiv.style.display = 'none';
         return true;
     }
 
-    if (ageInput && dobInput) {
-        ageInput.addEventListener('input', validateAgeVsDob);
-        dobInput.addEventListener('change', validateAgeVsDob);
+    // --- Event Listeners ---
+    if (dobInput) {
+        // Calculate immediately when date changes
+        dobInput.addEventListener('change', autoCalculateAge);
+        dobInput.addEventListener('input', autoCalculateAge);
+        // Run once on load to set initial Age if DOB exists
+        autoCalculateAge();
     }
 
     if (intakeInput) {
-        // Trigger validation immediately when the date changes
         intakeInput.addEventListener('change', validateIntake);
-        // Also trigger on input if users can type manually
         intakeInput.addEventListener('input', validateIntake);
+        // Run once on load to show existing errors if any
+        validateIntake();
     }
 
-    form.addEventListener('submit', function (e) {
-      const isAgeValid = validateAgeVsDob();
-      const isIntakeValid = validateIntake();
+    // --- Form Submit Handler ---
+    if (form) {
+        form.addEventListener('submit', function (e) {
+          // We only need to validate Intake. Age is now auto-calculated and safe.
+          const isIntakeValid = validateIntake();
 
-      if (!isAgeValid || !isIntakeValid) {
-        e.preventDefault();
-        
-        // Scroll to the specific error
-        if (!isIntakeValid) {
-             intakeErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else if (!isAgeValid) {
-             ageErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
-    });
+          if (!isIntakeValid) {
+            e.preventDefault(); 
+            if (intakeErrorDiv) {
+                 intakeErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        });
+    }
   });
 </script>
 
 <style>
     #id_intake {
-        width: 98% !important;
+        width: fit-content !important;
     }
     #id_date_of_birth {
-        width: 98% !important;
+        width: fit-content !important;
     }
 </style>
 {% endblock %}

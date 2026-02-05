@@ -59,8 +59,31 @@
 
       <div class="form-vertical-row">
         <label class="top-label">Upload supporting document(s):</label>
-        {{ form.supporting_document }}
-        {% comment %} <input type="file" class="file-input" style="width: 300px" /> {% endcomment %}
+        
+        <div style="width: 100%;"> {% if form.instance.supporting_document %}
+                <div id="display_supporting_document" class="file-display-box" style="width: 350px;">
+                    <div class="file-info">
+                        <i class="fas fa-file-pdf file-icon"></i>
+                        <a href="{{ form.instance.supporting_document.url }}" target="_blank" class="file-link">
+                            {{ form.instance.supporting_document.name|slice:"16:" }}
+                        </a>
+                    </div>
+                    <button type="button" class="btn-change" onclick="toggleFileField('supporting_document')">
+                        Change
+                    </button>
+                </div>
+
+                <div id="input_supporting_document" style="display: none;">
+                    {{ form.supporting_document }}
+                    <div style="margin-top: 5px;">
+                        <small><a href="#" onclick="cancelFileChange('supporting_document'); return false;" style="color: #666;">Cancel change</a></small>
+                    </div>
+                </div>
+            {% else %}
+                {{ form.supporting_document }}
+            {% endif %}
+            <div class="sub-label">Supported formats: PDF, JPG, PNG</div>
+        </div>
       </div>
 
       <div class="button-group-center">
@@ -77,4 +100,18 @@
     </form>
   </div>
 </div>
+
+<script>
+  function toggleFileField(fieldName) {
+    document.getElementById('display_' + fieldName).style.display = 'none';
+    document.getElementById('input_' + fieldName).style.display = 'block';
+  }
+
+  function cancelFileChange(fieldName) {
+    document.getElementById('display_' + fieldName).style.display = 'flex';
+    document.getElementById('input_' + fieldName).style.display = 'none';
+    const input = document.querySelector('#input_' + fieldName + ' input[type="file"]');
+    if (input) input.value = ''; 
+  }
+</script>
 {% endblock %}

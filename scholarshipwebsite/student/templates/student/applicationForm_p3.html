@@ -193,19 +193,55 @@
                 </div>
             </div>
 
-            <div class="docs-section">
-                <h3 class="card-title"><u>Supporting Documents:</u></h3>
-                <h4 style="margin-bottom: 15px; margin-left: 10px;">Upload</h4>
+            <div class="docs-section" style="background-color: white; border: 2px solid #0056b3; padding: 25px; border-radius: 8px; margin: 30px 10px;">
+                <h3 class="card-title" style="color: #0056b3; margin-bottom: 20px;"><u>Supporting Documents</u></h3>
                 
-                <div class="form-row">
-                    <label>EA Form:</label>
-                    {{ form.ea_form }}
+                <div class="form-row align-top">
+                    <label style="width: 30%; font-weight: 700;">EA Form:</label>
+                    <div style="width: 70%;">
+                        {% if form.instance.ea_form %}
+                            <div id="display_ea_form" class="file-display-box" style="width: 350px;">
+                                <div class="file-info">
+                                    <i class="fas fa-file-invoice file-icon"></i>
+                                    <a href="{{ form.instance.ea_form.url }}" target="_blank" class="file-link">
+                                        {{ form.instance.ea_form.name|slice:"9:" }}
+                                    </a>
+                                </div>
+                                <button type="button" class="btn-change" onclick="toggleFileField('ea_form')">Change</button>
+                            </div>
+                            <div id="input_ea_form" style="display: none;">
+                                {{ form.ea_form }}
+                                <small><a href="#" onclick="cancelFileChange('ea_form'); return false;" style="color: #666;">Cancel</a></small>
+                            </div>
+                        {% else %}
+                            {{ form.ea_form }}
+                        {% endif %}
+                        <div class="sub-label">Upload the latest EA Form (PDF/Image)</div>
+                    </div>
                 </div>
                 
-                <div class="form-row">
-                    <label>Latest 3 months payslip:</label>
-                    {{ form.payslip }}
-                    {% comment %} <input type="file" class="file-input"> {% endcomment %}
+                <div class="form-row align-top" style="margin-top: 20px;">
+                    <label style="width: 30%; font-weight: 700;">Latest 3 months payslip:</label>
+                    <div style="width: 70%;">
+                        {% if form.instance.payslip %}
+                            <div id="display_payslip" class="file-display-box" style="width: 350px;">
+                                <div class="file-info">
+                                    <i class="fas fa-file-invoice-dollar file-icon"></i>
+                                    <a href="{{ form.instance.payslip.url }}" target="_blank" class="file-link">
+                                        {{ form.instance.payslip.name|slice:"9:" }}
+                                    </a>
+                                </div>
+                                <button type="button" class="btn-change" onclick="toggleFileField('payslip')">Change</button>
+                            </div>
+                            <div id="input_payslip" style="display: none;">
+                                {{ form.payslip }}
+                                <small><a href="#" onclick="cancelFileChange('payslip'); return false;" style="color: #666;">Cancel</a></small>
+                            </div>
+                        {% else %}
+                            {{ form.payslip }}
+                        {% endif %}
+                        <div class="sub-label">Combined PDF preferred</div>
+                    </div>
                 </div>
             </div>
 
@@ -218,4 +254,72 @@
         </form>
     </div>
 </div>
+
+<script>
+  // --- Existing File Toggle Functions (Keep these) ---
+  function toggleFileField(fieldName) {
+    document.getElementById('display_' + fieldName).style.display = 'none';
+    document.getElementById('input_' + fieldName).style.display = 'block';
+  }
+
+  function cancelFileChange(fieldName) {
+    document.getElementById('display_' + fieldName).style.display = 'flex';
+    document.getElementById('input_' + fieldName).style.display = 'none';
+    const input = document.querySelector('#input_' + fieldName + ' input[type="file"]');
+    if (input) input.value = ''; 
+  }
+
+  // --- NEW: Guardian Age Auto-Calculation ---
+  document.addEventListener('DOMContentLoaded', function () {
+
+    // Helper function to setup auto-calc for a specific guardian
+    // We pass the IDs of the Date input and Age input
+    function setupGuardianAutoAge(dobId, ageId) {
+        const dobInput = document.getElementById(dobId);
+        const ageInput = document.getElementById(ageId);
+
+        if (!dobInput || !ageInput) return; // Safety check
+
+        function calculate() {
+            const dobValue = dobInput.value;
+            if (dobValue) {
+                // Parse Date (Local Time) to avoid timezone bugs
+                const parts = dobValue.split('-');
+                const year = parseInt(parts[0]);
+                const month = parseInt(parts[1]) - 1; 
+                const day = parseInt(parts[2]);
+                
+                const dob = new Date(year, month, day);
+                const today = new Date();
+
+                let calculatedAge = today.getFullYear() - dob.getFullYear();
+                const m = today.getMonth() - dob.getMonth();
+                
+                // Adjust if birthday hasn't happened yet this year
+                if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                    calculatedAge--;
+                }
+
+                // Set the value
+                ageInput.value = calculatedAge;
+            }
+        }
+
+        // Listen for changes
+        dobInput.addEventListener('change', calculate);
+        dobInput.addEventListener('input', calculate);
+        
+        // Run immediately (in case data is already loaded)
+        calculate();
+    }
+
+    // --- Apply to Guardian 1 ---
+    // Django automatically creates IDs like 'id_prefix-fieldname'
+    setupGuardianAutoAge('id_guardian1-date_of_birth', 'id_guardian1-age');
+
+    // --- Apply to Guardian 2 ---
+    setupGuardianAutoAge('id_guardian2-date_of_birth', 'id_guardian2-age');
+
+  });
+</script>
 {% endblock %}
