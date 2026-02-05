@@ -15,14 +15,13 @@ urlpatterns = [
     path("application/<int:id>/interview/", views.schedule_interview, name="schedule_interview"),
     path("application/<int:id>/decision/", views.decision_page, name="decision_page"),
     path("application/<int:id>/mark/", views.view_reviewer_mark, name="view_reviewer_mark"),
-
-
     
     path('changepassword/', login_views.change_password, name='committee_change_password'),
     path('changesecurityquestion/', login_views.update_security_questions, name='committee_update_security_questions'),
 
     
-    path('api/', views.ChartData.as_view(), name='api_data'),
+    path('api/', views.ChartData.as_view(), name='committee_api_data'),
+    path('api/admin', views.AdminChartData.as_view(), name='admin_api_data'),
 
     #notification
     path("notification/markasread/", views.committee_mark_all_read, name="committee_mark_all_read"),

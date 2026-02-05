@@ -84,7 +84,7 @@ def index(request):
     approved = user_apps.filter(committee_status='Approved').count()
     rejected = user_apps.filter(committee_status='Rejected').count() 
     pending = user_apps.filter(committee_status='Pending').count()
-
+     
     
     context = {
         'total_apps': total_apps,
@@ -125,6 +125,7 @@ def reviewApprove(request):
         elif app.committee_status == 'Rejected':
             app.dashboard_status = 'Rejected'
             app.dashboard_class = 'rejected'
+
         else:
             app.dashboard_status = 'Pending Review'
             app.dashboard_class = 'pending-review'
@@ -345,7 +346,6 @@ def view_reviewer_mark(request, id):
         'checked_items': checked_items
     })
 
- 
 
 class ChartData(APIView):
     authentication_classes = [SessionAuthentication]
@@ -356,7 +356,7 @@ class ChartData(APIView):
         user_apps_query = Application.objects.filter(assigned_committee_member=request.user)
 
         # 1. Growth Chart: Cumulative Applications
-        daily_apps = user_apps_query.values('submitted_date').annotate(
+        daily_apps = Application.objects.values('submitted_date').annotate(
             count=Count('id')
         ).order_by('submitted_date')
         
@@ -371,19 +371,21 @@ class ChartData(APIView):
 
         # 2. Status Chart: Approved vs Rejected vs Pending
         # For committee, they care about committee_status
-        approved = user_apps_query.filter(committee_status='Approved').count()
-        rejected = user_apps_query.filter(committee_status='Rejected').count()
-        pending = user_apps_query.exclude(committee_status__in=['Approved', 'Rejected']).count()
+        user_apps = Application.objects.filter(reviewer_status = 'Reviewed', assigned_committee_member=request.user)
+        
+        approved = user_apps.filter(committee_status='Approved').count()
+        rejected = user_apps.filter(committee_status='Rejected').count() 
+        pending = user_apps.filter(committee_status='Pending').count()
         
         # 3. Popularity Chart: Apps per Scholarship (Only for assigned apps)
-        scholarships = Scholarship.objects.filter(application__assigned_committee_member=request.user).annotate(
-            count=Count('application', filter=models.Q(application__assigned_committee_member=request.user))
-        ).distinct()
+        scholarships = Scholarship.objects.annotate(
+            count=Count('application')
+        )
         sch_labels = [s.name for s in scholarships]
         sch_data = [s.count for s in scholarships]
 
         # 4. Demographic Chart: Education Level
-        edu_levels = user_apps_query.values('student__education_level').annotate(
+        edu_levels = Application.objects.values('student__education_level').annotate(
             count=Count('id')
         )
         edu_labels = [e['student__education_level'] for e in edu_levels if e['student__education_level']]
@@ -411,6 +413,71 @@ class ChartData(APIView):
         }
         return Response(data)
     
+
+class AdminChartData(APIView):
+    authentication_classes = []
+    permission_classes = []
+ 
+    def get(self, request, format=None):
+        # 1. Growth Chart: Cumulative Applications
+        daily_apps = Application.objects.values('submitted_date').annotate(
+            count=Count('id')
+        ).order_by('submitted_date')
+        
+        line_labels = []
+        line_data = []
+        cumulative_count = 0
+        for entry in daily_apps:
+            if entry['submitted_date']:
+                line_labels.append(entry['submitted_date'].strftime('%d-%m-%Y'))
+                cumulative_count += entry['count']
+                line_data.append(cumulative_count)
+
+        # 2. Status Chart: Approved vs Rejected vs Pending
+        approved = Application.objects.filter(committee_status='Approved').count()
+        committee_rejected = Application.objects.filter(committee_status='Rejected').count() 
+        reviewer_rejected =  Application.objects.filter(reviewer_status='Rejected').count()
+        rejected = committee_rejected + reviewer_rejected
+        committee_pending = Application.objects.filter(committee_status='Pending').count() 
+        pending = committee_pending - reviewer_rejected
+        
+        # 3. Popularity Chart: Apps per Scholarship
+        scholarships = Scholarship.objects.annotate(count=Count('application'))
+        sch_labels = [s.name for s in scholarships]
+        sch_data = [s.count for s in scholarships]
+
+        # 4. Demographic Chart: Education Level
+        # Assuming we can get education level from the related Student model or similar
+        # Since ScholarshipApplication has 'programme', we can group by that for a demo, 
+        # or use 'highest_qualification' if available in the model I saw earlier.
+        # Looking at model: highest_qualification is available.
+        edu_levels = Application.objects.values('education_level').annotate(
+            count=Count('id')
+        )
+        edu_labels = [e['education_level'] for e in edu_levels if e['education_level']]
+        edu_data = [e['count'] for e in edu_levels if e['education_level']]
+
+        data = {
+            "growth_chart": {
+                "labels": line_labels,
+                "data": line_data,
+                "label": "Total Applications"
+            },
+            "status_chart": {
+                "labels": ["Approved", "Rejected", "Pending"],
+                "data": [approved, rejected, pending]
+            },
+            "scholarship_chart": {
+                "labels": sch_labels,
+                "data": sch_data,
+                "label": "Applications"
+            },
+            "education_chart": {
+                "labels": edu_labels,
+                "data": edu_data
+            }
+        }
+        return Response(data)
 
 @login_required
 def committee_mark_all_read(request):

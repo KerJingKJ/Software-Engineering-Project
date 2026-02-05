@@ -31,7 +31,14 @@
     </div>
     <div class="col-md-4 col-sm-6" style="margin-bottom: 1rem;">
       <div class="metric-card border-warning">
-        <div class="metric-title text-warning-custom">Pending</div>
+        <div class="metric-title text-warning-custom">In Progress</div>
+        <div class="metric-value">{{ In_progress }}</div>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6" style="margin-bottom: 1rem;">
+      <div class="metric-card border-grey">
+        <div class="metric-title text-grey-custom">Pending Review</div>
         <div class="metric-value">{{ pending }}</div>
       </div>
     </div>
@@ -54,7 +61,7 @@
     <div class="col-lg-4 col-md-12">
       <div class="chart-card">
         <div class="chart-header">
-          <i class="fas fa-chart-pie mr-2"></i> Status Distribution
+          <i class="fas fa-chart-pie mr-2"></i> Overall Status Distribution
         </div>
         <div class="chart-body">
           <canvas id="statusChart" height="200"></canvas>
@@ -175,8 +182,10 @@
           labels: data.labels,
           datasets: [{
             data: data.data,
-            backgroundColor: ['#e74a3b', '#f6c23e'],
-            hoverBackgroundColor: ['#be2617', '#dda20a'],
+            // Updated colors for 4 categories:
+            // Reviewed (Blue), Rejected (Red), In-Progress (Yellow), Pending (Grey)
+            backgroundColor: ['#034EA1', '#e74a3b', '#f6c23e', '#cfcfd1'],
+            hoverBackgroundColor: ['#022a58', '#be2617', '#dda20a', '#a7a7a8'],
             hoverBorderColor: "rgba(234, 236, 244, 1)",
           }]
         },
