@@ -77,16 +77,14 @@ def delete_scholarship(request, id):
     return redirect("manage")
 
 @login_required
-def index(request):
-    user_apps = Application.objects.filter(assigned_committee_member=request.user)
+def index(request):  
+    user_apps = Application.objects.filter(reviewer_status = 'Reviewed', assigned_committee_member=request.user)
     total_apps = user_apps.count()
     total_scholarships = Scholarship.objects.count()
     approved = user_apps.filter(committee_status='Approved').count()
-    committee_rejected = user_apps.filter(committee_status='Rejected').count() 
-    reviewer_rejected =  user_apps.filter(reviewer_status='Rejected').count()
-    rejected = committee_rejected + reviewer_rejected
-    committee_pending = user_apps.filter(committee_status='Pending').count() 
-    pending = committee_pending - reviewer_rejected
+    rejected = user_apps.filter(committee_status='Rejected').count() 
+    pending = user_apps.filter(committee_status='Pending').count()
+
     
     context = {
         'total_apps': total_apps,
@@ -127,7 +125,6 @@ def reviewApprove(request):
         elif app.committee_status == 'Rejected':
             app.dashboard_status = 'Rejected'
             app.dashboard_class = 'rejected'
-        
         else:
             app.dashboard_status = 'Pending Review'
             app.dashboard_class = 'pending-review'
@@ -185,7 +182,7 @@ def schedule_interview(request, id):
         interview.skip_signal = True
         interview.save()
         
-        # --- SEND NOTIFICATION (ONE TIME ONLY) ---
+        # send notification to student, and allow student to reschedule interview
         reschedule_url = reverse('reschedule_interview', args=[application.id])
         
         Notification.objects.create(
@@ -196,7 +193,7 @@ def schedule_interview(request, id):
                 f"<a href='{reschedule_url}' style='color: #007bff; text-decoration: underline;'>Click here to reschedule</a> if this time works for you."
             )
         )
-        # ----------------------------------------
+        
         
         return redirect('decision_page', id=id)
 

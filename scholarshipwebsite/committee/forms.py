@@ -4,17 +4,6 @@ from django.forms import inlineformset_factory
 from datetime import date
 
 class ScholarshipForm(forms.ModelForm):
-    # student_type = forms.ChoiceField(choices=[
-    #     ('International Student', 'International Student'),
-    #     ('Local', 'Local')
-    # ], label="Student Type")
-    
-    # education_level = forms.ChoiceField(choices=[
-    #     ('Foundation', 'Foundation'),
-    #     ('Undergraduate', 'Undergraduate'),
-    #     ('Diploma', 'Diploma'),
-    #     ('Postgraduate', 'Postgraduate')
-    # ], label="Education Level")
 
     class Meta:
         model = Scholarship
@@ -23,15 +12,7 @@ class ScholarshipForm(forms.ModelForm):
             'deadline': forms.DateInput(attrs={'type': 'date'}),
         }
 
-    # def __init__(self, *args, **kwargs):
-    #     super(ScholarshipForm, self).__init__(*args, **kwargs)
-    #     if self.instance.pk and self.instance.open_for:
-            
-    #         parts = self.instance.open_for.split(', ')
-    #         if len(parts) >= 2:
-    #             self.fields['student_type'].initial = parts[0]
-    #             self.fields['education_level'].initial = parts[1]
-
+# check to make sure no duplicated scholarship names
     def clean_name(self):
         name = self.cleaned_data.get('name')
         if name:
@@ -47,6 +28,7 @@ class ScholarshipForm(forms.ModelForm):
         
         return name
 
+# check deadlines cannot be in past
     def clean_deadline(self):
         deadline = self.cleaned_data.get('deadline')
         if deadline and deadline < date.today():
@@ -55,8 +37,6 @@ class ScholarshipForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super(ScholarshipForm, self).save(commit=False)
-        # student_type = self.cleaned_data.get('student_type')
-        # education_level = self.cleaned_data.get('education_level')
         
         instance.open_for = f"{instance.student_type}, {instance.education_level}"
         

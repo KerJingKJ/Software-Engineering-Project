@@ -90,13 +90,11 @@ class ScholarshipCriteria(models.Model):
     def __str__(self):
         return f"{self.qualification} - {self.scholarship.name}"
 
-# by hui yee from committe models
 class Interview(models.Model):
     application = models.ForeignKey('student.Application', on_delete=models.CASCADE, related_name='interviews')
     date = models.DateField()
     interview_time = models.CharField(max_length=20, default='12:00 PM')  # e.g., "9:00 AM", "10:00 AM"
     timezone = models.CharField(max_length=50)
-    # from what i understand, committee would be the ones conducting the interview
     location = models.CharField(max_length=255,default="MMU" )
     remarks = models.TextField(null=True, blank=True)
     committee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)

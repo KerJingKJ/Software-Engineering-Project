@@ -109,6 +109,7 @@ class Application(models.Model):
         ('Pending', 'Pending'),
         ('Reviewed', 'Reviewed'),
         ('Rejected', 'Rejected'),
+        ('In-Progress', 'In-Progress'),
     ]
 
     COMMITTEE_STATUS_CHOICES = [

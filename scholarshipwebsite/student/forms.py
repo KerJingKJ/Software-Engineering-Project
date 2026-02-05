@@ -3,6 +3,7 @@ from django import forms
 from .models import Student, Application, Guardian
 from committee.models import Scholarship
 from datetime import date
+from django.utils import timezone
 
 class ApplicationForm(forms.ModelForm):
     class Meta:
@@ -124,6 +125,8 @@ class ApplicationForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        today = timezone.now().date()
+        self.fields['scholarship'].queryset = Scholarship.objects.filter(deadline__gte=today).order_by('deadline')
             
 
         
