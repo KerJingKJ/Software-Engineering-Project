@@ -92,30 +92,28 @@
       {% endif %}
       <div class="form-row">
         <label>Date of Birth:</label>
-        <div style="margin-left:0px">{{ form.date_of_birth }}</div>
-        <div id="js-age-dob-error"
-          style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 5px 10px; border-radius: 4px; font-size: 0.9em; margin-top: 5px;">
-          <i class="fas fa-exclamation-circle"></i> Age doesn't match the date of birth provided.
-        </div>
-        <div style="color: red; font-size: 0.9em;">
-          {{ form.date_of_birth.errors }}
+        <div class="stacked-inputs">
+          {{ form.date_of_birth }}
+
+          <div id="js-age-dob-error"
+            style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 5px 10px; border-radius: 4px; font-size: 0.9em; margin-top: 5px;">
+            <i class="fas fa-exclamation-circle"></i> Age doesn't match the date of birth provided.
+          </div>
         </div>
       </div>
 
       <div class="form-row">
         <label>Intake:</label>
-        {{ form.intake }}
+        <div class="stacked-inputs">
+            {{ form.intake }}
+            
+            <div id="js-intake-error"
+                style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 5px 10px; border-radius: 4px; font-size: 0.9em; display: none;">
+                <i class="fas fa-exclamation-circle"></i> Intake date cannot be in the future.
+            </div>
+        </div>
       </div>
-      {% if form.intake.errors %}
-      <div
-        style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
-        {% for error in form.intake.errors %}
-        <p style="margin: 0; padding: 0;">
-          <i class="fas fa-exclamation-circle"></i> {{ error }}
-        </p>
-        {% endfor %}
-      </div>
-      {% endif %}
+      
       <div class="form-row">
         <label>Programme:</label>
         {{ form.programme }}
@@ -185,6 +183,10 @@
     const ageInput = document.getElementById('id_age');
     const dobInput = document.getElementById('id_date_of_birth');
     const errorDiv = document.getElementById('js-age-dob-error');
+
+    const intakeInput = document.getElementById('id_intake');
+    const intakeErrorDiv = document.getElementById('js-intake-error');
+
     const form = document.querySelector('form');
 
     function validateAgeVsDob() {
@@ -214,16 +216,62 @@
       errorDiv.style.display = 'none';
       return true;
     }
+    function validateIntake() {
+        const intakeValue = intakeInput.value;
+        if (intakeValue) {
+            // Get today's date in YYYY-MM-DD string format
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const todayString = `${year}-${month}-${day}`;
 
-    ageInput.addEventListener('input', validateAgeVsDob);
-    dobInput.addEventListener('change', validateAgeVsDob);
+            // Compare strings (ISO format YYYY-MM-DD allows direct comparison)
+            if (intakeValue > todayString) {
+                intakeErrorDiv.style.display = 'block'; // Show error in the next line
+                return false;
+            }
+        }
+        intakeErrorDiv.style.display = 'none';
+        return true;
+    }
+
+    if (ageInput && dobInput) {
+        ageInput.addEventListener('input', validateAgeVsDob);
+        dobInput.addEventListener('change', validateAgeVsDob);
+    }
+
+    if (intakeInput) {
+        // Trigger validation immediately when the date changes
+        intakeInput.addEventListener('change', validateIntake);
+        // Also trigger on input if users can type manually
+        intakeInput.addEventListener('input', validateIntake);
+    }
 
     form.addEventListener('submit', function (e) {
-      if (!validateAgeVsDob()) {
+      const isAgeValid = validateAgeVsDob();
+      const isIntakeValid = validateIntake();
+
+      if (!isAgeValid || !isIntakeValid) {
         e.preventDefault();
-        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Scroll to the specific error
+        if (!isIntakeValid) {
+             intakeErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else if (!isAgeValid) {
+             ageErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       }
     });
   });
 </script>
+
+<style>
+    #id_intake {
+        width: 98% !important;
+    }
+    #id_date_of_birth {
+        width: 98% !important;
+    }
+</style>
 {% endblock %}
