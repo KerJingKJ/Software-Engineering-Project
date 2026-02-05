@@ -114,6 +114,10 @@ html{
   border-color: #ffc107 !important;
 }
 
+.border-info {
+  border-color: #034EA1 !important;
+}
+
 .text-primary-custom {
   color: #007bff;
 }
@@ -128,6 +132,10 @@ html{
 
 .text-warning-custom {
   color: #ffc107;
+}
+
+.text-info-custom{
+  color: #034EA1;
 }
 
 .dropdown {

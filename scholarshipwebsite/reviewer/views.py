@@ -19,17 +19,18 @@ def index(request):
     # Calculate summary stats for cards
  
     user_apps = Application.objects.filter(assigned_reviewer=request.user)
-    total_apps = user_apps.count()
-    committee_rejected = user_apps.filter(committee_status='Rejected').count() 
-    reviewer_rejected =  user_apps.filter(reviewer_status='Rejected').count()
-    rejected = committee_rejected + reviewer_rejected
-    committee_pending = user_apps.filter(committee_status='Pending').count() 
-    pending = committee_pending - reviewer_rejected
+    total_apps = user_apps.count()  
+    rejected = user_apps.filter(reviewer_status='Rejected').count()
+    pending = user_apps.filter(reviewer_status ='Pending').count() 
+    In_progress = user_apps.filter(reviewer_status='In-Progress').count() 
+    reviewed = user_apps.filter(reviewer_status='Reviewed').count() 
     
     context = {
         'total_apps': total_apps,
         'rejected': rejected,
-        'pending': pending
+        'pending': pending,
+        'In_progress': In_progress,
+        'reviewed': reviewed,
     }
     return render(request, "reviewer/reviewer.html", context)
 
