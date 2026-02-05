@@ -25,8 +25,14 @@ class Student(models.Model):
         null=True,
         blank=True,
     )
+    
+    highest_qualification_gpa = models.FloatField(
+        help_text="CGPA for your previous/highest qualification (e.g. Foundation, Diploma)",
+        null=True,
+        blank=True,
+    )
 
-    a_count = models.PositiveIntegerField(null=True, blank=True)
+    a_count = models.PositiveIntegerField(help_text="Number of A's in your highest qualification (e.g. SPM)", null=True, blank=True)
 
     qualification = models.CharField(
         max_length=100,

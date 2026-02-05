@@ -278,16 +278,24 @@ class StudentProfileForm(forms.ModelForm):
             'year_of_study',
             'current_gpa',
             'qualification',
+            'highest_qualification_gpa',
             'a_count',
             'extracurricular_activities'
         ]
+        labels = {
+            'current_gpa': 'Current CGPA (if applicable)',
+            'qualification': 'Highest Qualification Name',
+            'highest_qualification_gpa': 'Highest Qualification CGPA',
+            'a_count': "Number of A's",
+        }
         widgets = {
             'student_type': forms.Select(attrs={'class': 'form-input small-select'}),
             'education_level': forms.Select(attrs={'class': 'form-input'}),
             'course': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'e.g. Computer Science'}),
-            'year_of_study': forms.NumberInput(attrs={'class': 'form-input small-input'}),
+            'year_of_study': forms.NumberInput(attrs={'class': 'form-input small-input', 'placeholder': 'e.g. 1, 2, 3'}),
             'current_gpa': forms.NumberInput(attrs={'class': 'form-input medium-input', 'step': '0.01'}),
             'qualification': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'e.g. SPM/STPM/Foundation'}),
-            'a_count': forms.NumberInput(attrs={'class': 'form-input small-input'}),
+            'highest_qualification_gpa': forms.NumberInput(attrs={'class': 'form-input medium-input', 'step': '0.01'}),
+            'a_count': forms.NumberInput(attrs={'class': 'form-input small-input', 'placeholder': 'e.g. 5'}),
             'extracurricular_activities': forms.Textarea(attrs={'class': 'form-input', 'rows': 4}),
         }
