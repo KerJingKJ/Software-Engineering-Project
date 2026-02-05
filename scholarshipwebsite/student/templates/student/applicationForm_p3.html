@@ -126,70 +126,51 @@
                               <div class="form-row">
                     <label>Relationship:</label>
                     {{ form2.relationship }}
-                    {% comment %} <select class="form-input small-select">
-                        <option></option>
-                        <option>Father</option>
-                        <option>Mother</option>
-                        <option>Guardian</option>
-                    </select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Name:</label>
                     {{ form2.name }}
-                    {% comment %} <input type="text" class="form-input" placeholder="Enter your name"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Identification Card Number:</label>
                     {{ form2.ic_no }}
-                    {% comment %} <input type="text" class="form-input" placeholder="Example: 001122143344"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Date of Birth:</label>
                     {{ form2.date_of_birth }}
-                    {% comment %} <div class="date-inputs">
-                        <input type="text" placeholder="DD">
-                        <input type="text" placeholder="MM">
-                        <input type="text" placeholder="YYYY">
-                    </div> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Age:</label>
                     {{ form2.age }}
-                    {% comment %} <input type="number" class="form-input small-input"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Nationality:</label>
                     {{ form2.nationality }}
-                    {% comment %} <select class="form-input small-select"><option></option><option>Malaysian</option></select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Gender:</label>
                     {{ form2.gender }}
-                    {% comment %} <select class="form-input small-select"><option></option><option>Male</option><option>Female</option></select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Address:</label>
                     {{ form2.address }}
-                    {% comment %} <textarea class="form-input" rows="2"></textarea> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Contact number:</label>
                     {{ form2.contact_number }}
-                    {% comment %} <input type="text" class="form-input" placeholder="Example: 60123456789"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Email Address:</label>
                     {{ form2.email_address }}
-                    {% comment %} <input type="email" class="form-input"> {% endcomment %}
                 </div>
             </div>
 
@@ -247,7 +228,6 @@
 
             <div class="button-group-center">
                 <a href="{% url 'edit_application_form' form.instance.pk 2 %}" style="text-decoration: none;" class="btn-back">Back</a>
-                {% comment %} <a href="{% url 'edit_application_form' form.instance.pk 4 %}" style="text-decoration: none;" class="btn-next">Next</a> {% endcomment %}
                 <button type="submit" class="btn-next">Next</button>
             </div>
 
@@ -256,7 +236,6 @@
 </div>
 
 <script>
-  // --- Existing File Toggle Functions (Keep these) ---
   function toggleFileField(fieldName) {
     document.getElementById('display_' + fieldName).style.display = 'none';
     document.getElementById('input_' + fieldName).style.display = 'block';
@@ -269,7 +248,7 @@
     if (input) input.value = ''; 
   }
 
-  // --- NEW: Guardian Age Auto-Calculation ---
+  //Guardian Age Auto-Calculation
   document.addEventListener('DOMContentLoaded', function () {
 
     // Helper function to setup auto-calc for a specific guardian
@@ -278,12 +257,11 @@
         const dobInput = document.getElementById(dobId);
         const ageInput = document.getElementById(ageId);
 
-        if (!dobInput || !ageInput) return; // Safety check
+        if (!dobInput || !ageInput) return; 
 
         function calculate() {
             const dobValue = dobInput.value;
             if (dobValue) {
-                // Parse Date (Local Time) to avoid timezone bugs
                 const parts = dobValue.split('-');
                 const year = parseInt(parts[0]);
                 const month = parseInt(parts[1]) - 1; 

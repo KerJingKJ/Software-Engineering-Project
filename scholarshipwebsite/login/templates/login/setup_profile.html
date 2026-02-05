@@ -24,16 +24,30 @@
             <div class="academic-container">
                 <h3 class="academic-title">Academic Information</h3>
                 
-                
-                    {% for field in student_form %}
-                    <div class="academic-field {% if field.name == 'extracurricular_activities' %}full-width{% endif %}">
-                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <div class="field-error">{{ field.errors|striptags }}</div>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
+                {% for field in student_form %}
+                <div class="academic-field {% if field.name == 'extracurricular_activities' %}full-width{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    
+                    {{ field }}
+                    
+                    {% if field.help_text %}
+                        <small style="display: block; color: #666; font-size: 0.85rem; 
+                            {% if field.name == 'student_type' or field.name == 'education_level' %}
+                                margin-top: 15px;
+                            {% else %}
+                                margin-top: 4px; 
+                            {% endif %}">
+                            {{ field.help_text }}
+                        </small>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="field-error" style="margin-top: 5px; color: red;">
+                            {{ field.errors|striptags }}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
                 
             </div>
         {% endif %}
