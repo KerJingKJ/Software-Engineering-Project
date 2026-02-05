@@ -10,7 +10,7 @@ from django.db import models
 from committee.models import Scholarship
 from student.models import Student, Application
 from .models import EligibilityCheck
-
+from django.db.models.functions import TruncDate
 @login_required
 def index(request):
     """
@@ -39,17 +39,17 @@ def review_list(request):
     applications = Application.objects.filter(assigned_reviewer = request.user).order_by('submitted_date')
     
     for app in applications:
-        # Determine display status based on session or DB
-        if app.reviewer_status == 'Reviewed': #reviewed
+        if app.reviewer_status == 'Reviewed':
             app.dashboard_status = 'Reviewed'
             app.dashboard_class = 'reviewed'
-        elif app.reviewer_status == 'Rejected': #rejected
+        elif app.reviewer_status == 'Rejected':
             app.dashboard_status = 'Rejected'
             app.dashboard_class = 'rejected'
-        elif f'review_{app.id}' in request.session:
+        elif app.reviewer_status == 'In-Progress': 
+            # Now checking DB status instead of just session
             app.dashboard_status = 'In Progress'
             app.dashboard_class = 'in-progress'
-        else: #pending
+        else: # pending
             app.dashboard_status = 'To Review'
             app.dashboard_class = 'to-review'
             
@@ -60,6 +60,10 @@ def review_detail(request, app_id):
     app = Application.objects.filter(id=app_id).first()
     if not app:
         return redirect('review')
+    
+    if app.reviewer_status == 'Pending':
+        app.reviewer_status = 'In-Progress'
+        app.save()
 
     # Auto-check citizenship for Malaysian students (Local)
     if app.nationality == 'Local':
@@ -428,18 +432,14 @@ def review_step3(request, app_id):
 def details(request):
     return render(request, "reviewer/reviewScholarship.html", {})
 
-
-
 class ChartData(APIView):
+    # Enable SessionAuthentication so 'request.user' is available
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
- 
-    def get(self, request, format=None):
-        # Filter applications by the logged-in reviewer
-        user_apps_query = Application.objects.filter(assigned_reviewer=request.user)
 
-        # 1. Growth Chart: Cumulative Applications
-        daily_apps = user_apps_query.values('submitted_date').annotate(
+    def get(self, request, format=None):
+        # 1. Growth Chart: Cumulative Applications (Keep as is or filter by user if desired)
+        daily_apps = Application.objects.values('submitted_date').annotate(
             count=Count('id')
         ).order_by('submitted_date')
         
@@ -452,19 +452,26 @@ class ChartData(APIView):
                 cumulative_count += entry['count']
                 line_data.append(cumulative_count)
 
-        # 2. Status Chart: Rejected vs Pending
-        rejected = user_apps_query.filter(committee_status='Rejected').count()
-        pending = user_apps_query.exclude(committee_status__in=['Approved', 'Rejected']).count()
+        # 2. Status Chart: Reviewer Specific Data (UPDATED)
+        # Filter applications assigned to the current logged-in reviewer
+        user_apps = Application.objects.filter(assigned_reviewer=request.user)
         
-        # 3. Popularity Chart: Apps per Scholarship (Only for assigned apps)
-        scholarships = Scholarship.objects.filter(application__in=user_apps_query).annotate(
-            count=Count('application', filter=models.Q(application__assigned_reviewer=request.user))
-        ).distinct()
+        # Match logic from your 'index' view
+        reviewed = user_apps.filter(reviewer_status='Reviewed').count()
+        rejected = user_apps.filter(reviewer_status='Rejected').count()
+        in_progress = user_apps.filter(reviewer_status='In-Progress').count()
+        pending = user_apps.filter(reviewer_status='Pending').count()
+
+        status_labels = ["Reviewed", "Rejected", "In-Progress", "Pending"]
+        status_data = [reviewed, rejected, in_progress, pending]
+        
+        # 3. Popularity Chart: Apps per Scholarship
+        scholarships = Scholarship.objects.annotate(count=Count('application'))
         sch_labels = [s.name for s in scholarships]
         sch_data = [s.count for s in scholarships]
 
-        # 4. Demographic Chart: Education Level
-        edu_levels = user_apps_query.values('student__education_level').annotate(
+        # 4. Demographic Chart
+        edu_levels = Application.objects.values('student__education_level').annotate(
             count=Count('id')
         )
         edu_labels = [e['student__education_level'] for e in edu_levels if e['student__education_level']]
@@ -477,8 +484,8 @@ class ChartData(APIView):
                 "label": "Total Applications"
             },
             "status_chart": {
-                "labels": ["Rejected", "Pending"],
-                "data": [rejected, pending]
+                "labels": status_labels, # Updated labels
+                "data": status_data      # Updated data
             },
             "scholarship_chart": {
                 "labels": sch_labels,
