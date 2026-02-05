@@ -20,9 +20,16 @@
                 {% for scholarship in scholarships %}
                 <tr>
                     <td>
+                        {% if scholarship.status == "Open" %}
                         <a href="{% url 'scholarship_details' scholarship.id %}">
                             {{ scholarship.name }}
                         </a>
+                        {% else %}
+                        <span style="color: grey; cursor: not-allowed;"
+                            title="Closed scholarships are not available for details">
+                            {{ scholarship.name }}
+                        </span>
+                        {% endif %}
                     </td>
                     <td>{{ scholarship.description }}</td>
                     <td>{{ scholarship.education_level }}</td>
@@ -34,14 +41,14 @@
                     <td colspan="5">No scholarships available at the moment.</td>
                 </tr>
                 {% endfor %}
-                </tbody>
+            </tbody>
         </table>
     </div>
 
     <div class="action-buttons">
         <a href="{% url 'student' %}" class="btn-nav">Home</a>
-        
-        
+
+
     </div>
 </div>
 {% endblock %}

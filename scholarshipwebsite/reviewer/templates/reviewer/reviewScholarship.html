@@ -52,21 +52,21 @@
                         <a href="{{ app.academic_result.url }}" target="_blank">result.pdf</a>
                         {% else %}
                         N/A
-                        {% endif %}  
+                        {% endif %}
                     </div>
 
 
                     <div style="margin-top: 5px;">
                         <strong>Supporting Documents: </strong>
                         {% if app.supporting_document %}
-                            <a href="{{ app.supporting_document.url }}" target="_blank">supportdocuments.pdf</a>
-                            {% else %}
-                            N/A
-                            {% endif %} 
+                        <a href="{{ app.supporting_document.url }}" target="_blank">supportdocuments.pdf</a>
+                        {% else %}
+                        N/A
+                        {% endif %}
                     </div>
 
-                    
-                    
+
+
                 </div>
             </div>
             {% else %}
@@ -99,19 +99,19 @@
                     </tr>
                     <tr>
                         <td style="padding-left: 20px;">If Programme Level: Foundation, SPM/O-Level</td>
-                        <td style="text-align: center;"><input {{ efs_attr }} type="checkbox"
-                                name="exam_foundation_spm"></td>
+                        <td style="text-align: center;"><input {{ efs_attr }} type="radio" name="qualifying_exam"
+                                value="exam_foundation_spm"></td>
                     </tr>
                     <tr>
                         <td style="padding-left: 20px;">If Programme Level: Bachelor's Degree, STPM A-Level/UEC</td>
-                        <td style="text-align: center;"><input {{ eds_attr }} type="checkbox"
-                                name="exam_degree_stpm_uec"></td>
+                        <td style="text-align: center;"><input {{ eds_attr }} type="radio" name="qualifying_exam"
+                                value="exam_degree_stpm_uec"></td>
                     </tr>
                     <tr>
                         <td style="padding-left: 20px;">If Programme Level: Bachelor's Degree, Foundation/Matriculation
                             or equivalents</td>
-                        <td style="text-align: center;"><input {{ edm_attr }} type="checkbox"
-                                name="exam_degree_matriculation"></td>
+                        <td style="text-align: center;"><input {{ edm_attr }} type="radio" name="qualifying_exam"
+                                value="exam_degree_matriculation"></td>
                     </tr>
                     <tr>
                         <td><strong>Minimum Grades/CGPA:</strong></td>
@@ -119,20 +119,24 @@
                     </tr>
                     <tr>
                         <td style="padding-left: 20px;">SPM/O-Level: 9As and above</td>
-                        <td style="text-align: center;"><input {{ gspm_attr }} type="checkbox" name="grade_spm"></td>
+                        <td style="text-align: center;"><input {{ gspm_attr }} type="radio" name="minimum_grades"
+                                value="grade_spm"></td>
                     </tr>
                     <tr>
                         <td style="padding-left: 20px;">STPM A-Level: 4A's</td>
-                        <td style="text-align: center;"><input {{ gstpm_attr }} type="checkbox" name="grade_stpm"></td>
+                        <td style="text-align: center;"><input {{ gstpm_attr }} type="radio" name="minimum_grades"
+                                value="grade_stpm"></td>
                     </tr>
                     <tr>
                         <td style="padding-left: 20px;">UEC: 8A's</td>
-                        <td style="text-align: center;"><input {{ guec_attr }} type="checkbox" name="grade_uec"></td>
+                        <td style="text-align: center;"><input {{ guec_attr }} type="radio" name="minimum_grades"
+                                value="grade_uec"></td>
                     </tr>
                     <tr>
                         <td style="padding-left: 20px;">Foundation / Matriculation or equivalents: CGPA 3.90 and above
                         </td>
-                        <td style="text-align: center;"><input {{ gf_attr }} type="checkbox" name="grade_foundation">
+                        <td style="text-align: center;"><input {{ gf_attr }} type="radio" name="minimum_grades"
+                                value="grade_foundation">
                         </td>
                     </tr>
                     <tr>
@@ -157,41 +161,48 @@
                     <tr>
                         <td style="padding-left: 40px;">(1) Borderline: CGPA 3.90 - 3.91 / Exactly 4As / 8As (UEC) /
                             Exactly 9As (Mix of A/A-)</td>
-                        <td style="text-align: center;"><input {{ ab_attr }} type="checkbox" name="academic_borderline">
+                        <td style="text-align: center;"><input {{ ab_attr }} type="radio" name="academic_performance"
+                                value="academic_borderline">
                         </td>
                     </tr>
                     <tr>
                         <td style="padding-left: 40px;">(2) Competent: CGPA 3.92 - 3.94 / Exactly 9As (High A count)
                         </td>
-                        <td style="text-align: center;"><input {{ ac_attr }} type="checkbox" name="academic_competent">
+                        <td style="text-align: center;"><input {{ ac_attr }} type="radio" name="academic_performance"
+                                value="academic_competent">
                         </td>
                     </tr>
                     <tr>
                         <td style="padding-left: 40px;">(3) Superior: CGPA 3.95 - 3.99 / Mix of A+ and A (9+ As)</td>
-                        <td style="text-align: center;"><input {{ as_attr }} type="checkbox" name="academic_superior">
+                        <td style="text-align: center;"><input {{ as_attr }} type="radio" name="academic_performance"
+                                value="academic_superior">
                         </td>
                     </tr>
                     <tr>
                         <td style="padding-left: 40px;">(4) Elite: CGPA 4.00 / 4 A* (A-Level) / Straight A+ (SPM)</td>
-                        <td style="text-align: center;"><input {{ ae_attr }} type="checkbox" name="academic_elite"></td>
+                        <td style="text-align: center;"><input {{ ae_attr }} type="radio" name="academic_performance"
+                                value="academic_elite"></td>
                     </tr>
                     <tr>
                         <td colspan="2" style="padding-left: 20px;">2) Academic Rigor & Awards</td>
                     </tr>
                     <tr>
                         <td style="padding-left: 40px;">Received "Best Student" / Dean's List / Book Prize award.</td>
-                        <td style="text-align: center;"><input {{ rbs_attr }} type="checkbox" name="rigor_best_student">
+                        <td style="text-align: center;"><input {{ rbs_attr }} type="radio" name="academic_rigor"
+                                value="rigor_best_student">
                         </td>
                     </tr>
                     <tr>
                         <td style="padding-left: 40px;">Participated in National/State Academic Competitions (Olympiad,
                             Debate, Hackathon).</td>
-                        <td style="text-align: center;"><input {{ rc_attr }} type="checkbox" name="rigor_competitions">
+                        <td style="text-align: center;"><input {{ rc_attr }} type="radio" name="academic_rigor"
+                                value="rigor_competitions">
                         </td>
                     </tr>
                     <tr>
                         <td style="padding-left: 40px;">None of the above.</td>
-                        <td style="text-align: center;"><input {{ rn_attr }} type="checkbox" name="rigor_none"></td>
+                        <td style="text-align: center;"><input {{ rn_attr }} type="radio" name="academic_rigor"
+                                value="rigor_none"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong>B. Co-Curricular & Leadership</strong></td>
@@ -248,86 +259,53 @@
                                 name="competition_participant"></td>
                     </tr>
                 </table>
-                
+
                 <!-- Error message container -->
-                <div id="validation-errors" style="display: none; background-color: #f8d7da; color: #721c24; padding: 15px; margin-top: 20px; border-radius: 5px; border: 1px solid #f5c6cb;">
+                <div id="validation-errors"
+                    style="display: none; background-color: #f8d7da; color: #721c24; padding: 15px; margin-top: 20px; border-radius: 5px; border: 1px solid #f5c6cb;">
                     <strong>Please fix the following errors:</strong>
                     <ul id="error-list" style="margin: 10px 0 0 20px;"></ul>
                 </div>
-                
+
                 <br>
                 <button type="submit" style="padding: 10px 20px; cursor: pointer;">Next</button>
             </form>
-            
+
             <script>
-            document.querySelector('form').addEventListener('submit', function(e) {
-                var errors = [];
-                var errorContainer = document.getElementById('validation-errors');
-                var errorList = document.getElementById('error-list');
-                
-                // Qualifying Exam - must select exactly one
-                var qualifyingExamFields = ['exam_foundation_spm', 'exam_degree_stpm_uec', 'exam_degree_matriculation'];
-                var qualifyingExamChecked = qualifyingExamFields.filter(function(name) {
-                    var checkbox = document.querySelector('input[name="' + name + '"]');
-                    return checkbox && checkbox.checked;
+                document.querySelector('form').addEventListener('submit', function (e) {
+                    var errors = [];
+                    var errorContainer = document.getElementById('validation-errors');
+                    var errorList = document.getElementById('error-list');
+
+                    // Group Validation Helper
+                    function checkRadioGroup(name, label) {
+                        var radios = document.querySelectorAll('input[name="' + name + '"]');
+                        var checked = Array.from(radios).some(r => r.checked);
+                        if (!checked) {
+                            errors.push('Please select one option for ' + label + '.');
+                        }
+                    }
+
+                    checkRadioGroup('qualifying_exam', 'Qualifying Exam');
+                    checkRadioGroup('minimum_grades', 'Minimum Grades/CGPA');
+                    checkRadioGroup('academic_performance', 'Academic Performance (Grades)');
+                    checkRadioGroup('academic_rigor', 'Academic Rigor & Awards');
+
+                    // Show errors if any
+                    if (errors.length > 0) {
+                        e.preventDefault();
+                        errorList.innerHTML = '';
+                        errors.forEach(function (error) {
+                            var li = document.createElement('li');
+                            li.textContent = error;
+                            errorList.appendChild(li);
+                        });
+                        errorContainer.style.display = 'block';
+                        errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        errorContainer.style.display = 'none';
+                    }
                 });
-                
-                if (qualifyingExamChecked.length === 0) {
-                    errors.push('Please select one option for Qualifying Exam.');
-                } else if (qualifyingExamChecked.length > 1) {
-                    errors.push('Please select only ONE option for Qualifying Exam.');
-                }
-                
-                // Minimum Grades/CGPA - must select exactly one
-                var gradesFields = ['grade_spm', 'grade_stpm', 'grade_uec', 'grade_foundation'];
-                var gradesChecked = gradesFields.filter(function(name) {
-                    var checkbox = document.querySelector('input[name="' + name + '"]');
-                    return checkbox && checkbox.checked;
-                });
-                
-                if (gradesChecked.length === 0) {
-                    errors.push('Please select one option for Minimum Grades/CGPA.');
-                } else if (gradesChecked.length > 1) {
-                    errors.push('Please select only ONE option for Minimum Grades/CGPA.');
-                }
-                
-                // Academic Performance (Grades) - must select at least one
-                var academicPerformanceFields = ['academic_borderline', 'academic_competent', 'academic_superior', 'academic_elite'];
-                var academicPerformanceChecked = academicPerformanceFields.filter(function(name) {
-                    var checkbox = document.querySelector('input[name="' + name + '"]');
-                    return checkbox && checkbox.checked;
-                });
-                
-                if (academicPerformanceChecked.length === 0) {
-                    errors.push('Please select at least one option for Academic Performance (Grades).');
-                }
-                
-                // Academic Rigor & Awards - must select at least one
-                var rigorFields = ['rigor_best_student', 'rigor_competitions', 'rigor_none'];
-                var rigorChecked = rigorFields.filter(function(name) {
-                    var checkbox = document.querySelector('input[name="' + name + '"]');
-                    return checkbox && checkbox.checked;
-                });
-                
-                if (rigorChecked.length === 0) {
-                    errors.push('Please select at least one option for Academic Rigor & Awards.');
-                }
-                
-                // Show errors if any
-                if (errors.length > 0) {
-                    e.preventDefault();
-                    errorList.innerHTML = '';
-                    errors.forEach(function(error) {
-                        var li = document.createElement('li');
-                        li.textContent = error;
-                        errorList.appendChild(li);
-                    });
-                    errorContainer.style.display = 'block';
-                    errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                } else {
-                    errorContainer.style.display = 'none';
-                }
-            });
             </script>
             {% else %}
             <p>Select an application to view eligibility check.</p>

@@ -3,7 +3,10 @@ from django.db.models import Count, F
 from django.contrib import messages
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.decorators import login_required
+from django.db import models
 from committee.models import Scholarship
 from student.models import Student, Application
 from .models import EligibilityCheck
@@ -15,17 +18,16 @@ def index(request):
     """
     # Calculate summary stats for cards
  
-    total_apps = Application.objects.count()
-    approved = Application.objects.filter(committee_status='Approved').count()
-    committee_rejected = Application.objects.filter(committee_status='Rejected').count() 
-    reviewer_rejected =  Application.objects.filter(reviewer_status='Rejected').count()
+    user_apps = Application.objects.filter(assigned_reviewer=request.user)
+    total_apps = user_apps.count()
+    committee_rejected = user_apps.filter(committee_status='Rejected').count() 
+    reviewer_rejected =  user_apps.filter(reviewer_status='Rejected').count()
     rejected = committee_rejected + reviewer_rejected
-    committee_pending = Application.objects.filter(committee_status='Pending').count() 
+    committee_pending = user_apps.filter(committee_status='Pending').count() 
     pending = committee_pending - reviewer_rejected
     
     context = {
         'total_apps': total_apps,
-        'approved': approved,
         'rejected': rejected,
         'pending': pending
     }
@@ -58,21 +60,61 @@ def review_detail(request, app_id):
     if not app:
         return redirect('review')
 
+    # Auto-check citizenship for Malaysian students (Local)
+    if app.nationality == 'Local':
+        eligibility, created = EligibilityCheck.objects.get_or_create(application=app)
+        if not eligibility.citizenship_check:
+            eligibility.citizenship_check = True
+            eligibility.save()
+            
+            # Update session if it already exists to reflect the change immediately
+            data = request.session.get(f'review_{app.id}')
+            if data is not None:
+                data['citizenship_check'] = True
+                request.session[f'review_{app.id}'] = data
+                request.session.modified = True
+
     if request.method == "POST":
         data = request.session.get(f'review_{app.id}', {})
         
-        step1_fields = [
-            'citizenship_check', 'programme_level_check', 'exam_foundation_spm',
-            'exam_degree_stpm_uec', 'exam_degree_matriculation', 'grade_spm',
-            'grade_stpm', 'grade_uec', 'grade_foundation', 'documents_verified',
-            'academic_borderline', 'academic_competent', 'academic_superior', 'academic_elite',
-            'rigor_best_student', 'rigor_competitions', 'rigor_none',
+        # Fields that remain checkboxes
+        checkbox_fields = ['citizenship_check', 'programme_level_check', 'documents_verified']
+        for f in checkbox_fields:
+            data[f] = request.POST.get(f) == 'on'
+
+        # Group 1: Qualifying Exam (Radio)
+        qual_exam = request.POST.get('qualifying_exam')
+        data['exam_foundation_spm'] = (qual_exam == 'exam_foundation_spm')
+        data['exam_degree_stpm_uec'] = (qual_exam == 'exam_degree_stpm_uec')
+        data['exam_degree_matriculation'] = (qual_exam == 'exam_degree_matriculation')
+
+        # Group 2: Minimum Grades/CGPA (Radio)
+        min_grades = request.POST.get('minimum_grades')
+        data['grade_spm'] = (min_grades == 'grade_spm')
+        data['grade_stpm'] = (min_grades == 'grade_stpm')
+        data['grade_uec'] = (min_grades == 'grade_uec')
+        data['grade_foundation'] = (min_grades == 'grade_foundation')
+
+        # Group 3: Academic Performance (Radio)
+        acad_perf = request.POST.get('academic_performance')
+        data['academic_borderline'] = (acad_perf == 'academic_borderline')
+        data['academic_competent'] = (acad_perf == 'academic_competent')
+        data['academic_superior'] = (acad_perf == 'academic_superior')
+        data['academic_elite'] = (acad_perf == 'academic_elite')
+
+        # Group 4: Academic Rigor (Radio)
+        acad_rigor = request.POST.get('academic_rigor')
+        data['rigor_best_student'] = (acad_rigor == 'rigor_best_student')
+        data['rigor_competitions'] = (acad_rigor == 'rigor_competitions')
+        data['rigor_none'] = (acad_rigor == 'rigor_none')
+
+        # Fields that remain checkboxes (Leadership/Competition)
+        other_checkboxes = [
             'leadership_leader', 'leadership_subleader', 'leadership_secretary',
             'leadership_committee', 'leadership_member', 'competition_national',
             'competition_state', 'competition_university', 'competition_participant'
         ]
-        
-        for f in step1_fields:
+        for f in other_checkboxes:
             data[f] = request.POST.get(f) == 'on'
         
         request.session[f'review_{app.id}'] = data
@@ -388,12 +430,15 @@ def details(request):
 
 
 class ChartData(APIView):
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
  
     def get(self, request, format=None):
+        # Filter applications by the logged-in reviewer
+        user_apps_query = Application.objects.filter(assigned_reviewer=request.user)
+
         # 1. Growth Chart: Cumulative Applications
-        daily_apps = Application.objects.values('submitted_date').annotate(
+        daily_apps = user_apps_query.values('submitted_date').annotate(
             count=Count('id')
         ).order_by('submitted_date')
         
@@ -406,22 +451,19 @@ class ChartData(APIView):
                 cumulative_count += entry['count']
                 line_data.append(cumulative_count)
 
-        # 2. Status Chart: Approved vs Rejected vs Pending
-        approved = Application.objects.filter(committee_status='Approved').count()
-        rejected = Application.objects.filter(committee_status='Rejected').count()
-        pending = Application.objects.exclude(committee_status__in=['Approved', 'Rejected']).count()
+        # 2. Status Chart: Rejected vs Pending
+        rejected = user_apps_query.filter(committee_status='Rejected').count()
+        pending = user_apps_query.exclude(committee_status__in=['Approved', 'Rejected']).count()
         
-        # 3. Popularity Chart: Apps per Scholarship
-        scholarships = Scholarship.objects.annotate(count=Count('application'))
+        # 3. Popularity Chart: Apps per Scholarship (Only for assigned apps)
+        scholarships = Scholarship.objects.filter(application__in=user_apps_query).annotate(
+            count=Count('application', filter=models.Q(application__assigned_reviewer=request.user))
+        ).distinct()
         sch_labels = [s.name for s in scholarships]
         sch_data = [s.count for s in scholarships]
 
         # 4. Demographic Chart: Education Level
-        # Assuming we can get education level from the related Student model or similar
-        # Since ScholarshipApplication has 'programme', we can group by that for a demo, 
-        # or use 'highest_qualification' if available in the model I saw earlier.
-        # Looking at model: highest_qualification is available.
-        edu_levels = Application.objects.values('student__education_level').annotate(
+        edu_levels = user_apps_query.values('student__education_level').annotate(
             count=Count('id')
         )
         edu_labels = [e['student__education_level'] for e in edu_levels if e['student__education_level']]
@@ -434,8 +476,8 @@ class ChartData(APIView):
                 "label": "Total Applications"
             },
             "status_chart": {
-                "labels": ["Approved", "Rejected", "Pending"],
-                "data": [approved, rejected, pending]
+                "labels": ["Rejected", "Pending"],
+                "data": [rejected, pending]
             },
             "scholarship_chart": {
                 "labels": sch_labels,
