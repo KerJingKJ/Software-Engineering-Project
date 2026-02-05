@@ -6,7 +6,9 @@
   <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 3rem;">
     <h1 class="h3 text-dark">Dashboard</h1>
   </div>
+
   <div class="row" style="margin-bottom: 3rem;">
+    
     <div class="col" style="margin-bottom: 1rem;">
       <div class="metric-card border-info">
         <div class="metric-title text-info-custom">Total Scholarships</div>
@@ -20,7 +22,7 @@
         <div class="metric-value">{{ total_apps }}</div>
       </div>
     </div>
-    
+
     <div class="col" style="margin-bottom: 1rem;">
       <div class="metric-card border-success">
         <div class="metric-title text-success-custom">Approved</div>
@@ -58,7 +60,7 @@
     <div class="col-lg-4 col-md-12">
       <div class="chart-card">
         <div class="chart-header">
-          <i class="fas fa-chart-pie mr-2"></i> Status Distribution
+          <i class="fas fa-chart-pie mr-2"></i> Overall Status Distribution
         </div>
         <div class="chart-body">
           <canvas id="statusChart" height="200"></canvas>
@@ -96,7 +98,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
   <script>
-    var endpoint = "{% url 'api_data' %}";
+    var endpoint = "{% url 'committee_api_data' %}";
 
     $.ajax({
       method: "GET",
@@ -171,7 +173,7 @@
       });
     }
 
-    function drawStatusChart(data, id) {
+     function drawStatusChart(data, id) {
       var ctx = document.getElementById(id).getContext('2d');
       new Chart(ctx, {
         type: 'doughnut',
@@ -179,8 +181,10 @@
           labels: data.labels,
           datasets: [{
             data: data.data,
-            backgroundColor: ['#1cc88a', '#e74a3b', '#f6c23e'],
-            hoverBackgroundColor: ['#17a673', '#be2617', '#dda20a'],
+            // Updated colors for 4 categories:
+            // Reviewed (Blue), Rejected (Red), In-Progress (Yellow), Pending (Grey)
+            backgroundColor: ['#28a745', '#e74a3b', '#f6c23e'],
+            hoverBackgroundColor: ['#1f7c35', '#be2617', '#dda20a'],
             hoverBorderColor: "rgba(234, 236, 244, 1)",
           }]
         },

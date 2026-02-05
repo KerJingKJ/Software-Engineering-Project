@@ -122,6 +122,10 @@ html {
   border-color: #ffc107 !important;
 }
 
+.border-grey {
+  border-color: #ccc !important;
+}
+
 .text-primary-custom {
   color: #007bff;
 }
@@ -141,6 +145,11 @@ html {
 .text-warning-custom {
   color: #ffc107;
 }
+
+.text-grey-custom {
+  color: #6c757d;
+}
+
 
 .dropdown {
   position: relative;

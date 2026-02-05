@@ -36,6 +36,7 @@ def application_dashboard_view(request, extra_context=None):
         'approved': approved,
         'rejected': rejected,
         'pending': pending,
+        'admin_api_data': [approved, rejected, pending],
         # We also need to pass the "api_data" for the charts to work without errors
         # If you haven't created the api_data view yet, the charts will be empty.
     })
