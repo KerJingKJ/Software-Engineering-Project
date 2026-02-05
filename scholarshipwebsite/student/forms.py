@@ -43,6 +43,8 @@ class ApplicationForm(forms.ModelForm):
             }),
             'age': forms.NumberInput(attrs={
                 'class': 'form-input small-input',
+                'readonly': 'readonly',  # <--- ADD THIS LINE
+                'style': 'background-color: #e9ecef; cursor: not-allowed;' # Optional: Visual cue
             }),
             'date_of_birth': forms.DateInput(attrs={
                 'class': 'form-input',
@@ -89,14 +91,14 @@ class ApplicationForm(forms.ModelForm):
                 'class': 'form-input medium-input',
                 
             }),
-            'passport_photo': forms.FileInput(attrs={
+            'passport_photo': forms.ClearableFileInput(attrs={
                 'class': 'file-input',
                 
             }),
             'highest_qualification': forms.Select(attrs={
                 'class': 'form-input small-select',
             }),
-            'academic_result': forms.FileInput(attrs={
+            'academic_result': forms.ClearableFileInput(attrs={
                 'class': 'file-input',
                 
             }),
@@ -105,7 +107,7 @@ class ApplicationForm(forms.ModelForm):
                 'rows': 8,
                 
             }),
-            'supporting_document': forms.FileInput(attrs={
+            'supporting_document': forms.ClearableFileInput(attrs={
                 'class': 'file-input',
                 'style': 'width: 300px',
             }),
@@ -113,11 +115,11 @@ class ApplicationForm(forms.ModelForm):
                 'class': 'form-input large-textarea',
                 'rows': 10,
             }),
-            'ea_form': forms.FileInput(attrs={
+            'ea_form': forms.ClearableFileInput(attrs={
                 'class': 'file-input',
                 'style': 'width: 300px',
             }),
-           'payslip': forms.FileInput(attrs={
+           'payslip': forms.ClearableFileInput(attrs={
                 'class': 'file-input',
                 'style': 'width: 300px',
             }),
@@ -143,6 +145,12 @@ class ApplicationForm(forms.ModelForm):
         # Add HTML5 required attribute to required fields
         for field_name, field in self.fields.items():
             if field.required:
+                # FIX: If this is a File field and data already exists, DO NOT force HTML 'required'
+                # This allows the user to keep the existing file without re-uploading
+                if isinstance(field.widget, (forms.FileInput, forms.ClearableFileInput)):
+                    if self.instance.pk and getattr(self.instance, field_name):
+                        continue 
+                
                 field.widget.attrs['required'] = 'required'
     
     def clean_date_of_birth(self):
@@ -203,6 +211,8 @@ class GuardianForm(forms.ModelForm):
             }),
             'age': forms.NumberInput(attrs={
                 'class': 'form-input small-input',
+                'readonly': 'readonly',              
+                'style': 'background-color: #e9ecef;' 
             }),
             'nationality': forms.TextInput(attrs={
                 'class': 'form-input',
