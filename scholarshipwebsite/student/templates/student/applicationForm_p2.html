@@ -14,8 +14,6 @@
   </div>
 
   <div class="form-content">
-    {% comment %} <form action="" method="POST" enctype="multipart/form-data">
-      {% csrf_token %} {% endcomment %}
   <form
     method="POST"
     enctype="multipart/form-data"
@@ -43,18 +41,14 @@
           {{ form.passport_photo }}
           {{ form.highest_qualification }}
           {{ form.academic_result }}
-          {% comment %} {{ form.personal_achievement }} {% endcomment %}
-          {% comment %} {{ form.supporting_document }} {% endcomment %}
           {{ form.ea_form }}
           {{ form.payslip }}
           {{ form.reason_deserve }}
         </div>
       <div class="form-vertical-row">
         <label class="top-label"
-          >Briefly explain your personal achievement:</label
-        >
+          >Briefly explain your personal achievement:</label>
         {{ form.personal_achievement }}
-        {% comment %} <textarea class="form-input large-textarea" rows="8"></textarea> {% endcomment %}
       </div>
 
       <div class="form-vertical-row">
@@ -89,12 +83,6 @@
       <div class="button-group-center">
         <a href="{% url 'edit_application_form' form.instance.pk 1 %}" class="btn-back">Back</a>
 
-        {% comment %} <a
-          href="{% url 'edit_application_form' form.instance.pk 3 %}"
-          style="text-decoration: none"
-          class="btn-next"
-          >Next</a
-        > {% endcomment %}
         <button type="submit" class="btn-next">Next</button>
       </div>
     </form>

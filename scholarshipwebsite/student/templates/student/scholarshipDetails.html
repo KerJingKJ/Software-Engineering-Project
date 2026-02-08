@@ -75,23 +75,6 @@
 </div>
 
 <script>
-    {% comment %} // 1. Get the URL parameters (e.g., ?id=merit)
-    const urlParams = new URLSearchParams(window.location.search);
-    const scholarshipId = urlParams.get('id');
-
-    // 2. Define which ID corresponds to which Div
-    // Default to 'chancellor' if no ID is found
-    const targetId = scholarshipId ? 'content-' + scholarshipId : 'content-chancellor';
-
-    // 3. Show the correct div
-    const element = document.getElementById(targetId);
-    if (element) {
-        element.style.display = 'block';
-    } else {
-        // Fallback if ID doesn't exist
-        document.getElementById('content-chancellor').style.display = 'block';
-    } {% endcomment %}
-
     function toggleBookmark(imgElement) {
         // Check if the current source contains the 'empty' image name
         if (imgElement.src.includes('bookmarkicon.png')) {

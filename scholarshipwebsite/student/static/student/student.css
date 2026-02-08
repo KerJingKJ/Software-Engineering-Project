@@ -855,10 +855,10 @@ html{
     box-shadow: 0 6px 12px rgba(0,0,0,0.08);
 }
 
-.card-body {
+/* .card-body {
     padding: 20px;
     flex-grow: 1;
-}
+} */
 
 .card-tags span {
     background: #e9ecef;
