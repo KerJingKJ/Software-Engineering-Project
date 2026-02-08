@@ -31,11 +31,13 @@
                     {{ field }}
                     
                     {% if field.help_text %}
-                        <small style="display: block; color: #666; font-size: 0.85rem; 
+                        <small style="display: block; color: #666; font-size: 0.85rem; margin-bottom: 15px;
                             {% if field.name == 'student_type' or field.name == 'education_level' %}
-                                margin-top: 15px;
+                                margin-top: -5px;
+                            {% elif field.name == 'extracurricular_activities' %}
+                                margin-top: 0px;
                             {% else %}
-                                margin-top: 4px; 
+                                margin-top: -13px; 
                             {% endif %}">
                             {{ field.help_text }}
                         </small>

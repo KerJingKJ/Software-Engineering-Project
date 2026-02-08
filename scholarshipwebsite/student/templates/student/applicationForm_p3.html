@@ -43,8 +43,6 @@
             {{ form.academic_result }}
             {{ form.personal_achievement }}
             {{ form.supporting_document }}
-            {% comment %} {{ form.ea_form }} {% endcomment %}
-            {% comment %} {{ form.payslip }} {% endcomment %}
             {{ form.reason_deserve }}
         </div>
 
@@ -54,76 +52,57 @@
                 <div class="form-row">
                     <label>Relationship:</label>
                     {{ form1.relationship }}
-                    {% comment %} <select class="form-input small-select">
-                        <option></option>
-                        <option>Father</option>
-                        <option>Mother</option>
-                        <option>Guardian</option>
-                    </select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Name:</label>
                     {{ form1.name }}
-                    {% comment %} <input type="text" class="form-input" placeholder="Enter your name"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Identification Card Number:</label>
                     {{ form1.ic_no }}
-                    {% comment %} <input type="text" class="form-input" placeholder="Example: 001122143344"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Date of Birth:</label>
                     {{ form1.date_of_birth }}
-                    {% comment %} <div class="date-inputs">
-                        <input type="text" placeholder="DD">
-                        <input type="text" placeholder="MM">
-                        <input type="text" placeholder="YYYY">
-                    </div> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Age:</label>
                     {{ form1.age }}
-                    {% comment %} <input type="number" class="form-input small-input"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Nationality:</label>
                     {{ form1.nationality }}
-                    {% comment %} <select class="form-input small-select"><option></option><option>Malaysian</option></select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Gender:</label>
                     {{ form1.gender }}
-                    {% comment %} <select class="form-input small-select"><option></option><option>Male</option><option>Female</option></select> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Address:</label>
                     {{ form1.address }}
-                    {% comment %} <textarea class="form-input" rows="2"></textarea> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Contact number:</label>
                     {{ form1.contact_number }}
-                    {% comment %} <input type="text" class="form-input" placeholder="Example: 60123456789"> {% endcomment %}
                 </div>
 
                 <div class="form-row">
                     <label>Email Address:</label>
                     {{ form1.email_address }}
-                    {% comment %} <input type="email" class="form-input"> {% endcomment %}
                 </div>
             </div>
 
             <div class="guardian-card">
                 <h3 class="card-title"><u>Guardian 2:</u></h3>
-                              <div class="form-row">
+                <div class="form-row">
                     <label>Relationship:</label>
                     {{ form2.relationship }}
                 </div>
